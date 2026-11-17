@@ -1,0 +1,5738 @@
+{
+  "source": "Expected: user SQL export paste.txt; templates: user message; no spelling corrections",
+  "lemmas": [
+    {
+      "lemma_id": 3511,
+      "lemma": "anduakseh",
+      "dialect_id": 44,
+      "source_reflexive": "1",
+      "template": "an|duakseh (-nammos, -dah/-dahes; -netahes; -doih/-doihes, -nettihes)",
+      "forms": {
+        "26": [
+          "annammos"
+        ],
+        "27": [
+          "annattos"
+        ],
+        "28": [
+          "andah",
+          "andahes"
+        ],
+        "29": [
+          "annammokseh"
+        ],
+        "30": [
+          "annattokseh"
+        ],
+        "31": [
+          "annetahes"
+        ],
+        "32": [
+          "annoimmos"
+        ],
+        "33": [
+          "annoittos"
+        ],
+        "34": [
+          "andoih",
+          "andoihes"
+        ],
+        "35": [
+          "annoimmokseh"
+        ],
+        "36": [
+          "annoittokseh"
+        ],
+        "37": [
+          "annettihes"
+        ],
+        "38": [
+          "andazimmos"
+        ],
+        "39": [
+          "andazittos"
+        ],
+        "40": [
+          "andazihes"
+        ],
+        "41": [
+          "andazimmokseh"
+        ],
+        "42": [
+          "andazittokseh"
+        ],
+        "43": [
+          "annettazihes"
+        ],
+        "44": [
+          "andannuzimmos"
+        ],
+        "45": [
+          "andannuzittos"
+        ],
+        "46": [
+          "andannuzihes"
+        ],
+        "47": [
+          "andannuzimmokseh"
+        ],
+        "48": [
+          "andannuzittokseh"
+        ],
+        "49": [
+          "annettanuzihes"
+        ],
+        "50": [
+          "älä andai"
+        ],
+        "51": [
+          "andai"
+        ],
+        "52": [
+          "andakkahes"
+        ],
+        "53": [
+          "andakkuammokseh"
+        ],
+        "54": [
+          "andakkuattokseh"
+        ],
+        "55": [
+          "annettahes"
+        ],
+        "70": [
+          "en andai"
+        ],
+        "71": [
+          "et andai"
+        ],
+        "72": [
+          "ei andai"
+        ],
+        "73": [
+          "emmo andai"
+        ],
+        "74": [
+          "älgäh andakkahes"
+        ],
+        "76": [
+          "älgiä andakkuattokseh"
+        ],
+        "77": [
+          "äldähes annettahes"
+        ],
+        "78": [
+          "etto andai"
+        ],
+        "79": [
+          "ei annetahes"
+        ],
+        "80": [
+          "en andannuhes"
+        ],
+        "81": [
+          "et andannuhes"
+        ],
+        "82": [
+          "ei andannuhes"
+        ],
+        "83": [
+          "emmo andannuhes"
+        ],
+        "84": [
+          "etto andannuhes"
+        ],
+        "85": [
+          "ei annettuhes"
+        ],
+        "86": [
+          "olen andannuhes"
+        ],
+        "87": [
+          "olet andannuhes"
+        ],
+        "88": [
+          "on andannuhes"
+        ],
+        "89": [
+          "olemmo andannuhes"
+        ],
+        "90": [
+          "oletto andannuhes"
+        ],
+        "91": [
+          "ollah annettuhes"
+        ],
+        "92": [
+          "en ole annannuhes"
+        ],
+        "93": [
+          "et ole andannuhes"
+        ],
+        "94": [
+          "ei ole andannuhes"
+        ],
+        "95": [
+          "emmo ole andannuhes"
+        ],
+        "96": [
+          "etto ole andannuhes"
+        ],
+        "97": [
+          "ei olla annettuhes"
+        ],
+        "98": [
+          "olin andannuhes"
+        ],
+        "99": [
+          "olit andannuhes"
+        ],
+        "100": [
+          "oli andannuhes"
+        ],
+        "101": [
+          "olimmo andannuhes"
+        ],
+        "102": [
+          "olitto andannuhes"
+        ],
+        "103": [
+          "oldih annettuhes"
+        ],
+        "104": [
+          "en olluh andannuhes"
+        ],
+        "105": [
+          "et olluh andannuhes"
+        ],
+        "106": [
+          "etto olluh andannuhes"
+        ],
+        "107": [
+          "ei olluh andannuhes"
+        ],
+        "108": [
+          "emmo olluh andannuhes"
+        ],
+        "109": [
+          "ei oldu annettuhes"
+        ],
+        "110": [
+          "en andazihes"
+        ],
+        "111": [
+          "et andazihes"
+        ],
+        "112": [
+          "ei andazihes"
+        ],
+        "113": [
+          "emmo andazihes"
+        ],
+        "114": [
+          "etto andazihes"
+        ],
+        "115": [
+          "ei annettazihes"
+        ],
+        "116": [
+          "en andannuzihes"
+        ],
+        "117": [
+          "et andannuzihes"
+        ],
+        "118": [
+          "ei andannuzihes"
+        ],
+        "119": [
+          "emmo andannuzihes"
+        ],
+        "120": [
+          "etto andannuzihes"
+        ],
+        "121": [
+          "ei annettanuzihes"
+        ],
+        "122": [
+          "olizin andannuhes"
+        ],
+        "123": [
+          "olizit andannuhes"
+        ],
+        "124": [
+          "olis andannuhes"
+        ],
+        "125": [
+          "olluzit andannuhes"
+        ],
+        "126": [
+          "olizimmo andannuhes"
+        ],
+        "127": [
+          "olizitto andannuhes"
+        ],
+        "128": [
+          "oldas annettuhes"
+        ],
+        "129": [
+          "en olis andannuhes"
+        ],
+        "130": [
+          "et olis andannuhes"
+        ],
+        "131": [
+          "ei olis andannuhes"
+        ],
+        "132": [
+          "emmo olis andannuhes"
+        ],
+        "133": [
+          "etto olis andannuhes"
+        ],
+        "134": [
+          "ei oldas annettuhes"
+        ],
+        "135": [
+          "olluzin andannuhes"
+        ],
+        "136": [
+          "ollus andannuhes"
+        ],
+        "137": [
+          "olluzimmo andannuhes"
+        ],
+        "138": [
+          "olluzitto andannuhes"
+        ],
+        "139": [
+          "oldanus annettuhes"
+        ],
+        "140": [
+          "en ollus andannuhes"
+        ],
+        "141": [
+          "et ollus andannuhes"
+        ],
+        "142": [
+          "ei ollus andannuhes"
+        ],
+        "143": [
+          "emmo ollus andannuhes"
+        ],
+        "144": [
+          "etto ollus andannuhes"
+        ],
+        "145": [
+          "ei oldanus annettuhes"
+        ],
+        "146": [
+          "andannemmos"
+        ],
+        "147": [
+          "andannettos"
+        ],
+        "148": [
+          "andannehes"
+        ],
+        "149": [
+          "andannemmokseh"
+        ],
+        "150": [
+          "andannettokseh"
+        ],
+        "151": [
+          "annettanehes"
+        ],
+        "152": [
+          "en andannei"
+        ],
+        "153": [
+          "et andannei"
+        ],
+        "154": [
+          "ei andannei"
+        ],
+        "155": [
+          "emmo andannei"
+        ],
+        "156": [
+          "etto andannei"
+        ],
+        "157": [
+          "ei annettanehes"
+        ],
+        "158": [
+          "ollen andannuhes"
+        ],
+        "159": [
+          "ollet andannuhes"
+        ],
+        "160": [
+          "ollou andannuhes"
+        ],
+        "161": [
+          "ollemmo andannuhes"
+        ],
+        "162": [
+          "olletto andannuhes"
+        ],
+        "163": [
+          "oldaneh annettuhes"
+        ],
+        "164": [
+          "en olle andannuhes"
+        ],
+        "165": [
+          "et olle anddannuhes"
+        ],
+        "166": [
+          "ei olle andannuhes"
+        ],
+        "167": [
+          "emmo olle andannuhes"
+        ],
+        "168": [
+          "etto olle andannuhes"
+        ],
+        "169": [
+          "ei oldane annettuhes"
+        ],
+        "170": [
+          "anduakseh"
+        ],
+        "179": [
+          "andannuhes"
+        ],
+        "181": [
+          "annettuhes"
+        ],
+        "295": [
+          "andai"
+        ],
+        "296": [
+          "annetahes"
+        ]
+      },
+      "gramset_names": {
+        "26": "индикатив, презенс, 1 л., ед. ч., +",
+        "27": "индикатив, презенс, 2 л., ед. ч., +",
+        "28": "индикатив, презенс, 3 л., ед. ч., +",
+        "29": "индикатив, презенс, 1 л., мн. ч., +",
+        "30": "индикатив, презенс, 2 л., мн. ч., +",
+        "31": "индикатив, презенс, 3 л., мн. ч., +",
+        "32": "индикатив, имперфект, 1 л., ед. ч., +",
+        "33": "индикатив, имперфект, 2 л., ед. ч., +",
+        "34": "индикатив, имперфект, 3 л., ед. ч., +",
+        "35": "индикатив, имперфект, 1 л., мн. ч., +",
+        "36": "индикатив, имперфект, 2 л., мн. ч., +",
+        "37": "индикатив, имперфект, 3 л., мн. ч., +",
+        "38": "кондиционал, презенс, 1 л., ед. ч., +",
+        "39": "кондиционал, презенс, 2 л., ед. ч., +",
+        "40": "кондиционал, презенс, 3 л., ед. ч., +",
+        "41": "кондиционал, презенс, 1 л., мн. ч., +",
+        "42": "кондиционал, презенс, 2 л., мн. ч., +",
+        "43": "кондиционал, презенс, 3 л., мн. ч., +",
+        "44": "кондиционал, имперфект, 1 л., ед. ч., +",
+        "45": "кондиционал, имперфект, 2 л., ед. ч., +",
+        "46": "кондиционал, имперфект, 3 л., ед. ч., +",
+        "47": "кондиционал, имперфект, 1 л., мн. ч., +",
+        "48": "кондиционал, имперфект, 2 л., мн. ч., +",
+        "49": "кондиционал, имперфект, 3 л., мн. ч., +",
+        "50": "императив, 2 л., ед. ч., -",
+        "51": "императив, 2 л., ед. ч., +",
+        "52": "императив, 3 л., ед. ч., +",
+        "53": "императив, 1 л., мн. ч., +",
+        "54": "императив, 2 л., мн. ч., +",
+        "55": "императив, 3 л., мн. ч., +",
+        "70": "индикатив, презенс, 1 л., ед. ч., -",
+        "71": "индикатив, презенс, 2 л., ед. ч., -",
+        "72": "индикатив, презенс, 3 л., ед. ч., -",
+        "73": "индикатив, презенс, 1 л., мн. ч., -",
+        "74": "императив, 3 л., ед. ч., -",
+        "76": "императив, 2 л., мн. ч., -",
+        "77": "императив, 3 л., мн. ч., -",
+        "78": "индикатив, презенс, 1 л., мн. ч., -",
+        "79": "индикатив, презенс, 1 л., мн. ч., -",
+        "80": "индикатив, имперфект, 1 л., ед. ч., -",
+        "81": "индикатив, имперфект, 2 л., ед. ч., -",
+        "82": "индикатив, имперфект, 3 л., ед. ч., -",
+        "83": "индикатив, имперфект, 1 л., мн. ч., -",
+        "84": "индикатив, имперфект, 2 л., мн. ч., -",
+        "85": "индикатив, имперфект, 3 л., мн. ч., -",
+        "86": "индикатив, перфект, 1 л., ед. ч., +",
+        "87": "индикатив, перфект, 2 л., ед. ч., +",
+        "88": "индикатив, перфект, 3 л., ед. ч., +",
+        "89": "индикатив, перфект, 1 л., мн. ч., +",
+        "90": "индикатив, перфект, 2 л., мн. ч., +",
+        "91": "индикатив, перфект, 3 л., мн. ч., +",
+        "92": "индикатив, перфект, 1 л., ед. ч., -",
+        "93": "индикатив, перфект, 2 л., ед. ч., -",
+        "94": "индикатив, перфект, 3 л., ед. ч., -",
+        "95": "индикатив, перфект, 1 л., мн. ч., -",
+        "96": "индикатив, перфект, 2 л., мн. ч., -",
+        "97": "индикатив, перфект, 3 л., мн. ч., -",
+        "98": "индикатив, плюсквамперфект, 1 л., ед. ч., +",
+        "99": "индикатив, плюсквамперфект, 2 л., ед. ч., +",
+        "100": "индикатив, плюсквамперфект, 3 л., ед. ч., +",
+        "101": "индикатив, плюсквамперфект, 1 л., мн. ч., +",
+        "102": "индикатив, плюсквамперфект, 2 л., мн. ч., +",
+        "103": "индикатив, плюсквамперфект, 3 л., мн. ч., +",
+        "104": "индикатив, плюсквамперфект, 1 л., ед. ч., -",
+        "105": "индикатив, плюсквамперфект, 2 л., ед. ч., -",
+        "106": "индикатив, плюсквамперфект, 2 л., мн. ч., -",
+        "107": "индикатив, плюсквамперфект, 3 л., ед. ч., -",
+        "108": "индикатив, плюсквамперфект, 1 л., мн. ч., -",
+        "109": "индикатив, плюсквамперфект, 3 л., мн. ч., -",
+        "110": "кондиционал, презенс, 1 л., ед. ч., -",
+        "111": "кондиционал, презенс, 2 л., ед. ч., -",
+        "112": "кондиционал, презенс, 3 л., ед. ч., -",
+        "113": "кондиционал, презенс, 1 л., мн. ч., -",
+        "114": "кондиционал, презенс, 2 л., мн. ч., -",
+        "115": "кондиционал, презенс, 3 л., мн. ч., -",
+        "116": "кондиционал, имперфект, 1 л., ед. ч., -",
+        "117": "кондиционал, имперфект, 2 л., ед. ч., -",
+        "118": "кондиционал, имперфект, 3 л., ед. ч., -",
+        "119": "кондиционал, имперфект, 1 л., мн. ч., -",
+        "120": "кондиционал, имперфект, 2 л., мн. ч., -",
+        "121": "кондиционал, имперфект, 3 л., мн. ч., -",
+        "122": "кондиционал, перфект, 1 л., ед. ч., +",
+        "123": "кондиционал, перфект, 2 л., ед. ч., +",
+        "124": "кондиционал, перфект, 3 л., ед. ч., +",
+        "125": "кондиционал, плюсквамперфект, 2 л., ед. ч., +",
+        "126": "кондиционал, перфект, 1 л., мн. ч., +",
+        "127": "кондиционал, перфект, 2 л., мн. ч., +",
+        "128": "кондиционал, перфект, 3 л., мн. ч., +",
+        "129": "кондиционал, перфект, 1 л., ед. ч., -",
+        "130": "кондиционал, перфект, 2 л., ед. ч., -",
+        "131": "кондиционал, перфект, 3 л., ед. ч., -",
+        "132": "кондиционал, перфект, 1 л., мн. ч., -",
+        "133": "кондиционал, перфект, 2 л., мн. ч., -",
+        "134": "кондиционал, перфект, 3 л., мн. ч., -",
+        "135": "кондиционал, плюсквамперфект, 1 л., ед. ч., +",
+        "136": "кондиционал, плюсквамперфект, 3 л., ед. ч., +",
+        "137": "кондиционал, плюсквамперфект, 1 л., мн. ч., +",
+        "138": "кондиционал, плюсквамперфект, 2 л., мн. ч., +",
+        "139": "кондиционал, плюсквамперфект, 3 л., мн. ч., +",
+        "140": "кондиционал, плюсквамперфект, 1 л., ед. ч., -",
+        "141": "кондиционал, плюсквамперфект, 2 л., ед. ч., -",
+        "142": "кондиционал, плюсквамперфект, 3 л., ед. ч., -",
+        "143": "кондиционал, плюсквамперфект, 1 л., мн. ч., -",
+        "144": "кондиционал, плюсквамперфект, 2 л., мн. ч., -",
+        "145": "кондиционал, плюсквамперфект, 3 л., мн. ч., -",
+        "146": "потенциал, презенс, 1 л., ед. ч., +",
+        "147": "потенциал, презенс, 2 л., ед. ч., +",
+        "148": "потенциал, презенс, 3 л., ед. ч., +",
+        "149": "потенциал, презенс, 1 л., мн. ч., +",
+        "150": "потенциал, презенс, 2 л., мн. ч., +",
+        "151": "потенциал, презенс, 3 л., мн. ч., +",
+        "152": "потенциал, презенс, 1 л., ед. ч., -",
+        "153": "потенциал, презенс, 2 л., ед. ч., -",
+        "154": "потенциал, презенс, 3 л., ед. ч., -",
+        "155": "потенциал, презенс, 1 л., мн. ч., -",
+        "156": "потенциал, презенс, 2 л., мн. ч., -",
+        "157": "потенциал, презенс, 3 л., мн. ч., -",
+        "158": "потенциал, перфект, 1 л., ед. ч., +",
+        "159": "потенциал, перфект, 2 л., ед. ч., +",
+        "160": "потенциал, перфект, 3 л., ед. ч., +",
+        "161": "потенциал, перфект, 1 л., мн. ч., +",
+        "162": "потенциал, перфект, 2 л., мн. ч., +",
+        "163": "потенциал, перфект, 3 л., мн. ч., +",
+        "164": "потенциал, перфект, 1 л., ед. ч., -",
+        "165": "потенциал, перфект, 2 л., ед. ч., -",
+        "166": "потенциал, перфект, 3 л., ед. ч., -",
+        "167": "потенциал, перфект, 1 л., мн. ч., -",
+        "168": "потенциал, перфект, 2 л., мн. ч., -",
+        "169": "потенциал, перфект, 3 л., мн. ч., -",
+        "170": "I инфинитив",
+        "179": "актив, 2-е причастие",
+        "181": "пассив, 2-е причастие",
+        "295": "295",
+        "296": "296"
+      },
+      "source_rows": [
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "26",
+          "dialect_id": "44",
+          "wordform_id": "12202",
+          "wordform": "annammos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "27",
+          "dialect_id": "44",
+          "wordform_id": "1140762",
+          "wordform": "annattos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "28",
+          "dialect_id": "44",
+          "wordform_id": "39525",
+          "wordform": "andah"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "28",
+          "dialect_id": "44",
+          "wordform_id": "39526",
+          "wordform": "andahes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "29",
+          "dialect_id": "44",
+          "wordform_id": "1140763",
+          "wordform": "annammokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "30",
+          "dialect_id": "44",
+          "wordform_id": "1140764",
+          "wordform": "annattokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "31",
+          "dialect_id": "44",
+          "wordform_id": "12204",
+          "wordform": "annetahes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "32",
+          "dialect_id": "44",
+          "wordform_id": "1140771",
+          "wordform": "annoimmos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "33",
+          "dialect_id": "44",
+          "wordform_id": "1140772",
+          "wordform": "annoittos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "34",
+          "dialect_id": "44",
+          "wordform_id": "1140773",
+          "wordform": "andoih"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "34",
+          "dialect_id": "44",
+          "wordform_id": "1140774",
+          "wordform": "andoihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "35",
+          "dialect_id": "44",
+          "wordform_id": "1140775",
+          "wordform": "annoimmokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "36",
+          "dialect_id": "44",
+          "wordform_id": "1140776",
+          "wordform": "annoittokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "37",
+          "dialect_id": "44",
+          "wordform_id": "1140777",
+          "wordform": "annettihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "38",
+          "dialect_id": "44",
+          "wordform_id": "1140814",
+          "wordform": "andazimmos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "39",
+          "dialect_id": "44",
+          "wordform_id": "1140815",
+          "wordform": "andazittos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "40",
+          "dialect_id": "44",
+          "wordform_id": "1140816",
+          "wordform": "andazihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "41",
+          "dialect_id": "44",
+          "wordform_id": "1140817",
+          "wordform": "andazimmokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "42",
+          "dialect_id": "44",
+          "wordform_id": "1140818",
+          "wordform": "andazittokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "43",
+          "dialect_id": "44",
+          "wordform_id": "1140819",
+          "wordform": "annettazihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "44",
+          "dialect_id": "44",
+          "wordform_id": "2840218",
+          "wordform": "andannuzimmos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "45",
+          "dialect_id": "44",
+          "wordform_id": "2840219",
+          "wordform": "andannuzittos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "46",
+          "dialect_id": "44",
+          "wordform_id": "2840220",
+          "wordform": "andannuzihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "47",
+          "dialect_id": "44",
+          "wordform_id": "2840221",
+          "wordform": "andannuzimmokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "48",
+          "dialect_id": "44",
+          "wordform_id": "2840222",
+          "wordform": "andannuzittokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "49",
+          "dialect_id": "44",
+          "wordform_id": "1140831",
+          "wordform": "annettanuzihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "50",
+          "dialect_id": "44",
+          "wordform_id": "1140811",
+          "wordform": "älä andai"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "51",
+          "dialect_id": "44",
+          "wordform_id": "315",
+          "wordform": "andai"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "52",
+          "dialect_id": "44",
+          "wordform_id": "1140808",
+          "wordform": "andakkahes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "53",
+          "dialect_id": "44",
+          "wordform_id": "1140809",
+          "wordform": "andakkuammokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "54",
+          "dialect_id": "44",
+          "wordform_id": "1140810",
+          "wordform": "andakkuattokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "55",
+          "dialect_id": "44",
+          "wordform_id": "1140678",
+          "wordform": "annettahes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "70",
+          "dialect_id": "44",
+          "wordform_id": "1140765",
+          "wordform": "en andai"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "71",
+          "dialect_id": "44",
+          "wordform_id": "1140766",
+          "wordform": "et andai"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "72",
+          "dialect_id": "44",
+          "wordform_id": "1140767",
+          "wordform": "ei andai"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "73",
+          "dialect_id": "44",
+          "wordform_id": "1140768",
+          "wordform": "emmo andai"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "74",
+          "dialect_id": "44",
+          "wordform_id": "1140812",
+          "wordform": "älgäh andakkahes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "76",
+          "dialect_id": "44",
+          "wordform_id": "1140813",
+          "wordform": "älgiä andakkuattokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "77",
+          "dialect_id": "44",
+          "wordform_id": "1140683",
+          "wordform": "äldähes annettahes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "78",
+          "dialect_id": "44",
+          "wordform_id": "1140769",
+          "wordform": "etto andai"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "79",
+          "dialect_id": "44",
+          "wordform_id": "1140770",
+          "wordform": "ei annetahes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "80",
+          "dialect_id": "44",
+          "wordform_id": "2840194",
+          "wordform": "en andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "81",
+          "dialect_id": "44",
+          "wordform_id": "2840195",
+          "wordform": "et andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "82",
+          "dialect_id": "44",
+          "wordform_id": "2840196",
+          "wordform": "ei andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "83",
+          "dialect_id": "44",
+          "wordform_id": "2840197",
+          "wordform": "emmo andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "84",
+          "dialect_id": "44",
+          "wordform_id": "2840198",
+          "wordform": "etto andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "85",
+          "dialect_id": "44",
+          "wordform_id": "1140783",
+          "wordform": "ei annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "86",
+          "dialect_id": "44",
+          "wordform_id": "2840199",
+          "wordform": "olen andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "87",
+          "dialect_id": "44",
+          "wordform_id": "2840200",
+          "wordform": "olet andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "88",
+          "dialect_id": "44",
+          "wordform_id": "2840201",
+          "wordform": "on andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "89",
+          "dialect_id": "44",
+          "wordform_id": "2840202",
+          "wordform": "olemmo andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "90",
+          "dialect_id": "44",
+          "wordform_id": "2840203",
+          "wordform": "oletto andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "91",
+          "dialect_id": "44",
+          "wordform_id": "1140789",
+          "wordform": "ollah annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "92",
+          "dialect_id": "44",
+          "wordform_id": "1140790",
+          "wordform": "en ole annannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "93",
+          "dialect_id": "44",
+          "wordform_id": "2840204",
+          "wordform": "et ole andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "94",
+          "dialect_id": "44",
+          "wordform_id": "2840205",
+          "wordform": "ei ole andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "95",
+          "dialect_id": "44",
+          "wordform_id": "2840206",
+          "wordform": "emmo ole andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "96",
+          "dialect_id": "44",
+          "wordform_id": "2840207",
+          "wordform": "etto ole andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "97",
+          "dialect_id": "44",
+          "wordform_id": "1140795",
+          "wordform": "ei olla annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "98",
+          "dialect_id": "44",
+          "wordform_id": "2840208",
+          "wordform": "olin andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "99",
+          "dialect_id": "44",
+          "wordform_id": "2840209",
+          "wordform": "olit andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "100",
+          "dialect_id": "44",
+          "wordform_id": "2840210",
+          "wordform": "oli andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "101",
+          "dialect_id": "44",
+          "wordform_id": "2840211",
+          "wordform": "olimmo andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "102",
+          "dialect_id": "44",
+          "wordform_id": "2840212",
+          "wordform": "olitto andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "103",
+          "dialect_id": "44",
+          "wordform_id": "1140801",
+          "wordform": "oldih annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "104",
+          "dialect_id": "44",
+          "wordform_id": "2840213",
+          "wordform": "en olluh andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "105",
+          "dialect_id": "44",
+          "wordform_id": "2840214",
+          "wordform": "et olluh andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "106",
+          "dialect_id": "44",
+          "wordform_id": "2840217",
+          "wordform": "etto olluh andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "107",
+          "dialect_id": "44",
+          "wordform_id": "2840215",
+          "wordform": "ei olluh andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "108",
+          "dialect_id": "44",
+          "wordform_id": "2840216",
+          "wordform": "emmo olluh andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "109",
+          "dialect_id": "44",
+          "wordform_id": "1140807",
+          "wordform": "ei oldu annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "110",
+          "dialect_id": "44",
+          "wordform_id": "1140820",
+          "wordform": "en andazihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "111",
+          "dialect_id": "44",
+          "wordform_id": "1140821",
+          "wordform": "et andazihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "112",
+          "dialect_id": "44",
+          "wordform_id": "1140822",
+          "wordform": "ei andazihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "113",
+          "dialect_id": "44",
+          "wordform_id": "1140823",
+          "wordform": "emmo andazihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "114",
+          "dialect_id": "44",
+          "wordform_id": "1140824",
+          "wordform": "etto andazihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "115",
+          "dialect_id": "44",
+          "wordform_id": "1140825",
+          "wordform": "ei annettazihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "116",
+          "dialect_id": "44",
+          "wordform_id": "2840223",
+          "wordform": "en andannuzihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "117",
+          "dialect_id": "44",
+          "wordform_id": "2840224",
+          "wordform": "et andannuzihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "118",
+          "dialect_id": "44",
+          "wordform_id": "2840225",
+          "wordform": "ei andannuzihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "119",
+          "dialect_id": "44",
+          "wordform_id": "2840226",
+          "wordform": "emmo andannuzihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "120",
+          "dialect_id": "44",
+          "wordform_id": "2840227",
+          "wordform": "etto andannuzihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "121",
+          "dialect_id": "44",
+          "wordform_id": "1140837",
+          "wordform": "ei annettanuzihes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "122",
+          "dialect_id": "44",
+          "wordform_id": "2840228",
+          "wordform": "olizin andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "123",
+          "dialect_id": "44",
+          "wordform_id": "2840229",
+          "wordform": "olizit andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "124",
+          "dialect_id": "44",
+          "wordform_id": "2840230",
+          "wordform": "olis andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "125",
+          "dialect_id": "44",
+          "wordform_id": "2840239",
+          "wordform": "olluzit andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "126",
+          "dialect_id": "44",
+          "wordform_id": "2840231",
+          "wordform": "olizimmo andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "127",
+          "dialect_id": "44",
+          "wordform_id": "2840232",
+          "wordform": "olizitto andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "128",
+          "dialect_id": "44",
+          "wordform_id": "1140843",
+          "wordform": "oldas annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "129",
+          "dialect_id": "44",
+          "wordform_id": "2840233",
+          "wordform": "en olis andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "130",
+          "dialect_id": "44",
+          "wordform_id": "2840234",
+          "wordform": "et olis andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "131",
+          "dialect_id": "44",
+          "wordform_id": "2840235",
+          "wordform": "ei olis andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "132",
+          "dialect_id": "44",
+          "wordform_id": "2840236",
+          "wordform": "emmo olis andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "133",
+          "dialect_id": "44",
+          "wordform_id": "2840237",
+          "wordform": "etto olis andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "134",
+          "dialect_id": "44",
+          "wordform_id": "1140849",
+          "wordform": "ei oldas annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "135",
+          "dialect_id": "44",
+          "wordform_id": "2840238",
+          "wordform": "olluzin andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "136",
+          "dialect_id": "44",
+          "wordform_id": "2840240",
+          "wordform": "ollus andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "137",
+          "dialect_id": "44",
+          "wordform_id": "2840241",
+          "wordform": "olluzimmo andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "138",
+          "dialect_id": "44",
+          "wordform_id": "2840242",
+          "wordform": "olluzitto andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "139",
+          "dialect_id": "44",
+          "wordform_id": "1140855",
+          "wordform": "oldanus annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "140",
+          "dialect_id": "44",
+          "wordform_id": "2840243",
+          "wordform": "en ollus andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "141",
+          "dialect_id": "44",
+          "wordform_id": "2840244",
+          "wordform": "et ollus andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "142",
+          "dialect_id": "44",
+          "wordform_id": "2840245",
+          "wordform": "ei ollus andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "143",
+          "dialect_id": "44",
+          "wordform_id": "2840246",
+          "wordform": "emmo ollus andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "144",
+          "dialect_id": "44",
+          "wordform_id": "2840247",
+          "wordform": "etto ollus andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "145",
+          "dialect_id": "44",
+          "wordform_id": "1140861",
+          "wordform": "ei oldanus annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "146",
+          "dialect_id": "44",
+          "wordform_id": "2840248",
+          "wordform": "andannemmos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "147",
+          "dialect_id": "44",
+          "wordform_id": "2840249",
+          "wordform": "andannettos"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "148",
+          "dialect_id": "44",
+          "wordform_id": "2840250",
+          "wordform": "andannehes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "149",
+          "dialect_id": "44",
+          "wordform_id": "2840251",
+          "wordform": "andannemmokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "150",
+          "dialect_id": "44",
+          "wordform_id": "2840252",
+          "wordform": "andannettokseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "151",
+          "dialect_id": "44",
+          "wordform_id": "1140867",
+          "wordform": "annettanehes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "152",
+          "dialect_id": "44",
+          "wordform_id": "2840253",
+          "wordform": "en andannei"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "153",
+          "dialect_id": "44",
+          "wordform_id": "2840254",
+          "wordform": "et andannei"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "154",
+          "dialect_id": "44",
+          "wordform_id": "2840255",
+          "wordform": "ei andannei"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "155",
+          "dialect_id": "44",
+          "wordform_id": "2840256",
+          "wordform": "emmo andannei"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "156",
+          "dialect_id": "44",
+          "wordform_id": "2840257",
+          "wordform": "etto andannei"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "157",
+          "dialect_id": "44",
+          "wordform_id": "1140873",
+          "wordform": "ei annettanehes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "158",
+          "dialect_id": "44",
+          "wordform_id": "2840258",
+          "wordform": "ollen andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "159",
+          "dialect_id": "44",
+          "wordform_id": "2840259",
+          "wordform": "ollet andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "160",
+          "dialect_id": "44",
+          "wordform_id": "2840260",
+          "wordform": "ollou andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "161",
+          "dialect_id": "44",
+          "wordform_id": "2840261",
+          "wordform": "ollemmo andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "162",
+          "dialect_id": "44",
+          "wordform_id": "2840262",
+          "wordform": "olletto andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "163",
+          "dialect_id": "44",
+          "wordform_id": "1140879",
+          "wordform": "oldaneh annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "164",
+          "dialect_id": "44",
+          "wordform_id": "2840263",
+          "wordform": "en olle andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "165",
+          "dialect_id": "44",
+          "wordform_id": "2840264",
+          "wordform": "et olle anddannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "166",
+          "dialect_id": "44",
+          "wordform_id": "2840265",
+          "wordform": "ei olle andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "167",
+          "dialect_id": "44",
+          "wordform_id": "2840266",
+          "wordform": "emmo olle andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "168",
+          "dialect_id": "44",
+          "wordform_id": "2840267",
+          "wordform": "etto olle andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "169",
+          "dialect_id": "44",
+          "wordform_id": "1140885",
+          "wordform": "ei oldane annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "170",
+          "dialect_id": "44",
+          "wordform_id": "12205",
+          "wordform": "anduakseh"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "179",
+          "dialect_id": "44",
+          "wordform_id": "2840268",
+          "wordform": "andannuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "181",
+          "dialect_id": "44",
+          "wordform_id": "1140887",
+          "wordform": "annettuhes"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "295",
+          "dialect_id": "44",
+          "wordform_id": "315",
+          "wordform": "andai"
+        },
+        {
+          "lemma_id": "3511",
+          "lemma": "anduakseh",
+          "reflexive": "1",
+          "lemma_status": "0",
+          "gramset_id": "296",
+          "dialect_id": "44",
+          "wordform_id": "12204",
+          "wordform": "annetahes"
+        }
+      ]
+    },
+    {
+      "lemma_id": 6241,
+      "lemma": "istuokseh",
+      "dialect_id": 44,
+      "source_reflexive": "NULL",
+      "template": "istu|okseh (-mmos, -hes; -tahes; -ihes, -ttihes)",
+      "forms": {
+        "26": [
+          "istummos"
+        ],
+        "27": [
+          "istuttos"
+        ],
+        "28": [
+          "istuhes"
+        ],
+        "29": [
+          "istummokseh"
+        ],
+        "30": [
+          "istuttokseh"
+        ],
+        "31": [
+          "istutahes"
+        ],
+        "32": [
+          "istuimmos"
+        ],
+        "33": [
+          "istuittos"
+        ],
+        "34": [
+          "istuihes"
+        ],
+        "35": [
+          "istuimmokseh"
+        ],
+        "36": [
+          "istuittokseh"
+        ],
+        "37": [
+          "istuttihes"
+        ],
+        "38": [
+          "istuzimmos"
+        ],
+        "39": [
+          "istuzittos"
+        ],
+        "40": [
+          "istuzihes"
+        ],
+        "41": [
+          "istuzimmokseh"
+        ],
+        "42": [
+          "istuzittokseh"
+        ],
+        "43": [
+          "istuttazihes"
+        ],
+        "44": [
+          "istunuzimmos"
+        ],
+        "45": [
+          "istunuzittos"
+        ],
+        "46": [
+          "istunuzihes"
+        ],
+        "47": [
+          "istunuzimmokseh"
+        ],
+        "48": [
+          "istunuzittokseh"
+        ],
+        "49": [
+          "istuttanuzihes"
+        ],
+        "50": [
+          "älä istui"
+        ],
+        "51": [
+          "istui"
+        ],
+        "52": [
+          "istukkahes"
+        ],
+        "53": [
+          "istukkuammokseh"
+        ],
+        "54": [
+          "istukkuattokseh"
+        ],
+        "55": [
+          "istuttahes"
+        ],
+        "70": [
+          "en istui"
+        ],
+        "71": [
+          "et istui"
+        ],
+        "72": [
+          "ei istui"
+        ],
+        "73": [
+          "emmo istui"
+        ],
+        "74": [
+          "älgäh istukkahes"
+        ],
+        "76": [
+          "älgiä istukkuattokseh"
+        ],
+        "77": [
+          "äldähes istuttahes"
+        ],
+        "78": [
+          "etto istui"
+        ],
+        "79": [
+          "ei istutahes"
+        ],
+        "80": [
+          "en istunuhes"
+        ],
+        "81": [
+          "et istunuhes"
+        ],
+        "82": [
+          "ei istunuhes"
+        ],
+        "83": [
+          "emmo istunuhes"
+        ],
+        "84": [
+          "etto istunuhes"
+        ],
+        "85": [
+          "ei istuttuhes"
+        ],
+        "86": [
+          "olen istunuhes"
+        ],
+        "87": [
+          "olet istunuhes"
+        ],
+        "88": [
+          "on istunuhes"
+        ],
+        "89": [
+          "olemmo istunuhes"
+        ],
+        "90": [
+          "oletto istunuhes"
+        ],
+        "91": [
+          "ollah istuttuhes"
+        ],
+        "92": [
+          "en ole istunuhes"
+        ],
+        "93": [
+          "et ole istunuhes"
+        ],
+        "94": [
+          "ei ole istunuhes"
+        ],
+        "95": [
+          "emmo ole istunuhes"
+        ],
+        "96": [
+          "etto ole istunuhes"
+        ],
+        "97": [
+          "ei olla istuttuhes"
+        ],
+        "98": [
+          "olin istunuhes"
+        ],
+        "99": [
+          "olit istunuhes"
+        ],
+        "100": [
+          "oli istunuhes"
+        ],
+        "101": [
+          "olimmo istunuhes"
+        ],
+        "102": [
+          "olitto istunuhes"
+        ],
+        "103": [
+          "oldih istuttuhes"
+        ],
+        "104": [
+          "en olluh istunuhes"
+        ],
+        "105": [
+          "et olluh istunuhes"
+        ],
+        "106": [
+          "etto olluh istunuhes"
+        ],
+        "107": [
+          "ei olluh istunuhes"
+        ],
+        "108": [
+          "emmo olluh istunuhes"
+        ],
+        "109": [
+          "ei oldu istuttuhes"
+        ],
+        "110": [
+          "en istuzihes"
+        ],
+        "111": [
+          "et istuzihes"
+        ],
+        "112": [
+          "ei istuzihes"
+        ],
+        "113": [
+          "emmo istuzihes"
+        ],
+        "114": [
+          "etto istuzihes"
+        ],
+        "115": [
+          "ei istuttazihes"
+        ],
+        "116": [
+          "en istunuzihes"
+        ],
+        "117": [
+          "et istunuzihes"
+        ],
+        "118": [
+          "ei istunuzihes"
+        ],
+        "119": [
+          "emmo istunuzihes"
+        ],
+        "120": [
+          "etto istunuzihes"
+        ],
+        "121": [
+          "ei istuttanuzihes"
+        ],
+        "122": [
+          "olizin istunuhes"
+        ],
+        "123": [
+          "olizit istunuhes"
+        ],
+        "124": [
+          "olis istunuhes"
+        ],
+        "125": [
+          "olluzit istunuhes"
+        ],
+        "126": [
+          "olizimmo istunuhes"
+        ],
+        "127": [
+          "olizitto istunuhes"
+        ],
+        "128": [
+          "oldas istuttuhes"
+        ],
+        "129": [
+          "en olis istunuhes"
+        ],
+        "130": [
+          "et olis istunuhes"
+        ],
+        "131": [
+          "ei olis istunuhes"
+        ],
+        "132": [
+          "emmo olis istunuhes"
+        ],
+        "133": [
+          "etto olis istunuhes"
+        ],
+        "134": [
+          "ei oldas istuttuhes"
+        ],
+        "135": [
+          "olluzin istunuhes"
+        ],
+        "136": [
+          "ollus istunuhes"
+        ],
+        "137": [
+          "olluzimmo istunuhes"
+        ],
+        "138": [
+          "olluzitto istunuhes"
+        ],
+        "139": [
+          "oldanus istuttuhes"
+        ],
+        "140": [
+          "en ollus istunuhes"
+        ],
+        "141": [
+          "et ollus istunuhes"
+        ],
+        "142": [
+          "ei ollus istunuhes"
+        ],
+        "143": [
+          "emmo ollus istunuhes"
+        ],
+        "144": [
+          "etto ollus istunuhes"
+        ],
+        "145": [
+          "ei oldanus istuttuhes"
+        ],
+        "146": [
+          "istunemmos"
+        ],
+        "147": [
+          "istunettos"
+        ],
+        "148": [
+          "istunehes"
+        ],
+        "149": [
+          "istunemmokseh"
+        ],
+        "150": [
+          "istunettokseh"
+        ],
+        "151": [
+          "istuttanehes"
+        ],
+        "152": [
+          "en istunei"
+        ],
+        "153": [
+          "et istunei"
+        ],
+        "154": [
+          "ei istunei"
+        ],
+        "155": [
+          "emmo istunei"
+        ],
+        "156": [
+          "etto istunei"
+        ],
+        "157": [
+          "ei istuttanehes"
+        ],
+        "158": [
+          "ollen istunuhes"
+        ],
+        "159": [
+          "ollet istunuhes"
+        ],
+        "160": [
+          "ollou istunuhes"
+        ],
+        "161": [
+          "ollemmo istunuhes"
+        ],
+        "162": [
+          "olletto istunuhes"
+        ],
+        "163": [
+          "oldaneh istuttuhes"
+        ],
+        "164": [
+          "en olle istunuhes"
+        ],
+        "165": [
+          "et olle istunuhes"
+        ],
+        "166": [
+          "ei olle istunuhes"
+        ],
+        "167": [
+          "emmo olle istunuhes"
+        ],
+        "168": [
+          "etto olle istunuhes"
+        ],
+        "169": [
+          "ei oldane istuttuhes"
+        ],
+        "170": [
+          "istuokseh"
+        ],
+        "179": [
+          "istunuhes"
+        ],
+        "181": [
+          "istuttuhes"
+        ],
+        "295": [
+          "istui"
+        ],
+        "296": [
+          "istutahes"
+        ]
+      },
+      "gramset_names": {
+        "26": "индикатив, презенс, 1 л., ед. ч., +",
+        "27": "индикатив, презенс, 2 л., ед. ч., +",
+        "28": "индикатив, презенс, 3 л., ед. ч., +",
+        "29": "индикатив, презенс, 1 л., мн. ч., +",
+        "30": "индикатив, презенс, 2 л., мн. ч., +",
+        "31": "индикатив, презенс, 3 л., мн. ч., +",
+        "32": "индикатив, имперфект, 1 л., ед. ч., +",
+        "33": "индикатив, имперфект, 2 л., ед. ч., +",
+        "34": "индикатив, имперфект, 3 л., ед. ч., +",
+        "35": "индикатив, имперфект, 1 л., мн. ч., +",
+        "36": "индикатив, имперфект, 2 л., мн. ч., +",
+        "37": "индикатив, имперфект, 3 л., мн. ч., +",
+        "38": "кондиционал, презенс, 1 л., ед. ч., +",
+        "39": "кондиционал, презенс, 2 л., ед. ч., +",
+        "40": "кондиционал, презенс, 3 л., ед. ч., +",
+        "41": "кондиционал, презенс, 1 л., мн. ч., +",
+        "42": "кондиционал, презенс, 2 л., мн. ч., +",
+        "43": "кондиционал, презенс, 3 л., мн. ч., +",
+        "44": "кондиционал, имперфект, 1 л., ед. ч., +",
+        "45": "кондиционал, имперфект, 2 л., ед. ч., +",
+        "46": "кондиционал, имперфект, 3 л., ед. ч., +",
+        "47": "кондиционал, имперфект, 1 л., мн. ч., +",
+        "48": "кондиционал, имперфект, 2 л., мн. ч., +",
+        "49": "кондиционал, имперфект, 3 л., мн. ч., +",
+        "50": "императив, 2 л., ед. ч., -",
+        "51": "императив, 2 л., ед. ч., +",
+        "52": "императив, 3 л., ед. ч., +",
+        "53": "императив, 1 л., мн. ч., +",
+        "54": "императив, 2 л., мн. ч., +",
+        "55": "императив, 3 л., мн. ч., +",
+        "70": "индикатив, презенс, 1 л., ед. ч., -",
+        "71": "индикатив, презенс, 2 л., ед. ч., -",
+        "72": "индикатив, презенс, 3 л., ед. ч., -",
+        "73": "индикатив, презенс, 1 л., мн. ч., -",
+        "74": "императив, 3 л., ед. ч., -",
+        "76": "императив, 2 л., мн. ч., -",
+        "77": "императив, 3 л., мн. ч., -",
+        "78": "индикатив, презенс, 1 л., мн. ч., -",
+        "79": "индикатив, презенс, 1 л., мн. ч., -",
+        "80": "индикатив, имперфект, 1 л., ед. ч., -",
+        "81": "индикатив, имперфект, 2 л., ед. ч., -",
+        "82": "индикатив, имперфект, 3 л., ед. ч., -",
+        "83": "индикатив, имперфект, 1 л., мн. ч., -",
+        "84": "индикатив, имперфект, 2 л., мн. ч., -",
+        "85": "индикатив, имперфект, 3 л., мн. ч., -",
+        "86": "индикатив, перфект, 1 л., ед. ч., +",
+        "87": "индикатив, перфект, 2 л., ед. ч., +",
+        "88": "индикатив, перфект, 3 л., ед. ч., +",
+        "89": "индикатив, перфект, 1 л., мн. ч., +",
+        "90": "индикатив, перфект, 2 л., мн. ч., +",
+        "91": "индикатив, перфект, 3 л., мн. ч., +",
+        "92": "индикатив, перфект, 1 л., ед. ч., -",
+        "93": "индикатив, перфект, 2 л., ед. ч., -",
+        "94": "индикатив, перфект, 3 л., ед. ч., -",
+        "95": "индикатив, перфект, 1 л., мн. ч., -",
+        "96": "индикатив, перфект, 2 л., мн. ч., -",
+        "97": "индикатив, перфект, 3 л., мн. ч., -",
+        "98": "индикатив, плюсквамперфект, 1 л., ед. ч., +",
+        "99": "индикатив, плюсквамперфект, 2 л., ед. ч., +",
+        "100": "индикатив, плюсквамперфект, 3 л., ед. ч., +",
+        "101": "индикатив, плюсквамперфект, 1 л., мн. ч., +",
+        "102": "индикатив, плюсквамперфект, 2 л., мн. ч., +",
+        "103": "индикатив, плюсквамперфект, 3 л., мн. ч., +",
+        "104": "индикатив, плюсквамперфект, 1 л., ед. ч., -",
+        "105": "индикатив, плюсквамперфект, 2 л., ед. ч., -",
+        "106": "индикатив, плюсквамперфект, 2 л., мн. ч., -",
+        "107": "индикатив, плюсквамперфект, 3 л., ед. ч., -",
+        "108": "индикатив, плюсквамперфект, 1 л., мн. ч., -",
+        "109": "индикатив, плюсквамперфект, 3 л., мн. ч., -",
+        "110": "кондиционал, презенс, 1 л., ед. ч., -",
+        "111": "кондиционал, презенс, 2 л., ед. ч., -",
+        "112": "кондиционал, презенс, 3 л., ед. ч., -",
+        "113": "кондиционал, презенс, 1 л., мн. ч., -",
+        "114": "кондиционал, презенс, 2 л., мн. ч., -",
+        "115": "кондиционал, презенс, 3 л., мн. ч., -",
+        "116": "кондиционал, имперфект, 1 л., ед. ч., -",
+        "117": "кондиционал, имперфект, 2 л., ед. ч., -",
+        "118": "кондиционал, имперфект, 3 л., ед. ч., -",
+        "119": "кондиционал, имперфект, 1 л., мн. ч., -",
+        "120": "кондиционал, имперфект, 2 л., мн. ч., -",
+        "121": "кондиционал, имперфект, 3 л., мн. ч., -",
+        "122": "кондиционал, перфект, 1 л., ед. ч., +",
+        "123": "кондиционал, перфект, 2 л., ед. ч., +",
+        "124": "кондиционал, перфект, 3 л., ед. ч., +",
+        "125": "кондиционал, плюсквамперфект, 2 л., ед. ч., +",
+        "126": "кондиционал, перфект, 1 л., мн. ч., +",
+        "127": "кондиционал, перфект, 2 л., мн. ч., +",
+        "128": "кондиционал, перфект, 3 л., мн. ч., +",
+        "129": "кондиционал, перфект, 1 л., ед. ч., -",
+        "130": "кондиционал, перфект, 2 л., ед. ч., -",
+        "131": "кондиционал, перфект, 3 л., ед. ч., -",
+        "132": "кондиционал, перфект, 1 л., мн. ч., -",
+        "133": "кондиционал, перфект, 2 л., мн. ч., -",
+        "134": "кондиционал, перфект, 3 л., мн. ч., -",
+        "135": "кондиционал, плюсквамперфект, 1 л., ед. ч., +",
+        "136": "кондиционал, плюсквамперфект, 3 л., ед. ч., +",
+        "137": "кондиционал, плюсквамперфект, 1 л., мн. ч., +",
+        "138": "кондиционал, плюсквамперфект, 2 л., мн. ч., +",
+        "139": "кондиционал, плюсквамперфект, 3 л., мн. ч., +",
+        "140": "кондиционал, плюсквамперфект, 1 л., ед. ч., -",
+        "141": "кондиционал, плюсквамперфект, 2 л., ед. ч., -",
+        "142": "кондиционал, плюсквамперфект, 3 л., ед. ч., -",
+        "143": "кондиционал, плюсквамперфект, 1 л., мн. ч., -",
+        "144": "кондиционал, плюсквамперфект, 2 л., мн. ч., -",
+        "145": "кондиционал, плюсквамперфект, 3 л., мн. ч., -",
+        "146": "потенциал, презенс, 1 л., ед. ч., +",
+        "147": "потенциал, презенс, 2 л., ед. ч., +",
+        "148": "потенциал, презенс, 3 л., ед. ч., +",
+        "149": "потенциал, презенс, 1 л., мн. ч., +",
+        "150": "потенциал, презенс, 2 л., мн. ч., +",
+        "151": "потенциал, презенс, 3 л., мн. ч., +",
+        "152": "потенциал, презенс, 1 л., ед. ч., -",
+        "153": "потенциал, презенс, 2 л., ед. ч., -",
+        "154": "потенциал, презенс, 3 л., ед. ч., -",
+        "155": "потенциал, презенс, 1 л., мн. ч., -",
+        "156": "потенциал, презенс, 2 л., мн. ч., -",
+        "157": "потенциал, презенс, 3 л., мн. ч., -",
+        "158": "потенциал, перфект, 1 л., ед. ч., +",
+        "159": "потенциал, перфект, 2 л., ед. ч., +",
+        "160": "потенциал, перфект, 3 л., ед. ч., +",
+        "161": "потенциал, перфект, 1 л., мн. ч., +",
+        "162": "потенциал, перфект, 2 л., мн. ч., +",
+        "163": "потенциал, перфект, 3 л., мн. ч., +",
+        "164": "потенциал, перфект, 1 л., ед. ч., -",
+        "165": "потенциал, перфект, 2 л., ед. ч., -",
+        "166": "потенциал, перфект, 3 л., ед. ч., -",
+        "167": "потенциал, перфект, 1 л., мн. ч., -",
+        "168": "потенциал, перфект, 2 л., мн. ч., -",
+        "169": "потенциал, перфект, 3 л., мн. ч., -",
+        "170": "I инфинитив",
+        "179": "актив, 2-е причастие",
+        "181": "пассив, 2-е причастие",
+        "295": "295",
+        "296": "296"
+      },
+      "source_rows": [
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "26",
+          "dialect_id": "44",
+          "wordform_id": "21873",
+          "wordform": "istummos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "27",
+          "dialect_id": "44",
+          "wordform_id": "1354397",
+          "wordform": "istuttos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "28",
+          "dialect_id": "44",
+          "wordform_id": "21874",
+          "wordform": "istuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "29",
+          "dialect_id": "44",
+          "wordform_id": "1354398",
+          "wordform": "istummokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "30",
+          "dialect_id": "44",
+          "wordform_id": "1354399",
+          "wordform": "istuttokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "31",
+          "dialect_id": "44",
+          "wordform_id": "21875",
+          "wordform": "istutahes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "32",
+          "dialect_id": "44",
+          "wordform_id": "1354406",
+          "wordform": "istuimmos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "33",
+          "dialect_id": "44",
+          "wordform_id": "1354407",
+          "wordform": "istuittos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "34",
+          "dialect_id": "44",
+          "wordform_id": "1354408",
+          "wordform": "istuihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "35",
+          "dialect_id": "44",
+          "wordform_id": "1354409",
+          "wordform": "istuimmokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "36",
+          "dialect_id": "44",
+          "wordform_id": "1354410",
+          "wordform": "istuittokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "37",
+          "dialect_id": "44",
+          "wordform_id": "1354411",
+          "wordform": "istuttihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "38",
+          "dialect_id": "44",
+          "wordform_id": "1354448",
+          "wordform": "istuzimmos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "39",
+          "dialect_id": "44",
+          "wordform_id": "1354449",
+          "wordform": "istuzittos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "40",
+          "dialect_id": "44",
+          "wordform_id": "1354450",
+          "wordform": "istuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "41",
+          "dialect_id": "44",
+          "wordform_id": "1354451",
+          "wordform": "istuzimmokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "42",
+          "dialect_id": "44",
+          "wordform_id": "1354452",
+          "wordform": "istuzittokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "43",
+          "dialect_id": "44",
+          "wordform_id": "1354453",
+          "wordform": "istuttazihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "44",
+          "dialect_id": "44",
+          "wordform_id": "2841527",
+          "wordform": "istunuzimmos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "45",
+          "dialect_id": "44",
+          "wordform_id": "2841528",
+          "wordform": "istunuzittos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "46",
+          "dialect_id": "44",
+          "wordform_id": "2841529",
+          "wordform": "istunuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "47",
+          "dialect_id": "44",
+          "wordform_id": "2841530",
+          "wordform": "istunuzimmokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "48",
+          "dialect_id": "44",
+          "wordform_id": "2841531",
+          "wordform": "istunuzittokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "49",
+          "dialect_id": "44",
+          "wordform_id": "1354465",
+          "wordform": "istuttanuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "50",
+          "dialect_id": "44",
+          "wordform_id": "1354445",
+          "wordform": "älä istui"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "51",
+          "dialect_id": "44",
+          "wordform_id": "1354280",
+          "wordform": "istui"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "52",
+          "dialect_id": "44",
+          "wordform_id": "1354442",
+          "wordform": "istukkahes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "53",
+          "dialect_id": "44",
+          "wordform_id": "1354443",
+          "wordform": "istukkuammokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "54",
+          "dialect_id": "44",
+          "wordform_id": "1354444",
+          "wordform": "istukkuattokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "55",
+          "dialect_id": "44",
+          "wordform_id": "1354318",
+          "wordform": "istuttahes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "70",
+          "dialect_id": "44",
+          "wordform_id": "1354400",
+          "wordform": "en istui"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "71",
+          "dialect_id": "44",
+          "wordform_id": "1354401",
+          "wordform": "et istui"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "72",
+          "dialect_id": "44",
+          "wordform_id": "1354402",
+          "wordform": "ei istui"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "73",
+          "dialect_id": "44",
+          "wordform_id": "1354403",
+          "wordform": "emmo istui"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "74",
+          "dialect_id": "44",
+          "wordform_id": "1354446",
+          "wordform": "älgäh istukkahes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "76",
+          "dialect_id": "44",
+          "wordform_id": "1354447",
+          "wordform": "älgiä istukkuattokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "77",
+          "dialect_id": "44",
+          "wordform_id": "1354323",
+          "wordform": "äldähes istuttahes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "78",
+          "dialect_id": "44",
+          "wordform_id": "1354404",
+          "wordform": "etto istui"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "79",
+          "dialect_id": "44",
+          "wordform_id": "1354405",
+          "wordform": "ei istutahes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "80",
+          "dialect_id": "44",
+          "wordform_id": "2841502",
+          "wordform": "en istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "81",
+          "dialect_id": "44",
+          "wordform_id": "2841503",
+          "wordform": "et istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "82",
+          "dialect_id": "44",
+          "wordform_id": "2841504",
+          "wordform": "ei istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "83",
+          "dialect_id": "44",
+          "wordform_id": "2841505",
+          "wordform": "emmo istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "84",
+          "dialect_id": "44",
+          "wordform_id": "2841506",
+          "wordform": "etto istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "85",
+          "dialect_id": "44",
+          "wordform_id": "1354417",
+          "wordform": "ei istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "86",
+          "dialect_id": "44",
+          "wordform_id": "2841507",
+          "wordform": "olen istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "87",
+          "dialect_id": "44",
+          "wordform_id": "2841508",
+          "wordform": "olet istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "88",
+          "dialect_id": "44",
+          "wordform_id": "2841509",
+          "wordform": "on istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "89",
+          "dialect_id": "44",
+          "wordform_id": "2841510",
+          "wordform": "olemmo istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "90",
+          "dialect_id": "44",
+          "wordform_id": "2841511",
+          "wordform": "oletto istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "91",
+          "dialect_id": "44",
+          "wordform_id": "1354423",
+          "wordform": "ollah istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "92",
+          "dialect_id": "44",
+          "wordform_id": "2841512",
+          "wordform": "en ole istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "93",
+          "dialect_id": "44",
+          "wordform_id": "2841513",
+          "wordform": "et ole istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "94",
+          "dialect_id": "44",
+          "wordform_id": "2841514",
+          "wordform": "ei ole istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "95",
+          "dialect_id": "44",
+          "wordform_id": "2841515",
+          "wordform": "emmo ole istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "96",
+          "dialect_id": "44",
+          "wordform_id": "2841516",
+          "wordform": "etto ole istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "97",
+          "dialect_id": "44",
+          "wordform_id": "1354429",
+          "wordform": "ei olla istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "98",
+          "dialect_id": "44",
+          "wordform_id": "2841517",
+          "wordform": "olin istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "99",
+          "dialect_id": "44",
+          "wordform_id": "2841518",
+          "wordform": "olit istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "100",
+          "dialect_id": "44",
+          "wordform_id": "2841519",
+          "wordform": "oli istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "101",
+          "dialect_id": "44",
+          "wordform_id": "2841520",
+          "wordform": "olimmo istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "102",
+          "dialect_id": "44",
+          "wordform_id": "2841521",
+          "wordform": "olitto istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "103",
+          "dialect_id": "44",
+          "wordform_id": "1354435",
+          "wordform": "oldih istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "104",
+          "dialect_id": "44",
+          "wordform_id": "2841522",
+          "wordform": "en olluh istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "105",
+          "dialect_id": "44",
+          "wordform_id": "2841523",
+          "wordform": "et olluh istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "106",
+          "dialect_id": "44",
+          "wordform_id": "2841526",
+          "wordform": "etto olluh istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "107",
+          "dialect_id": "44",
+          "wordform_id": "2841524",
+          "wordform": "ei olluh istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "108",
+          "dialect_id": "44",
+          "wordform_id": "2841525",
+          "wordform": "emmo olluh istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "109",
+          "dialect_id": "44",
+          "wordform_id": "1354441",
+          "wordform": "ei oldu istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "110",
+          "dialect_id": "44",
+          "wordform_id": "1354454",
+          "wordform": "en istuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "111",
+          "dialect_id": "44",
+          "wordform_id": "1354455",
+          "wordform": "et istuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "112",
+          "dialect_id": "44",
+          "wordform_id": "1354456",
+          "wordform": "ei istuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "113",
+          "dialect_id": "44",
+          "wordform_id": "1354457",
+          "wordform": "emmo istuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "114",
+          "dialect_id": "44",
+          "wordform_id": "1354458",
+          "wordform": "etto istuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "115",
+          "dialect_id": "44",
+          "wordform_id": "1354459",
+          "wordform": "ei istuttazihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "116",
+          "dialect_id": "44",
+          "wordform_id": "2841532",
+          "wordform": "en istunuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "117",
+          "dialect_id": "44",
+          "wordform_id": "2841533",
+          "wordform": "et istunuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "118",
+          "dialect_id": "44",
+          "wordform_id": "2841534",
+          "wordform": "ei istunuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "119",
+          "dialect_id": "44",
+          "wordform_id": "2841535",
+          "wordform": "emmo istunuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "120",
+          "dialect_id": "44",
+          "wordform_id": "2841536",
+          "wordform": "etto istunuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "121",
+          "dialect_id": "44",
+          "wordform_id": "1354471",
+          "wordform": "ei istuttanuzihes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "122",
+          "dialect_id": "44",
+          "wordform_id": "2841537",
+          "wordform": "olizin istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "123",
+          "dialect_id": "44",
+          "wordform_id": "2841538",
+          "wordform": "olizit istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "124",
+          "dialect_id": "44",
+          "wordform_id": "2841539",
+          "wordform": "olis istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "125",
+          "dialect_id": "44",
+          "wordform_id": "2841548",
+          "wordform": "olluzit istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "126",
+          "dialect_id": "44",
+          "wordform_id": "2841540",
+          "wordform": "olizimmo istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "127",
+          "dialect_id": "44",
+          "wordform_id": "2841541",
+          "wordform": "olizitto istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "128",
+          "dialect_id": "44",
+          "wordform_id": "1354477",
+          "wordform": "oldas istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "129",
+          "dialect_id": "44",
+          "wordform_id": "2841542",
+          "wordform": "en olis istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "130",
+          "dialect_id": "44",
+          "wordform_id": "2841543",
+          "wordform": "et olis istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "131",
+          "dialect_id": "44",
+          "wordform_id": "2841544",
+          "wordform": "ei olis istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "132",
+          "dialect_id": "44",
+          "wordform_id": "2841545",
+          "wordform": "emmo olis istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "133",
+          "dialect_id": "44",
+          "wordform_id": "2841546",
+          "wordform": "etto olis istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "134",
+          "dialect_id": "44",
+          "wordform_id": "1354483",
+          "wordform": "ei oldas istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "135",
+          "dialect_id": "44",
+          "wordform_id": "2841547",
+          "wordform": "olluzin istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "136",
+          "dialect_id": "44",
+          "wordform_id": "2841549",
+          "wordform": "ollus istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "137",
+          "dialect_id": "44",
+          "wordform_id": "2841550",
+          "wordform": "olluzimmo istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "138",
+          "dialect_id": "44",
+          "wordform_id": "2841551",
+          "wordform": "olluzitto istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "139",
+          "dialect_id": "44",
+          "wordform_id": "1354489",
+          "wordform": "oldanus istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "140",
+          "dialect_id": "44",
+          "wordform_id": "2841552",
+          "wordform": "en ollus istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "141",
+          "dialect_id": "44",
+          "wordform_id": "2841553",
+          "wordform": "et ollus istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "142",
+          "dialect_id": "44",
+          "wordform_id": "2841554",
+          "wordform": "ei ollus istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "143",
+          "dialect_id": "44",
+          "wordform_id": "2841555",
+          "wordform": "emmo ollus istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "144",
+          "dialect_id": "44",
+          "wordform_id": "2841556",
+          "wordform": "etto ollus istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "145",
+          "dialect_id": "44",
+          "wordform_id": "1354495",
+          "wordform": "ei oldanus istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "146",
+          "dialect_id": "44",
+          "wordform_id": "2841557",
+          "wordform": "istunemmos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "147",
+          "dialect_id": "44",
+          "wordform_id": "2841558",
+          "wordform": "istunettos"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "148",
+          "dialect_id": "44",
+          "wordform_id": "2841559",
+          "wordform": "istunehes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "149",
+          "dialect_id": "44",
+          "wordform_id": "2841560",
+          "wordform": "istunemmokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "150",
+          "dialect_id": "44",
+          "wordform_id": "2841561",
+          "wordform": "istunettokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "151",
+          "dialect_id": "44",
+          "wordform_id": "1354501",
+          "wordform": "istuttanehes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "152",
+          "dialect_id": "44",
+          "wordform_id": "2841562",
+          "wordform": "en istunei"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "153",
+          "dialect_id": "44",
+          "wordform_id": "2841563",
+          "wordform": "et istunei"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "154",
+          "dialect_id": "44",
+          "wordform_id": "2841564",
+          "wordform": "ei istunei"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "155",
+          "dialect_id": "44",
+          "wordform_id": "2841565",
+          "wordform": "emmo istunei"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "156",
+          "dialect_id": "44",
+          "wordform_id": "2841566",
+          "wordform": "etto istunei"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "157",
+          "dialect_id": "44",
+          "wordform_id": "1354507",
+          "wordform": "ei istuttanehes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "158",
+          "dialect_id": "44",
+          "wordform_id": "2841567",
+          "wordform": "ollen istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "159",
+          "dialect_id": "44",
+          "wordform_id": "2841568",
+          "wordform": "ollet istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "160",
+          "dialect_id": "44",
+          "wordform_id": "2841569",
+          "wordform": "ollou istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "161",
+          "dialect_id": "44",
+          "wordform_id": "2841570",
+          "wordform": "ollemmo istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "162",
+          "dialect_id": "44",
+          "wordform_id": "2841571",
+          "wordform": "olletto istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "163",
+          "dialect_id": "44",
+          "wordform_id": "1354513",
+          "wordform": "oldaneh istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "164",
+          "dialect_id": "44",
+          "wordform_id": "2841572",
+          "wordform": "en olle istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "165",
+          "dialect_id": "44",
+          "wordform_id": "2841573",
+          "wordform": "et olle istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "166",
+          "dialect_id": "44",
+          "wordform_id": "2841574",
+          "wordform": "ei olle istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "167",
+          "dialect_id": "44",
+          "wordform_id": "2841575",
+          "wordform": "emmo olle istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "168",
+          "dialect_id": "44",
+          "wordform_id": "2841576",
+          "wordform": "etto olle istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "169",
+          "dialect_id": "44",
+          "wordform_id": "1354519",
+          "wordform": "ei oldane istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "170",
+          "dialect_id": "44",
+          "wordform_id": "21876",
+          "wordform": "istuokseh"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "179",
+          "dialect_id": "44",
+          "wordform_id": "2841577",
+          "wordform": "istunuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "181",
+          "dialect_id": "44",
+          "wordform_id": "1354521",
+          "wordform": "istuttuhes"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "295",
+          "dialect_id": "44",
+          "wordform_id": "1354280",
+          "wordform": "istui"
+        },
+        {
+          "lemma_id": "6241",
+          "lemma": "istuokseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "296",
+          "dialect_id": "44",
+          "wordform_id": "21875",
+          "wordform": "istutahes"
+        }
+      ]
+    },
+    {
+      "lemma_id": 7566,
+      "lemma": "kačahtuakseh",
+      "dialect_id": 44,
+      "source_reflexive": "NULL",
+      "template": "kačaht|uakseh (-ammos, -ah/-ahes; -etahes; -ih/-ihes, -ettihes)",
+      "forms": {
+        "26": [
+          "kačahtammos"
+        ],
+        "27": [
+          "kačahtattos"
+        ],
+        "28": [
+          "kačahtah",
+          "kačahtahes"
+        ],
+        "29": [
+          "kačahtammokseh"
+        ],
+        "30": [
+          "kačahtattokseh"
+        ],
+        "31": [
+          "kačahtetahes"
+        ],
+        "32": [
+          "kačahtihmmos"
+        ],
+        "33": [
+          "kačahtihttos"
+        ],
+        "34": [
+          "kačahtih",
+          "kačahtihes"
+        ],
+        "35": [
+          "kačahtihmmokseh"
+        ],
+        "36": [
+          "kačahtihttokseh"
+        ],
+        "37": [
+          "kačahtettihes"
+        ],
+        "38": [
+          "kačahtazimmos"
+        ],
+        "39": [
+          "kačahtazittos"
+        ],
+        "40": [
+          "kačahtazihes"
+        ],
+        "41": [
+          "kačahtazimmokseh"
+        ],
+        "42": [
+          "kačahtazittokseh"
+        ],
+        "43": [
+          "kačahtettazihes"
+        ],
+        "44": [
+          "kačahtannuzimmos"
+        ],
+        "45": [
+          "kačahtannuzittos"
+        ],
+        "46": [
+          "kačahtannuzihes"
+        ],
+        "47": [
+          "kačahtannuzimmokseh"
+        ],
+        "48": [
+          "kačahtannuzittokseh"
+        ],
+        "49": [
+          "kačahtettanuzihes"
+        ],
+        "50": [
+          "älä kačahtai"
+        ],
+        "51": [
+          "kačahtai"
+        ],
+        "52": [
+          "kačahtakkahes"
+        ],
+        "53": [
+          "kačahtakkuammokseh"
+        ],
+        "54": [
+          "kačahtakkuattokseh"
+        ],
+        "55": [
+          "kačahtettihesahes"
+        ],
+        "70": [
+          "en kačahtai"
+        ],
+        "71": [
+          "et kačahtai"
+        ],
+        "72": [
+          "ei kačahtai"
+        ],
+        "73": [
+          "emmo kačahtai"
+        ],
+        "74": [
+          "älgäh kačahtakkahes"
+        ],
+        "76": [
+          "älgiä kačahtakkuattokseh"
+        ],
+        "77": [
+          "äldähes kačahtettahes"
+        ],
+        "78": [
+          "etto kačahtai"
+        ],
+        "79": [
+          "ei kačahtetahes"
+        ],
+        "80": [
+          "en kačahtannuhes"
+        ],
+        "81": [
+          "et kačahtannuhes"
+        ],
+        "82": [
+          "ei kačahtannuhes"
+        ],
+        "83": [
+          "emmo kačahtannuhes"
+        ],
+        "84": [
+          "etto kačahtannuhes"
+        ],
+        "85": [
+          "ei kačahtettuhes"
+        ],
+        "86": [
+          "olen kačahtannuhes"
+        ],
+        "87": [
+          "olet kačahtannuhes"
+        ],
+        "88": [
+          "on kačahtannuhes"
+        ],
+        "89": [
+          "olemmo kačahtannuhes"
+        ],
+        "90": [
+          "oletto kačahtannuhes"
+        ],
+        "91": [
+          "ollah kačahtettuhes",
+          "on kačahtettuhes"
+        ],
+        "92": [
+          "en ole kačahtannuhes"
+        ],
+        "93": [
+          "et ole kačahtannuhes"
+        ],
+        "94": [
+          "ei ole kačahtannuhes"
+        ],
+        "95": [
+          "emmo ole kačahtannuhes"
+        ],
+        "96": [
+          "etto ole kačahtannuhes"
+        ],
+        "97": [
+          "ei olla kačahtettuhes"
+        ],
+        "98": [
+          "olin kačahtannuhes"
+        ],
+        "99": [
+          "olit kačahtannuhes"
+        ],
+        "100": [
+          "oli kačahtannuhes"
+        ],
+        "101": [
+          "olimmo kačahtannuhes"
+        ],
+        "102": [
+          "olitto kačahtannuhes"
+        ],
+        "103": [
+          "oldih kačahtettuhes",
+          "oli kačahtettuhes"
+        ],
+        "104": [
+          "en olluh kačahtannuhes"
+        ],
+        "105": [
+          "et olluh kačahtannuhes"
+        ],
+        "106": [
+          "etto olluh kačahtannuhes"
+        ],
+        "107": [
+          "ei olluh kačahtannuhes"
+        ],
+        "108": [
+          "emmo olluh kačahtannuhes"
+        ],
+        "109": [
+          "ei oldu kačahtettuhes"
+        ],
+        "110": [
+          "en kačahtazihes"
+        ],
+        "111": [
+          "et kačahtazihes"
+        ],
+        "112": [
+          "ei kačahtazihes"
+        ],
+        "113": [
+          "emmo kačahtazihes"
+        ],
+        "114": [
+          "etto kačahtazihes"
+        ],
+        "115": [
+          "ei kačahtettazihes"
+        ],
+        "116": [
+          "en kačahtannuzihes"
+        ],
+        "117": [
+          "et kačahtannuzihes"
+        ],
+        "118": [
+          "ei kačahtannuzihes"
+        ],
+        "119": [
+          "emmo kačahtannuzihes"
+        ],
+        "120": [
+          "etto kačahtannuzihes"
+        ],
+        "121": [
+          "ei kačahtettanuzihes"
+        ],
+        "122": [
+          "olizin kačahtannuhes"
+        ],
+        "123": [
+          "olizit kačahtannuhes"
+        ],
+        "124": [
+          "olis kačahtannuhes"
+        ],
+        "125": [
+          "olluzit kačahtannuhes"
+        ],
+        "126": [
+          "olizimmo kačahtannuhes"
+        ],
+        "127": [
+          "olizitto kačahtannuhes"
+        ],
+        "128": [
+          "oldas kačahtettuhes"
+        ],
+        "129": [
+          "en olis kačahtannuhes"
+        ],
+        "130": [
+          "et olis kačahtannuhes"
+        ],
+        "131": [
+          "ei olis kačahtannuhes"
+        ],
+        "132": [
+          "emmo olis kačahtannuhes"
+        ],
+        "133": [
+          "etto olis kačahtannuhes"
+        ],
+        "134": [
+          "ei oldas kačahtettuhes"
+        ],
+        "135": [
+          "olluzin kačahtannuhes"
+        ],
+        "136": [
+          "ollus kačahtannuhes"
+        ],
+        "137": [
+          "olluzimmo kačahtannuhes"
+        ],
+        "138": [
+          "olluzitto kačahtannuhes"
+        ],
+        "139": [
+          "oldanus kačahtettuhes"
+        ],
+        "140": [
+          "en ollus kačahtannuhes"
+        ],
+        "141": [
+          "et ollus kačahtannuhes"
+        ],
+        "142": [
+          "ei ollus kačahtannuhes"
+        ],
+        "143": [
+          "emmo ollus kačahtannuhes"
+        ],
+        "144": [
+          "etto ollus kačahtannuhes"
+        ],
+        "145": [
+          "ei oldanus kačahtettuhes"
+        ],
+        "146": [
+          "kačahtannemmos"
+        ],
+        "147": [
+          "kačahtannettos"
+        ],
+        "148": [
+          "kačahtannehes"
+        ],
+        "149": [
+          "kačahtannemmokseh"
+        ],
+        "150": [
+          "kačahtannettokseh"
+        ],
+        "151": [
+          "kačahtettannehes"
+        ],
+        "152": [
+          "en kačahtannei"
+        ],
+        "153": [
+          "et kačahtannei"
+        ],
+        "154": [
+          "ei kačahtannei"
+        ],
+        "155": [
+          "emmo kačahtannei"
+        ],
+        "156": [
+          "etto kačahtannei"
+        ],
+        "157": [
+          "ei kačahtettannehes"
+        ],
+        "158": [
+          "ollen kačahtannuhes"
+        ],
+        "159": [
+          "ollet kačahtannuhes"
+        ],
+        "160": [
+          "ollou kačahtannuhes"
+        ],
+        "161": [
+          "ollemmo kačahtannuhes"
+        ],
+        "162": [
+          "olletto kačahtannuhes"
+        ],
+        "163": [
+          "oldaneh kačahtettuhes"
+        ],
+        "164": [
+          "en olle kačahtannuhes"
+        ],
+        "165": [
+          "et olle kačahtannuhes"
+        ],
+        "166": [
+          "ei olle kačahtannuhes"
+        ],
+        "167": [
+          "emmo olle kačahtannuhes"
+        ],
+        "168": [
+          "etto olle kačahtannuhes"
+        ],
+        "169": [
+          "ei oldane kačahtettuhes"
+        ],
+        "170": [
+          "kačahtuakseh"
+        ],
+        "179": [
+          "kačahtannuhes"
+        ],
+        "181": [
+          "kačahtettuhes"
+        ],
+        "295": [
+          "kačahtai"
+        ],
+        "296": [
+          "kačahtetahes"
+        ]
+      },
+      "gramset_names": {
+        "26": "индикатив, презенс, 1 л., ед. ч., +",
+        "27": "индикатив, презенс, 2 л., ед. ч., +",
+        "28": "индикатив, презенс, 3 л., ед. ч., +",
+        "29": "индикатив, презенс, 1 л., мн. ч., +",
+        "30": "индикатив, презенс, 2 л., мн. ч., +",
+        "31": "индикатив, презенс, 3 л., мн. ч., +",
+        "32": "индикатив, имперфект, 1 л., ед. ч., +",
+        "33": "индикатив, имперфект, 2 л., ед. ч., +",
+        "34": "индикатив, имперфект, 3 л., ед. ч., +",
+        "35": "индикатив, имперфект, 1 л., мн. ч., +",
+        "36": "индикатив, имперфект, 2 л., мн. ч., +",
+        "37": "индикатив, имперфект, 3 л., мн. ч., +",
+        "38": "кондиционал, презенс, 1 л., ед. ч., +",
+        "39": "кондиционал, презенс, 2 л., ед. ч., +",
+        "40": "кондиционал, презенс, 3 л., ед. ч., +",
+        "41": "кондиционал, презенс, 1 л., мн. ч., +",
+        "42": "кондиционал, презенс, 2 л., мн. ч., +",
+        "43": "кондиционал, презенс, 3 л., мн. ч., +",
+        "44": "кондиционал, имперфект, 1 л., ед. ч., +",
+        "45": "кондиционал, имперфект, 2 л., ед. ч., +",
+        "46": "кондиционал, имперфект, 3 л., ед. ч., +",
+        "47": "кондиционал, имперфект, 1 л., мн. ч., +",
+        "48": "кондиционал, имперфект, 2 л., мн. ч., +",
+        "49": "кондиционал, имперфект, 3 л., мн. ч., +",
+        "50": "императив, 2 л., ед. ч., -",
+        "51": "императив, 2 л., ед. ч., +",
+        "52": "императив, 3 л., ед. ч., +",
+        "53": "императив, 1 л., мн. ч., +",
+        "54": "императив, 2 л., мн. ч., +",
+        "55": "императив, 3 л., мн. ч., +",
+        "70": "индикатив, презенс, 1 л., ед. ч., -",
+        "71": "индикатив, презенс, 2 л., ед. ч., -",
+        "72": "индикатив, презенс, 3 л., ед. ч., -",
+        "73": "индикатив, презенс, 1 л., мн. ч., -",
+        "74": "императив, 3 л., ед. ч., -",
+        "76": "императив, 2 л., мн. ч., -",
+        "77": "императив, 3 л., мн. ч., -",
+        "78": "индикатив, презенс, 1 л., мн. ч., -",
+        "79": "индикатив, презенс, 1 л., мн. ч., -",
+        "80": "индикатив, имперфект, 1 л., ед. ч., -",
+        "81": "индикатив, имперфект, 2 л., ед. ч., -",
+        "82": "индикатив, имперфект, 3 л., ед. ч., -",
+        "83": "индикатив, имперфект, 1 л., мн. ч., -",
+        "84": "индикатив, имперфект, 2 л., мн. ч., -",
+        "85": "индикатив, имперфект, 3 л., мн. ч., -",
+        "86": "индикатив, перфект, 1 л., ед. ч., +",
+        "87": "индикатив, перфект, 2 л., ед. ч., +",
+        "88": "индикатив, перфект, 3 л., ед. ч., +",
+        "89": "индикатив, перфект, 1 л., мн. ч., +",
+        "90": "индикатив, перфект, 2 л., мн. ч., +",
+        "91": "индикатив, перфект, 3 л., мн. ч., +",
+        "92": "индикатив, перфект, 1 л., ед. ч., -",
+        "93": "индикатив, перфект, 2 л., ед. ч., -",
+        "94": "индикатив, перфект, 3 л., ед. ч., -",
+        "95": "индикатив, перфект, 1 л., мн. ч., -",
+        "96": "индикатив, перфект, 2 л., мн. ч., -",
+        "97": "индикатив, перфект, 3 л., мн. ч., -",
+        "98": "индикатив, плюсквамперфект, 1 л., ед. ч., +",
+        "99": "индикатив, плюсквамперфект, 2 л., ед. ч., +",
+        "100": "индикатив, плюсквамперфект, 3 л., ед. ч., +",
+        "101": "индикатив, плюсквамперфект, 1 л., мн. ч., +",
+        "102": "индикатив, плюсквамперфект, 2 л., мн. ч., +",
+        "103": "индикатив, плюсквамперфект, 3 л., мн. ч., +",
+        "104": "индикатив, плюсквамперфект, 1 л., ед. ч., -",
+        "105": "индикатив, плюсквамперфект, 2 л., ед. ч., -",
+        "106": "индикатив, плюсквамперфект, 2 л., мн. ч., -",
+        "107": "индикатив, плюсквамперфект, 3 л., ед. ч., -",
+        "108": "индикатив, плюсквамперфект, 1 л., мн. ч., -",
+        "109": "индикатив, плюсквамперфект, 3 л., мн. ч., -",
+        "110": "кондиционал, презенс, 1 л., ед. ч., -",
+        "111": "кондиционал, презенс, 2 л., ед. ч., -",
+        "112": "кондиционал, презенс, 3 л., ед. ч., -",
+        "113": "кондиционал, презенс, 1 л., мн. ч., -",
+        "114": "кондиционал, презенс, 2 л., мн. ч., -",
+        "115": "кондиционал, презенс, 3 л., мн. ч., -",
+        "116": "кондиционал, имперфект, 1 л., ед. ч., -",
+        "117": "кондиционал, имперфект, 2 л., ед. ч., -",
+        "118": "кондиционал, имперфект, 3 л., ед. ч., -",
+        "119": "кондиционал, имперфект, 1 л., мн. ч., -",
+        "120": "кондиционал, имперфект, 2 л., мн. ч., -",
+        "121": "кондиционал, имперфект, 3 л., мн. ч., -",
+        "122": "кондиционал, перфект, 1 л., ед. ч., +",
+        "123": "кондиционал, перфект, 2 л., ед. ч., +",
+        "124": "кондиционал, перфект, 3 л., ед. ч., +",
+        "125": "кондиционал, плюсквамперфект, 2 л., ед. ч., +",
+        "126": "кондиционал, перфект, 1 л., мн. ч., +",
+        "127": "кондиционал, перфект, 2 л., мн. ч., +",
+        "128": "кондиционал, перфект, 3 л., мн. ч., +",
+        "129": "кондиционал, перфект, 1 л., ед. ч., -",
+        "130": "кондиционал, перфект, 2 л., ед. ч., -",
+        "131": "кондиционал, перфект, 3 л., ед. ч., -",
+        "132": "кондиционал, перфект, 1 л., мн. ч., -",
+        "133": "кондиционал, перфект, 2 л., мн. ч., -",
+        "134": "кондиционал, перфект, 3 л., мн. ч., -",
+        "135": "кондиционал, плюсквамперфект, 1 л., ед. ч., +",
+        "136": "кондиционал, плюсквамперфект, 3 л., ед. ч., +",
+        "137": "кондиционал, плюсквамперфект, 1 л., мн. ч., +",
+        "138": "кондиционал, плюсквамперфект, 2 л., мн. ч., +",
+        "139": "кондиционал, плюсквамперфект, 3 л., мн. ч., +",
+        "140": "кондиционал, плюсквамперфект, 1 л., ед. ч., -",
+        "141": "кондиционал, плюсквамперфект, 2 л., ед. ч., -",
+        "142": "кондиционал, плюсквамперфект, 3 л., ед. ч., -",
+        "143": "кондиционал, плюсквамперфект, 1 л., мн. ч., -",
+        "144": "кондиционал, плюсквамперфект, 2 л., мн. ч., -",
+        "145": "кондиционал, плюсквамперфект, 3 л., мн. ч., -",
+        "146": "потенциал, презенс, 1 л., ед. ч., +",
+        "147": "потенциал, презенс, 2 л., ед. ч., +",
+        "148": "потенциал, презенс, 3 л., ед. ч., +",
+        "149": "потенциал, презенс, 1 л., мн. ч., +",
+        "150": "потенциал, презенс, 2 л., мн. ч., +",
+        "151": "потенциал, презенс, 3 л., мн. ч., +",
+        "152": "потенциал, презенс, 1 л., ед. ч., -",
+        "153": "потенциал, презенс, 2 л., ед. ч., -",
+        "154": "потенциал, презенс, 3 л., ед. ч., -",
+        "155": "потенциал, презенс, 1 л., мн. ч., -",
+        "156": "потенциал, презенс, 2 л., мн. ч., -",
+        "157": "потенциал, презенс, 3 л., мн. ч., -",
+        "158": "потенциал, перфект, 1 л., ед. ч., +",
+        "159": "потенциал, перфект, 2 л., ед. ч., +",
+        "160": "потенциал, перфект, 3 л., ед. ч., +",
+        "161": "потенциал, перфект, 1 л., мн. ч., +",
+        "162": "потенциал, перфект, 2 л., мн. ч., +",
+        "163": "потенциал, перфект, 3 л., мн. ч., +",
+        "164": "потенциал, перфект, 1 л., ед. ч., -",
+        "165": "потенциал, перфект, 2 л., ед. ч., -",
+        "166": "потенциал, перфект, 3 л., ед. ч., -",
+        "167": "потенциал, перфект, 1 л., мн. ч., -",
+        "168": "потенциал, перфект, 2 л., мн. ч., -",
+        "169": "потенциал, перфект, 3 л., мн. ч., -",
+        "170": "I инфинитив",
+        "179": "актив, 2-е причастие",
+        "181": "пассив, 2-е причастие",
+        "295": "295",
+        "296": "296"
+      },
+      "source_rows": [
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "26",
+          "dialect_id": "44",
+          "wordform_id": "26558",
+          "wordform": "kačahtammos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "27",
+          "dialect_id": "44",
+          "wordform_id": "1370510",
+          "wordform": "kačahtattos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "28",
+          "dialect_id": "44",
+          "wordform_id": "40090",
+          "wordform": "kačahtah"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "28",
+          "dialect_id": "44",
+          "wordform_id": "40091",
+          "wordform": "kačahtahes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "29",
+          "dialect_id": "44",
+          "wordform_id": "1370511",
+          "wordform": "kačahtammokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "30",
+          "dialect_id": "44",
+          "wordform_id": "1370512",
+          "wordform": "kačahtattokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "31",
+          "dialect_id": "44",
+          "wordform_id": "26560",
+          "wordform": "kačahtetahes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "32",
+          "dialect_id": "44",
+          "wordform_id": "2765491",
+          "wordform": "kačahtihmmos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "33",
+          "dialect_id": "44",
+          "wordform_id": "2765492",
+          "wordform": "kačahtihttos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "34",
+          "dialect_id": "44",
+          "wordform_id": "1370522",
+          "wordform": "kačahtih"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "34",
+          "dialect_id": "44",
+          "wordform_id": "1370523",
+          "wordform": "kačahtihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "35",
+          "dialect_id": "44",
+          "wordform_id": "2765493",
+          "wordform": "kačahtihmmokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "36",
+          "dialect_id": "44",
+          "wordform_id": "2765494",
+          "wordform": "kačahtihttokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "37",
+          "dialect_id": "44",
+          "wordform_id": "1370526",
+          "wordform": "kačahtettihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "38",
+          "dialect_id": "44",
+          "wordform_id": "1370565",
+          "wordform": "kačahtazimmos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "39",
+          "dialect_id": "44",
+          "wordform_id": "1370566",
+          "wordform": "kačahtazittos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "40",
+          "dialect_id": "44",
+          "wordform_id": "1370567",
+          "wordform": "kačahtazihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "41",
+          "dialect_id": "44",
+          "wordform_id": "1370568",
+          "wordform": "kačahtazimmokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "42",
+          "dialect_id": "44",
+          "wordform_id": "1370569",
+          "wordform": "kačahtazittokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "43",
+          "dialect_id": "44",
+          "wordform_id": "1370570",
+          "wordform": "kačahtettazihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "44",
+          "dialect_id": "44",
+          "wordform_id": "1370577",
+          "wordform": "kačahtannuzimmos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "45",
+          "dialect_id": "44",
+          "wordform_id": "1370578",
+          "wordform": "kačahtannuzittos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "46",
+          "dialect_id": "44",
+          "wordform_id": "1370579",
+          "wordform": "kačahtannuzihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "47",
+          "dialect_id": "44",
+          "wordform_id": "1370580",
+          "wordform": "kačahtannuzimmokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "48",
+          "dialect_id": "44",
+          "wordform_id": "1370581",
+          "wordform": "kačahtannuzittokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "49",
+          "dialect_id": "44",
+          "wordform_id": "1370582",
+          "wordform": "kačahtettanuzihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "50",
+          "dialect_id": "44",
+          "wordform_id": "1370561",
+          "wordform": "älä kačahtai"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "51",
+          "dialect_id": "44",
+          "wordform_id": "1370513",
+          "wordform": "kačahtai"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "52",
+          "dialect_id": "44",
+          "wordform_id": "1370557",
+          "wordform": "kačahtakkahes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "53",
+          "dialect_id": "44",
+          "wordform_id": "1370558",
+          "wordform": "kačahtakkuammokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "54",
+          "dialect_id": "44",
+          "wordform_id": "1370559",
+          "wordform": "kačahtakkuattokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "55",
+          "dialect_id": "44",
+          "wordform_id": "2765502",
+          "wordform": "kačahtettihesahes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "70",
+          "dialect_id": "44",
+          "wordform_id": "1370514",
+          "wordform": "en kačahtai"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "71",
+          "dialect_id": "44",
+          "wordform_id": "1370515",
+          "wordform": "et kačahtai"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "72",
+          "dialect_id": "44",
+          "wordform_id": "1370516",
+          "wordform": "ei kačahtai"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "73",
+          "dialect_id": "44",
+          "wordform_id": "1370517",
+          "wordform": "emmo kačahtai"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "74",
+          "dialect_id": "44",
+          "wordform_id": "1370562",
+          "wordform": "älgäh kačahtakkahes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "76",
+          "dialect_id": "44",
+          "wordform_id": "1370563",
+          "wordform": "älgiä kačahtakkuattokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "77",
+          "dialect_id": "44",
+          "wordform_id": "1370564",
+          "wordform": "äldähes kačahtettahes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "78",
+          "dialect_id": "44",
+          "wordform_id": "1370518",
+          "wordform": "etto kačahtai"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "79",
+          "dialect_id": "44",
+          "wordform_id": "1370519",
+          "wordform": "ei kačahtetahes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "80",
+          "dialect_id": "44",
+          "wordform_id": "1370527",
+          "wordform": "en kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "81",
+          "dialect_id": "44",
+          "wordform_id": "1370528",
+          "wordform": "et kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "82",
+          "dialect_id": "44",
+          "wordform_id": "1370529",
+          "wordform": "ei kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "83",
+          "dialect_id": "44",
+          "wordform_id": "1370530",
+          "wordform": "emmo kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "84",
+          "dialect_id": "44",
+          "wordform_id": "1370531",
+          "wordform": "etto kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "85",
+          "dialect_id": "44",
+          "wordform_id": "1370532",
+          "wordform": "ei kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "86",
+          "dialect_id": "44",
+          "wordform_id": "1370533",
+          "wordform": "olen kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "87",
+          "dialect_id": "44",
+          "wordform_id": "1370534",
+          "wordform": "olet kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "88",
+          "dialect_id": "44",
+          "wordform_id": "1370535",
+          "wordform": "on kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "89",
+          "dialect_id": "44",
+          "wordform_id": "1370536",
+          "wordform": "olemmo kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "90",
+          "dialect_id": "44",
+          "wordform_id": "1370537",
+          "wordform": "oletto kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "91",
+          "dialect_id": "44",
+          "wordform_id": "1370538",
+          "wordform": "ollah kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "91",
+          "dialect_id": "44",
+          "wordform_id": "2765710",
+          "wordform": "on kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "92",
+          "dialect_id": "44",
+          "wordform_id": "1370539",
+          "wordform": "en ole kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "93",
+          "dialect_id": "44",
+          "wordform_id": "1370540",
+          "wordform": "et ole kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "94",
+          "dialect_id": "44",
+          "wordform_id": "1370541",
+          "wordform": "ei ole kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "95",
+          "dialect_id": "44",
+          "wordform_id": "1370542",
+          "wordform": "emmo ole kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "96",
+          "dialect_id": "44",
+          "wordform_id": "1370543",
+          "wordform": "etto ole kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "97",
+          "dialect_id": "44",
+          "wordform_id": "1370544",
+          "wordform": "ei olla kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "98",
+          "dialect_id": "44",
+          "wordform_id": "1370545",
+          "wordform": "olin kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "99",
+          "dialect_id": "44",
+          "wordform_id": "1370546",
+          "wordform": "olit kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "100",
+          "dialect_id": "44",
+          "wordform_id": "1370547",
+          "wordform": "oli kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "101",
+          "dialect_id": "44",
+          "wordform_id": "1370548",
+          "wordform": "olimmo kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "102",
+          "dialect_id": "44",
+          "wordform_id": "1370549",
+          "wordform": "olitto kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "103",
+          "dialect_id": "44",
+          "wordform_id": "1370550",
+          "wordform": "oldih kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "103",
+          "dialect_id": "44",
+          "wordform_id": "2765711",
+          "wordform": "oli kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "104",
+          "dialect_id": "44",
+          "wordform_id": "1370551",
+          "wordform": "en olluh kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "105",
+          "dialect_id": "44",
+          "wordform_id": "1370552",
+          "wordform": "et olluh kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "106",
+          "dialect_id": "44",
+          "wordform_id": "1370555",
+          "wordform": "etto olluh kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "107",
+          "dialect_id": "44",
+          "wordform_id": "1370553",
+          "wordform": "ei olluh kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "108",
+          "dialect_id": "44",
+          "wordform_id": "1370554",
+          "wordform": "emmo olluh kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "109",
+          "dialect_id": "44",
+          "wordform_id": "1370556",
+          "wordform": "ei oldu kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "110",
+          "dialect_id": "44",
+          "wordform_id": "1370571",
+          "wordform": "en kačahtazihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "111",
+          "dialect_id": "44",
+          "wordform_id": "1370572",
+          "wordform": "et kačahtazihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "112",
+          "dialect_id": "44",
+          "wordform_id": "1370573",
+          "wordform": "ei kačahtazihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "113",
+          "dialect_id": "44",
+          "wordform_id": "1370574",
+          "wordform": "emmo kačahtazihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "114",
+          "dialect_id": "44",
+          "wordform_id": "1370575",
+          "wordform": "etto kačahtazihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "115",
+          "dialect_id": "44",
+          "wordform_id": "1370576",
+          "wordform": "ei kačahtettazihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "116",
+          "dialect_id": "44",
+          "wordform_id": "1370583",
+          "wordform": "en kačahtannuzihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "117",
+          "dialect_id": "44",
+          "wordform_id": "1370584",
+          "wordform": "et kačahtannuzihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "118",
+          "dialect_id": "44",
+          "wordform_id": "1370585",
+          "wordform": "ei kačahtannuzihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "119",
+          "dialect_id": "44",
+          "wordform_id": "1370586",
+          "wordform": "emmo kačahtannuzihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "120",
+          "dialect_id": "44",
+          "wordform_id": "1370587",
+          "wordform": "etto kačahtannuzihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "121",
+          "dialect_id": "44",
+          "wordform_id": "1370588",
+          "wordform": "ei kačahtettanuzihes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "122",
+          "dialect_id": "44",
+          "wordform_id": "1370589",
+          "wordform": "olizin kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "123",
+          "dialect_id": "44",
+          "wordform_id": "1370590",
+          "wordform": "olizit kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "124",
+          "dialect_id": "44",
+          "wordform_id": "1370591",
+          "wordform": "olis kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "125",
+          "dialect_id": "44",
+          "wordform_id": "1370602",
+          "wordform": "olluzit kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "126",
+          "dialect_id": "44",
+          "wordform_id": "1370592",
+          "wordform": "olizimmo kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "127",
+          "dialect_id": "44",
+          "wordform_id": "1370593",
+          "wordform": "olizitto kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "128",
+          "dialect_id": "44",
+          "wordform_id": "1370594",
+          "wordform": "oldas kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "129",
+          "dialect_id": "44",
+          "wordform_id": "1370595",
+          "wordform": "en olis kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "130",
+          "dialect_id": "44",
+          "wordform_id": "1370596",
+          "wordform": "et olis kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "131",
+          "dialect_id": "44",
+          "wordform_id": "1370597",
+          "wordform": "ei olis kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "132",
+          "dialect_id": "44",
+          "wordform_id": "1370598",
+          "wordform": "emmo olis kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "133",
+          "dialect_id": "44",
+          "wordform_id": "1370599",
+          "wordform": "etto olis kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "134",
+          "dialect_id": "44",
+          "wordform_id": "1370600",
+          "wordform": "ei oldas kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "135",
+          "dialect_id": "44",
+          "wordform_id": "1370601",
+          "wordform": "olluzin kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "136",
+          "dialect_id": "44",
+          "wordform_id": "1370603",
+          "wordform": "ollus kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "137",
+          "dialect_id": "44",
+          "wordform_id": "1370604",
+          "wordform": "olluzimmo kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "138",
+          "dialect_id": "44",
+          "wordform_id": "1370605",
+          "wordform": "olluzitto kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "139",
+          "dialect_id": "44",
+          "wordform_id": "1370606",
+          "wordform": "oldanus kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "140",
+          "dialect_id": "44",
+          "wordform_id": "1370607",
+          "wordform": "en ollus kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "141",
+          "dialect_id": "44",
+          "wordform_id": "1370608",
+          "wordform": "et ollus kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "142",
+          "dialect_id": "44",
+          "wordform_id": "1370609",
+          "wordform": "ei ollus kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "143",
+          "dialect_id": "44",
+          "wordform_id": "1370610",
+          "wordform": "emmo ollus kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "144",
+          "dialect_id": "44",
+          "wordform_id": "1370611",
+          "wordform": "etto ollus kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "145",
+          "dialect_id": "44",
+          "wordform_id": "1370612",
+          "wordform": "ei oldanus kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "146",
+          "dialect_id": "44",
+          "wordform_id": "1370613",
+          "wordform": "kačahtannemmos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "147",
+          "dialect_id": "44",
+          "wordform_id": "1370614",
+          "wordform": "kačahtannettos"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "148",
+          "dialect_id": "44",
+          "wordform_id": "1370615",
+          "wordform": "kačahtannehes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "149",
+          "dialect_id": "44",
+          "wordform_id": "1370616",
+          "wordform": "kačahtannemmokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "150",
+          "dialect_id": "44",
+          "wordform_id": "1370617",
+          "wordform": "kačahtannettokseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "151",
+          "dialect_id": "44",
+          "wordform_id": "2765712",
+          "wordform": "kačahtettannehes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "152",
+          "dialect_id": "44",
+          "wordform_id": "1370619",
+          "wordform": "en kačahtannei"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "153",
+          "dialect_id": "44",
+          "wordform_id": "1370620",
+          "wordform": "et kačahtannei"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "154",
+          "dialect_id": "44",
+          "wordform_id": "1370621",
+          "wordform": "ei kačahtannei"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "155",
+          "dialect_id": "44",
+          "wordform_id": "1370622",
+          "wordform": "emmo kačahtannei"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "156",
+          "dialect_id": "44",
+          "wordform_id": "1370623",
+          "wordform": "etto kačahtannei"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "157",
+          "dialect_id": "44",
+          "wordform_id": "2765713",
+          "wordform": "ei kačahtettannehes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "158",
+          "dialect_id": "44",
+          "wordform_id": "1370625",
+          "wordform": "ollen kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "159",
+          "dialect_id": "44",
+          "wordform_id": "1370626",
+          "wordform": "ollet kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "160",
+          "dialect_id": "44",
+          "wordform_id": "1370627",
+          "wordform": "ollou kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "161",
+          "dialect_id": "44",
+          "wordform_id": "1370628",
+          "wordform": "ollemmo kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "162",
+          "dialect_id": "44",
+          "wordform_id": "1370629",
+          "wordform": "olletto kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "163",
+          "dialect_id": "44",
+          "wordform_id": "1370630",
+          "wordform": "oldaneh kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "164",
+          "dialect_id": "44",
+          "wordform_id": "1370631",
+          "wordform": "en olle kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "165",
+          "dialect_id": "44",
+          "wordform_id": "1370632",
+          "wordform": "et olle kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "166",
+          "dialect_id": "44",
+          "wordform_id": "1370633",
+          "wordform": "ei olle kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "167",
+          "dialect_id": "44",
+          "wordform_id": "1370634",
+          "wordform": "emmo olle kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "168",
+          "dialect_id": "44",
+          "wordform_id": "1370635",
+          "wordform": "etto olle kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "169",
+          "dialect_id": "44",
+          "wordform_id": "1370636",
+          "wordform": "ei oldane kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "170",
+          "dialect_id": "44",
+          "wordform_id": "26561",
+          "wordform": "kačahtuakseh"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "179",
+          "dialect_id": "44",
+          "wordform_id": "1370637",
+          "wordform": "kačahtannuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "181",
+          "dialect_id": "44",
+          "wordform_id": "1370638",
+          "wordform": "kačahtettuhes"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "295",
+          "dialect_id": "44",
+          "wordform_id": "1370513",
+          "wordform": "kačahtai"
+        },
+        {
+          "lemma_id": "7566",
+          "lemma": "kačahtuakseh",
+          "reflexive": "NULL",
+          "lemma_status": "0",
+          "gramset_id": "296",
+          "dialect_id": "44",
+          "wordform_id": "26560",
+          "wordform": "kačahtetahes"
+        }
+      ]
+    }
+  ]
+}
