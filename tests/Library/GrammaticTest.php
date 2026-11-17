@@ -1713,12 +1713,162 @@ class GrammaticTest extends TestCase
             1 => 'kuorma-auto',
             2 => 'kuorma-auto',
             3 => 'kuorma-autuo',
-            4 => 'kuorma-autoje',
+            4 => 'kuorma-autoloi',
             5 => 'kuorma-autoloi',
             6 => 'kuorma-auto',
             10 => true
         ], $num, 'kuorma||-aut', 'o'];
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @dataProvider karProperNounGenitivePluralProvider
+     */
+    public function testKarProperNounGenitivePlural($template, $expected)
+    {
+        $lang_id = 4;
+        $pos_id = 5;
+        $dialect_id = 46;
+        $name_num = null;
+
+        list($stems, $name_num) = Grammatic::stemsFromTemplate(
+            $template,
+            $lang_id,
+            $pos_id,
+            $name_num,
+            $dialect_id
+        );
+
+        $result = Grammatic::wordformByStems(
+            $lang_id,
+            $pos_id,
+            $dialect_id,
+            24, // генитив множественного числа
+            $stems,
+            $name_num
+        );
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function karProperNounGenitivePluralProvider()
+    {
+        return [
+            'auto' => [
+                'aut|o [o]',
+                'autojen',
+            ],
+            'pelto' => [
+                'pel|to [lo]',
+                'peltojen',
+            ],
+            'kuorma-auto' => [
+                'kuorma||-aut|o [o]',
+                'kuorma-autojen',
+            ],
+        ];
+    }
+
+    public function testKarProperNounKuormaAutoEssivePlural()
+    {
+        $lang_id = 4;
+        $pos_id = 5;
+        $dialect_id = 46;
+        $name_num = null;
+
+        list($stems, $name_num) = Grammatic::stemsFromTemplate(
+            'kuorma||-aut|o [o]',
+            $lang_id,
+            $pos_id,
+            $name_num,
+            $dialect_id
+        );
+
+        $this->assertEquals('kuorma-autoloi', $stems[4]);
+        $this->assertEquals('kuorma-autoloi', $stems[5]);
+
+        $result = Grammatic::wordformByStems(
+            $lang_id,
+            $pos_id,
+            $dialect_id,
+            279, // эссив множественного числа
+            $stems,
+            $name_num
+        );
+
+        $this->assertEquals('kuorma-autoloina', $result);
+    }
+
+    public function testKarSyllableCountHyphenatedStems()
+    {
+        $cases = [
+            ['auto', 2],
+            ['autoloi', 3],
+            ['pelto', 2],
+            ['peltoloi', 3],
+            ['-auto', 2],
+            ['-autoloi', 3],
+            ['kuorma-auto', 4],
+            ['kuorma-autoloi', 5],
+        ];
+
+        foreach ($cases as $case) {
+            list($stem, $expected) = $case;
+
+            $this->assertEquals(
+                $expected,
+                \App\Library\Grammatic\KarGram::countSyllable($stem),
+                $stem
+            );
+        }
+    }
+
+    /**
+     * @dataProvider karProperNounPartitivePluralProvider
+     */
+    public function testKarProperNounPartitivePlural($template, $expected)
+    {
+        $lang_id = 4;
+        $pos_id = 5;
+        $dialect_id = 46;
+        $name_num = null;
+
+        list($stems, $name_num) = Grammatic::stemsFromTemplate(
+            $template,
+            $lang_id,
+            $pos_id,
+            $name_num,
+            $dialect_id
+        );
+
+        $result = Grammatic::wordformByStems(
+            $lang_id,
+            $pos_id,
+            $dialect_id,
+            22, // партитив множественного числа
+            $stems,
+            $name_num
+        );
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function karProperNounPartitivePluralProvider()
+    {
+        return [
+            'auto' => [
+                'aut|o [o]',
+                'autoja',
+            ],
+            'pelto' => [
+                'pel|to [lo]',
+                'peltoja',
+            ],
+            'kuorma-auto' => [
+                'kuorma||-aut|o [o]',
+                'kuorma-autoja',
+            ],
+        ];
     }
 
     public function testStemsFromTemplateOloNounCompound()

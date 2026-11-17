@@ -91,6 +91,13 @@ class KarGram
             $stem = $regs[1];
         }
         $stem = trim($stem, '-');
+        if (strpos($stem, '-') !== false) {
+            $count = 0;
+            foreach (preg_split('/-+/u', $stem, -1, PREG_SPLIT_NO_EMPTY) as $part) {
+                $count += self::countSyllable($part);
+            }
+            return $count;
+        }
         $C = "[" . KarGram::consSet() . "]";
         $C_n = "(" . $C . "’?)*";
         $C_o = "(" . $C . "’?)+";
