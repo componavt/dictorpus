@@ -101,3 +101,10 @@
     width: 100%;
     max-width: 360px;
 }
+
+/* Сохраняем исходный регистр лемм в заголовках групп. */
+.meaning-candidates .candidate-table .candidate-lemma>th,
+.meaning-candidates .candidate-table .candidate-lemma>th::first-letter,
+.meaning-candidates .candidate-table .candidate-lemma>th>a {
+    text-transform: none;
+}

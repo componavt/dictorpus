@@ -531,8 +531,9 @@ class MeaningExampleSearch
         $page = max(1, min($last_page, (int) $page));
 
         $rows = $this->collocationCandidatesQuery($partner_pos_id)
-            ->orderBy('sentences', 'desc')
-            ->orderBy('texts', 'desc')
+            ->orderBy('l2.lemma')
+            ->orderBy('l2.id')
+            ->orderBy('m2.meaning_n')
             ->orderBy('m2.id')
             ->skip(($page - 1) * $per_page)
             ->take($per_page)
