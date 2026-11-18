@@ -197,3 +197,8 @@
     gap: 8px;
     margin: 0;
 }
+
+.example-collocation-source-hint {
+    display: block;
+    margin-top: 6px;
+}

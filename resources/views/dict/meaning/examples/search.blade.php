@@ -14,6 +14,10 @@
 
 @section('body')
 <div class="meaning-example-search" data-synset-id="{{ $synset_id }}"
+data-source-excluded-message="{{ trans('meaning_examples.source_meaning_excluded') }}"
+    data-example-collocation-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/collocation') }}"
+    data-attachment-actions-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/actions') }}"
+    data-refresh-actions-error="{{ trans('meaning_examples.refresh_actions_error') }}"
     data-delete-collocation-confirm="{{ trans('meaning_examples.delete_collocation_confirm') }}"
     data-delete-collocation-error="{{ trans('meaning_examples.delete_collocation_error') }}"
     data-attach-error="{{ trans('collocation_examples.attach_error') }}"
@@ -107,13 +111,19 @@
     {!! $sentences->render() !!}
     @endif
 </div>
+
+@if (User::checkAccess('dict.edit'))
+    @include('dict.collocation._example_modal')
+@endif
+
 @stop
 @section('footScriptExtra')
-{!! js('select2.min') !!}
-{!! js('meaning_example_filters') !!}
-{!! js('text') !!}
-{!! js('meaning_examples') !!}
-{!! js('collocation_examples') !!}
+    {!! js('select2.min') !!}
+    {!! js('meaning_example_filters') !!}
+    {!! js('text') !!}
+    {!! js('meaning_examples') !!}
+    {!! js('collocation_examples') !!}
+    {!! js('example_collocation_modal') !!}
 @stop
 
 @section('jqueryFunc')
@@ -121,6 +131,7 @@
     initExamplePartnerSelect();
     initExampleCollocationLinks();
     initCollocationExampleAttach();
+    initExampleCollocationModal();
     updateExampleCollocationMarks();
 
     var example_page = $('.meaning-example-search');

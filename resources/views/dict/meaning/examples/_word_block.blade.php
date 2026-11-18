@@ -1,5 +1,8 @@
 <div
     class="example-review-block @if ($fully_checked) example-review-checked @endif"
+    data-source-relevance="{{ (int) $source_relevance }}"
+    data-is-source-word="{{ $is_source_word ? '1' : '0' }}"
+    data-source-excluded="{{ $source_excluded ? '1' : '0' }}"
     data-checked-meaning-id="{{ $meaning_checked ? $meaning_values[0]->id : 0 }}"
     data-collocation-recorded="{{ $collocation_recorded ? '1' : '0' }}"
 >
@@ -30,14 +33,20 @@
                 @if ($meaning_checked && ($add_collocation_url || $delete_collocation_url))
                     <span class="example-collocation-actions">
                     @if ($delete_collocation_url)
-                        <a href="{{ $delete_collocation_url }}" onclick="return deleteExampleCollocation(this, event)" title="{{ trans('meaning_examples.delete_collocation_hint') }}">
+                        <a href="{{ $delete_collocation_url }}" onclick="return handleExampleCollocationAction(this, event)" title="{{ trans('meaning_examples.delete_collocation_hint') }}">
                             {{ trans('meaning_examples.delete_collocation') }}
                         </a>
                     @else
-                        <a href="{{ $add_collocation_url }}" onclick="return deleteExampleCollocation(this, event)">
+                        <a href="{{ $add_collocation_url }}" onclick="return handleExampleCollocationAction(this, event)">
                             {{ trans('meaning_examples.add_collocation') }}
                         </a>
                     @endif
+                    </span>
+                @endif
+
+                @if (!empty($collocation_source_hint))
+                    <span class="example-collocation-source-hint text-muted">
+                        {{ $collocation_source_hint }}
                     </span>
                 @endif
             </p>

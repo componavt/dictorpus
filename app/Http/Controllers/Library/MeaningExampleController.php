@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Library\CollocationExampleData;
+use App\Library\MeaningExampleData;
 use App\Library\MeaningExampleFilterInput;
 use App\Library\MeaningExampleFilterValues;
 use App\Library\MeaningExampleFormatter;
@@ -69,6 +70,102 @@ class MeaningExampleController extends Controller
         list($source, $word, $interval) = $this->reviewWord($meaning_id, $text_id, $w_id, $request);
 
         return $this->renderWordBlock($source, $word, $interval);
+    }
+
+    /**
+     * Возвращает актуальные действия прикрепления одной карточки.
+     */
+    public function attachmentActions($meaning_id, $text_id, $w_id, Request $request)
+    {
+        if (!User::checkAccess('dict.edit')) {
+            abort(403);
+        }
+
+        $this->validate($request, [
+            'partner_meaning_id' => 'integer|min:1',
+            'same_gramset' => 'required|boolean',
+        ]);
+
+        list($source, $word, $interval) = $this->reviewWord(
+            $meaning_id,
+            $text_id,
+            $w_id,
+            $request
+        );
+
+        $partner = null;
+
+        if ($request->input('partner_meaning_id')) {
+            $partner = Meaning::with('lemma')
+                ->findOrFail($request->input('partner_meaning_id'));
+
+            if ((int) $partner->lemma->lang_id !== (int) $source->lemma->lang_id) {
+                abort(404);
+            }
+        }
+
+        $search = new MeaningExampleSearch($source, $partner, [
+            'distance_from' => $interval['distance_from'],
+            'distance_to' => $interval['distance_to'],
+            'whole_sentence' => (bool) $interval['whole_sentence'],
+            'same_gramset' => (bool) (int) $request->input('same_gramset'),
+        ]);
+
+        $matches = [];
+
+        foreach ($search->query()->where('w1.id', $word->id)->get() as $match) {
+            $matches[] = (array) $match;
+        }
+
+        if (!$matches) {
+            return response('');
+        }
+
+        $items = $this->attachmentActionItems($source, $word, $matches);
+        $loader = new CollocationExampleData();
+        $collocation_example_actions = [];
+
+        if ($partner) {
+            $collocation = $source->collocations()
+                ->where('collocate_meaning_id', $partner->id)
+                ->first();
+
+            if ($collocation) {
+                $collocation_example_actions = $loader->forPage($collocation, $items);
+            }
+        } else {
+            $collocation_example_actions = $loader->forSource($source, $items);
+        }
+
+        $example = $items[0]['source_examples'][0];
+
+        return view(
+            'dict.meaning.examples._collocation_examples',
+            compact('source', 'example', 'collocation_example_actions')
+        );
+    }
+
+    /**
+     * Восстанавливает данные конкретной карточки без повторного поиска страницы.
+     */
+    protected function attachmentActionItems(Meaning $source, Word $word, array $matches)
+    {
+        $text_xml = (string) DB::table('sentences')
+            ->where('id', $word->sentence_id)
+            ->value('text_xml');
+
+        return (new MeaningExampleData($source->id))->prepare([[
+            'sentence_id' => (int) $word->sentence_id,
+            'text_id' => (int) $word->text_id,
+            's_id' => (int) $word->s_id,
+            'source_relevance' => (int) $matches[0]['source_relevance'],
+            'match_count' => count($matches),
+            'matches' => $matches,
+            'linked_w_ids' => [],
+            'text_xml' => $text_xml,
+            'sentence' => '',
+            'word_positions' => [],
+        ]]);
     }
 
     /**
@@ -340,7 +437,7 @@ class MeaningExampleController extends Controller
                 . '_' . $review_context['source_w_id'];
         }
 
-        $add_collocation_url = $read_only ? null
+        $add_collocation_url = ($read_only || $source_relevance <= 1) ? null
             : $this->collocationEditorUrl(
                 $source,
                 $word,
@@ -369,6 +466,24 @@ class MeaningExampleController extends Controller
                 . '?' . http_build_query($query) . '#collocation-' . $collocation_id;
         }
 
+        $collocation_source_hint = null;
+
+        if (User::checkAccess('dict.edit') && !$read_only && $meaning_checked && !$collocation_recorded && $source_relevance <= 1 && (int) $word->w_id !== (int) $review_context['source_w_id']) {
+            $source_word = Word::where('text_id', $word->text_id)
+                ->where('s_id', $word->s_id)
+                ->where('w_id', $review_context['source_w_id'])
+                ->value('word');
+
+            $collocation_source_hint = trans('meaning_examples.confirm_source_for_collocation', ['source' => $source_word]);
+        }
+
+        $is_source_word = (int) $word->w_id
+            === (int) $review_context['source_w_id'];
+
+        $source_excluded = $is_source_word
+            && $meaning_checked
+            && (int) $word_meanings['checked']->id !== (int) $source->id;
+
         return view(
             'dict.meaning.examples._word_block',
             compact(
@@ -380,10 +495,13 @@ class MeaningExampleController extends Controller
                 'fully_checked',
                 'gramset_checked',
                 'gramset_values',
+                'is_source_word',
                 'meaning_checked',
                 'meaning_values',
                 'read_only',
                 'source',
+                'collocation_source_hint',
+                'source_excluded',
                 'source_relevance',
                 'word',
                 'wordforms',
@@ -1203,21 +1321,26 @@ class MeaningExampleController extends Controller
     }
 
     /**
-     * Готовит действия прикрепления для существующей пары значений.
+     * Готовит действия прикрепления с выбранным партнёром или без него.
      */
     protected function searchCollocationData(Meaning $source, $partner, $sentences)
     {
         $example_collocation = null;
         $collocation_example_actions = [];
 
-        if (User::checkAccess('dict.edit') && $partner && $sentences && count($sentences)) {
-            $example_collocation = $source->collocations()
-                ->where('collocate_meaning_id', $partner->id)
-                ->first();
+        if (User::checkAccess('dict.edit') && $sentences && count($sentences)) {
+            $loader = new CollocationExampleData();
 
-            if ($example_collocation) {
-                $collocation_example_actions = (new CollocationExampleData())
-                    ->forPage($example_collocation, $sentences->items());
+            if ($partner) {
+                $example_collocation = $source->collocations()
+                    ->where('collocate_meaning_id', $partner->id)
+                    ->first();
+
+                if ($example_collocation) {
+                    $collocation_example_actions = $loader->forPage($example_collocation, $sentences->items());
+                }
+            } else {
+                $collocation_example_actions = $loader->forSource($source, $sentences->items());
             }
         }
 

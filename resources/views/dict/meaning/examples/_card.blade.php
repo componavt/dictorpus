@@ -49,9 +49,12 @@
         </div>
     @endif
 
-    @if (isset($example_collocation))
+    <div class="example-attachment-actions">
         @include('dict.meaning.examples._collocation_examples')
-    @endif
+    </div>
+
+    <div class="example-attachment-refresh-error text-danger"
+        role="alert"></div>
 
     <div class="example-card-footer">
         (<a href="{{ $example['text_url'] }}">{{ $example['text_title'] }}</a>)

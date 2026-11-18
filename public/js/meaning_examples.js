@@ -59,17 +59,9 @@ function saveExampleAnnotation(el, action, data) {
 
             page.find('.example-original-content')
                 .data('downloaded', 0);
-            var source_relevance = block
-                .find('.example-review-block')
-                .attr('data-source-relevance');
-
-            if (source_relevance !== undefined) {
-                updateExampleRating(
-                    word.closest('.example-card'),
-                    parseInt(source_relevance, 10)
-                );
-            }
+            applyExampleSourceState(word, block);
             updateExampleCollocationMarks();
+            refreshExampleSentenceActions(word.closest('.example-card'), block);
         },
         error: function () {
             alert(page.attr('data-save-error'));
@@ -78,6 +70,7 @@ function saveExampleAnnotation(el, action, data) {
             block.data('saving', false);
             block.find('.example-review-plus, .example-review-reset')
                 .prop('disabled', false);
+            finishExcludedExample(word.closest('.example-card'));
         }
     });
 
@@ -205,10 +198,16 @@ function rateSourceExample(el) {
             whole_sentence: page.attr('data-whole-sentence') || 0,
         },
         success: function (result) {
-            updateExampleRating(card, parseInt(result.relevance, 10));
+            var relevance = parseInt(result.relevance, 10);
+
+            updateExampleRating(card, relevance);
 
             page.find('.links-to-lemmas').hide().data('downloaded', 0);
             page.find('.example-original-content').data('downloaded', 0);
+
+            if (relevance > 0) {
+                refreshExampleSentenceActions(card);
+            }
         },
         error: function () {
             alert(page.attr('data-save-error'));
@@ -223,12 +222,12 @@ function rateSourceExample(el) {
 /**
  * Обновляет звезду и доступность кнопок либо убирает исключённую карточку.
  */
-function updateExampleRating(card, relevance) {
+function updateExampleRating(card, relevance, keep_card) {
     if (isNaN(relevance) || relevance < 0 || relevance > 10) {
         return;
     }
 
-    if (relevance === 0) {
+    if (relevance === 0 && !keep_card) {
         window.location.reload();
         return;
     }
@@ -604,4 +603,172 @@ function deleteExampleCollocation(el, event) {
         page.data('collocation-deleting', false);
     });
 
+}
+
+/**
+ * Сбрасывает соседние разборы и обновляет действия карточек предложения.
+ */
+function refreshExampleSentenceActions(card, current_block) {
+    var group = card.closest('.example-sentence-group');
+    var cards = group.length ? group.find('.example-card') : card;
+
+    var blocks = cards.find('.links-to-lemmas');
+
+    if (current_block && current_block.length) {
+        blocks = blocks.not(current_block);
+    }
+
+    blocks.hide().data('downloaded', 0);
+
+    cards.each(function () {
+        refreshExampleAttachmentActions($(this));
+    });
+}
+
+/**
+ * Получает серверный HTML действий для конкретного исходного употребления.
+ */
+function refreshExampleAttachmentActions(card) {
+    var page = card.closest('.meaning-example-search');
+    var container = card.children('.example-attachment-actions');
+    var error = card.children('.example-attachment-refresh-error');
+    var base_url = page.attr('data-attachment-actions-url');
+
+    if (!base_url || !container.length) {
+        return;
+    }
+
+    var version = (card.data('attachment-actions-version') || 0) + 1;
+    var params = new URL(window.location.href).searchParams;
+    var same_gramset = params.get('same_gramset');
+
+    card.data('attachment-actions-version', version);
+
+    container.find('button[type="submit"]').prop('disabled', true);
+    error.text('');
+
+    $.ajax({
+        url: base_url + '/' + card.attr('data-source-word-key'),
+        type: 'GET',
+        dataType: 'html',
+        cache: false,
+        data: {
+            source_w_id: card.attr('data-source-w-id'),
+            fragment_id: card.attr('data-fragment-id') || 0,
+            original: 0,
+            distance_from: page.attr('data-distance-from'),
+            distance_to: page.attr('data-distance-to'),
+            whole_sentence: page.attr('data-whole-sentence') || 0,
+            same_gramset: same_gramset === null ? 1 : same_gramset,
+            partner_meaning_id: params.get('partner_meaning_id') || '',
+            synset_id: page.attr('data-synset-id') || ''
+        }
+    }).done(function (html) {
+        if (card.data('attachment-actions-version') !== version) {
+            return;
+        }
+
+        container.html(html);
+        error.text('');
+    }).fail(function () {
+        if (card.data('attachment-actions-version') !== version) {
+            return;
+        }
+
+        error.text(page.attr('data-refresh-actions-error'));
+    });
+}
+
+/**
+ * Применяет серверную оценку и состояние исходного употребления.
+ */
+function applyExampleSourceState(word, block) {
+    var card = word.closest('.example-card');
+    var review = block.find('.example-review-block').first();
+    var relevance = parseInt(review.attr('data-source-relevance'), 10);
+    var excluded = review.attr('data-source-excluded') === '1';
+
+    if (!isNaN(relevance)) {
+        updateExampleRating(card, relevance, excluded);
+    }
+
+    if (review.attr('data-is-source-word') === '1') {
+        markExampleSourceExcluded(card, block, excluded);
+    }
+}
+
+/**
+ * Оставляет исключённую карточку до закрытия разбора.
+ * При сбросе выбора отменяет отложенное скрытие.
+ */
+function markExampleSourceExcluded(card, block, excluded) {
+    var previous = card.data('source-exclusion-observer');
+
+    if (previous) {
+        previous.disconnect();
+    }
+
+    card.removeData('source-exclusion-observer');
+    card.removeData('source-exclusion-block');
+    card.data('source-excluded', excluded);
+
+    var notice = card.children('.example-source-excluded-notice');
+
+    if (!excluded) {
+        notice.remove();
+        return;
+    }
+
+    if (!notice.length) {
+        notice = $('<div>')
+            .addClass('example-source-excluded-notice alert alert-info')
+            .attr('role', 'status')
+            .prependTo(card);
+    }
+
+    notice.text(
+        card.closest('.meaning-example-search')
+            .attr('data-source-excluded-message')
+    );
+
+    card.data('source-exclusion-block', block);
+
+    var observer = new MutationObserver(function () {
+        finishExcludedExample(card);
+    });
+
+    observer.observe(block[0], {
+        attributes: true,
+        attributeFilter: ['style', 'class']
+    });
+
+    card.data('source-exclusion-observer', observer);
+
+    finishExcludedExample(card);
+}
+
+/**
+ * Убирает карточку после закрытия разбора и завершения сохранения.
+ */
+function finishExcludedExample(card) {
+    if (!card.data('source-excluded')) {
+        return;
+    }
+
+    var block = card.data('source-exclusion-block');
+
+    if (!block || block.data('saving') || block.is(':visible')) {
+        return;
+    }
+
+    var observer = card.data('source-exclusion-observer');
+
+    if (observer) {
+        observer.disconnect();
+    }
+
+    card.removeData('source-exclusion-observer');
+    card.removeData('source-exclusion-block');
+
+    removeExampleCard(card);
 }
