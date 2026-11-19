@@ -20,7 +20,7 @@
     </div>
 
     <fieldset class="example-form-section example-combination-section"
-            @if (empty($candidate_mode) && empty($partner)) style="display: none;" @endif>
+            @if (empty($candidate_mode) && empty($partner) && (int) request()->input('partner_pos_id', 0) === 0) style="display: none;" @endif>
         <legend>{{ trans('meaning_examples.combination_section') }}</legend>
         @include('dict.meaning.examples.form._conditions')
     </fieldset>

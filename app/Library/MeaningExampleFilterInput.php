@@ -4,6 +4,7 @@ namespace App\Library;
 
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Meaning;
 
 class MeaningExampleFilterInput
@@ -65,7 +66,7 @@ class MeaningExampleFilterInput
 
     public static function returnQuery(array $query)
     {
-        $array_fields = ['source_gramset_ids', 'corpus_ids'];
+        $array_fields = ['source_gramset_ids', 'partner_gramset_ids', 'corpus_ids'];
 
         foreach ($query as $name => $value) {
             if (!in_array($name, $array_fields, true)) {
@@ -98,6 +99,12 @@ class MeaningExampleFilterInput
     {
         $input = $this->searchInput($raw);
         $validator = $this->searchValidator($input);
+        if (
+            !$validator->fails() && (int) $input['partner_pos_id'] > 0
+            && !\App\Models\Dict\PartOfSpeech::where('id', (int) $input['partner_pos_id'])->exists()
+        ) {
+            $validator->errors()->add('partner_pos_id', trans('collocation_candidates.invalid_pos'));
+        }
         $partner = null;
 
         if (
@@ -111,31 +118,34 @@ class MeaningExampleFilterInput
             );
         }
 
-        if (
-            !$validator->errors()->count()
-            && (int) $input['distance_from'] > (int) $input['distance_to']
-        ) {
-            $validator->errors()->add(
-                'distance_from',
-                trans('meaning_examples.invalid_distance')
-            );
+        if ($partner && (int) $input['partner_pos_id'] > 0 && (int) $partner->lemma->pos_id !== (int) $input['partner_pos_id']) {
+            $validator->errors()->add('partner_meaning_id', trans('meaning_examples.invalid_partner'));
+        }
+
+        if (!$validator->errors()->count() && (int) $input['distance_from'] > (int) $input['distance_to']) {
+            $validator->errors()->add('distance_from', trans('meaning_examples.invalid_distance'));
         }
 
         $extra = $this->read($raw, $values);
+        $partner_gramsets = $this->partnerGramsets($raw, $source);
         $errors = $validator->errors();
 
-        foreach ($extra['errors']->getMessages() as $field => $messages) {
-            foreach ($messages as $message) {
-                $errors->add($field, $message);
+        foreach ([$extra['errors'], $partner_gramsets['errors']] as $error_bag) {
+            foreach ($error_bag->getMessages() as $field => $messages) {
+                foreach ($messages as $message) {
+                    $errors->add($field, $message);
+                }
             }
         }
+
+        $selected = $extra['options'] ?? ['source_gramset_ids' => [], 'corpus_ids' => []];
+        $selected['partner_gramset_ids'] = $partner_gramsets['ids'];
 
         return [
             'input' => $input,
             'partner' => $partner,
             'errors' => $errors,
-            'selected_filters' => $extra['options']
-                ?? ['source_gramset_ids' => [], 'corpus_ids' => []],
+            'selected_filters' => $selected,
         ];
     }
 
@@ -145,6 +155,7 @@ class MeaningExampleFilterInput
             'distance_from' => -1,
             'distance_to' => 1,
             'partner_meaning_id' => '',
+            'partner_pos_id' => 0,
             'only_checked' => 0,
             'same_gramset' => 1,
             'source_only_checked' => array_key_exists('only_checked', $raw)
@@ -163,6 +174,7 @@ class MeaningExampleFilterInput
             'distance_from' => 'required|integer',
             'distance_to' => 'required|integer',
             'partner_meaning_id' => 'integer|min:1',
+            'partner_pos_id' => 'required|integer|min:0',
             'only_checked' => 'required|boolean',
             'same_gramset' => 'required|boolean',
             'source_only_checked' => 'required|boolean',
@@ -191,5 +203,44 @@ class MeaningExampleFilterInput
         }
 
         return $partner;
+    }
+
+    /**
+     * Проверяет грамсеты партнёра для выбранной части речи и языка источника.
+     */
+    public function partnerGramsets(array $raw, Meaning $source)
+    {
+        $input = [
+            'partner_pos_id' => $raw['partner_pos_id'] ?? 0,
+            'partner_gramset_ids' => $raw['partner_gramset_ids'] ?? [],
+        ];
+
+        $validator = Validator::make($input, [
+            'partner_pos_id' => 'required|integer|min:0',
+            'partner_gramset_ids' => 'array|max:500',
+            'partner_gramset_ids.*' => 'integer|min:1',
+        ], [], [
+            'partner_gramset_ids' => trans('meaning_examples.partner_gramsets'),
+        ]);
+
+        $ids = [];
+
+        if (!$validator->fails()) {
+            $ids = array_values(array_unique(array_map('intval', $input['partner_gramset_ids'])));
+
+            if ($ids) {
+                $pos_id = (int) $input['partner_pos_id'];
+                $allowed = $pos_id > 0 ? array_map('intval', array_keys(Gramset::getList($pos_id, (int) $source->lemma->lang_id))) : [];
+
+                if (array_diff($ids, $allowed)) {
+                    $validator->errors()->add('partner_gramset_ids', trans('meaning_examples.invalid_partner_gramset_ids'));
+                }
+            }
+        }
+
+        return [
+            'ids' => $validator->errors()->count() ? [] : $ids,
+            'errors' => $validator->errors(),
+        ];
     }
 }

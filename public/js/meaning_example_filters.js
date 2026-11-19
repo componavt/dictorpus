@@ -42,13 +42,22 @@ function initExampleCombinationConditions() {
 function initExampleCombinationVisibility() {
     $('#example-search-partner').each(function () {
         var partner = $(this);
-        var section = partner.closest('form').find('.example-combination-section');
+        var form = partner.closest('form');
+        var pos = form.find('[name="partner_pos_id"]');
+        var section = form.find('.example-combination-section');
 
         function update() {
-            section.toggle(Boolean(partner.val()));
+            var has_partner = Boolean(partner.val());
+            var has_pos = parseInt(pos.val(), 10) > 0;
+            section.toggle(has_partner || has_pos);
         }
 
-        partner.on('change', update);
+        partner.off('change.exampleCombinationVisibility')
+            .on('change.exampleCombinationVisibility', update);
+
+        pos.off('change.exampleCombinationVisibility')
+            .on('change.exampleCombinationVisibility', update);
+
         update();
     });
 }

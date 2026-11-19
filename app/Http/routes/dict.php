@@ -111,6 +111,7 @@ Route::group(
         Route::get('meaning/{meaning_id}/examples/collocation', 'Dict\ExampleCollocationController@create')->where('meaning_id', '[0-9]+');
         Route::post('meaning/{meaning_id}/examples/collocation', 'Dict\ExampleCollocationController@store')->where('meaning_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/examples/original/{text_id}_{w_id}', 'Library\MeaningExampleController@originalSentence')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
+        Route::get('meaning/{meaning_id}/examples/partner-gramsets', 'Library\MeaningExampleController@partnerGramsets')->where('meaning_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/examples/partners', 'Library\MeaningExampleController@partners')->where('meaning_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/examples/recorded-partners', 'Library\MeaningExampleController@recordedPartners')->where('meaning_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/examples/search', 'Library\MeaningExampleController@index')->where('meaning_id', '[0-9]+')->name('meaning.examples.search');

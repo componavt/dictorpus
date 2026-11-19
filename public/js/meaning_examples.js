@@ -110,6 +110,8 @@ function initExamplePartnerSelect() {
                 return {
                     q: params.term || '',
                     page: params.page || 1,
+                    partner_gramset_ids: form.find('[name="partner_gramset_ids[]"]').val() || [],
+                    partner_pos_id: form.find('[name="partner_pos_id"]').val() || 0,
                     source_gramset_ids: form.find('[name="source_gramset_ids[]"]').val() || [],
                     corpus_ids: form.find('[name="corpus_ids[]"]').val() || [],
                     distance_from: form.find('[name="distance_from"]').val(),
@@ -126,6 +128,25 @@ function initExamplePartnerSelect() {
         }
     });
 
+    form.find('[name="partner_pos_id"]')
+        .off('change.examplePartnerPos')
+        .on('change.examplePartnerPos', function () {
+            partner_select.select2('close');
+
+            var filter_pos_id = parseInt($(this).val(), 10) || 0;
+
+            if (!filter_pos_id || !partner_select.val()) {
+                return;
+            }
+
+            var selected = partner_select.select2('data')[0] || {};
+            var partner_pos_id = parseInt(selected.pos_id || partner_select.find('option:selected').attr('data-pos-id'), 10) || 0;
+
+            if (partner_pos_id > 0 && partner_pos_id !== filter_pos_id) {
+                partner_select.val(null).trigger('change');
+            }
+        });
+
     form.on(
         'change',
         '[name="source_gramset_ids[]"], [name="corpus_ids[]"], '
@@ -138,6 +159,8 @@ function initExamplePartnerSelect() {
             partner_select.select2('close');
         }
     );
+
+    initExamplePartnerGramsets(partner_select);
 }
 
 /**
@@ -641,6 +664,13 @@ function refreshExampleAttachmentActions(card) {
     var version = (card.data('attachment-actions-version') || 0) + 1;
     var params = new URL(window.location.href).searchParams;
     var same_gramset = params.get('same_gramset');
+    var partner_gramset_ids = [];
+
+    params.forEach(function (value, name) {
+        if (/^partner_gramset_ids\[\d*\]$/.test(name)) {
+            partner_gramset_ids.push(value);
+        }
+    });
 
     card.data('attachment-actions-version', version);
 
@@ -661,6 +691,8 @@ function refreshExampleAttachmentActions(card) {
             whole_sentence: page.attr('data-whole-sentence') || 0,
             same_gramset: same_gramset === null ? 1 : same_gramset,
             partner_meaning_id: params.get('partner_meaning_id') || '',
+            partner_pos_id: params.get('partner_pos_id') || 0,
+            partner_gramset_ids: partner_gramset_ids,
             synset_id: page.attr('data-synset-id') || ''
         }
     }).done(function (html) {
@@ -771,4 +803,132 @@ function finishExcludedExample(card) {
     card.removeData('source-exclusion-block');
 
     removeExampleCard(card);
+}
+
+/**
+ * Загружает грамсеты при смене части речи партнёра.
+ */
+function initExamplePartnerGramsets(partner_select) {
+    var form = partner_select.closest('form');
+    var pos = form.find('[name="partner_pos_id"]');
+    var gramsets = form.find('#example-search-partner-gramsets');
+    var group = form.find('#example-partner-gramsets-group');
+    var status = group.find('.example-partner-gramsets-status');
+
+    if (!pos.length || !gramsets.length) {
+        return;
+    }
+
+    var request = null;
+    var version = 0;
+    var loading = false;
+    var failed = false;
+    var retained_ids = [];
+
+    function load() {
+        if (!loading && !failed) {
+            retained_ids = (gramsets.val() || []).map(function (id) {
+                return String(id);
+            });
+        }
+        version += 1;
+        var current_version = version;
+
+        if (request) {
+            request.abort();
+            request = null;
+        }
+
+        loading = false;
+        failed = false;
+        status.text('');
+
+        partner_select.select2('close');
+
+        gramsets.empty().prop('disabled', true).trigger('change');
+
+        var pos_id = parseInt(pos.val(), 10) || 0;
+
+        if (!pos_id) {
+            retained_ids = [];
+            group.hide();
+            partner_select.prop('disabled', false);
+            return;
+        }
+
+        loading = true;
+        group.show();
+        status.text(gramsets.attr('data-loading'));
+        partner_select.prop('disabled', true);
+
+        request = $.ajax({
+            url: gramsets.attr('data-search-url'),
+            type: 'GET',
+            dataType: 'json',
+            cache: false,
+            data: {
+                partner_pos_id: pos_id
+            }
+        }).done(function (result) {
+            if (current_version !== version) {
+                return;
+            }
+
+            if (!result || !Array.isArray(result.results)) {
+                failed = true;
+                status.text(gramsets.attr('data-load-error'));
+                return;
+            }
+
+            result.results.forEach(function (item) {
+                var selected = retained_ids.indexOf(String(item.id)) !== -1;
+                gramsets.append(new Option(item.text, item.id, false, selected));
+            });
+
+            retained_ids = (gramsets.val() || []).map(function (id) {
+                return String(id);
+            });
+
+            var has_options = result.results.length > 0;
+            gramsets.prop('disabled', !has_options).trigger('change');
+            group.toggle(has_options);
+            status.text('');
+        }).fail(function (xhr, text_status) {
+            if (current_version !== version || text_status === 'abort') {
+                return;
+            }
+
+            failed = true;
+            group.show();
+            status.text(gramsets.attr('data-load-error'));
+        }).always(function () {
+            if (current_version !== version) {
+                return;
+            }
+
+            request = null;
+            loading = false;
+            partner_select.prop('disabled', false);
+        });
+    }
+
+    pos.off('change.examplePartnerGramsets')
+        .on('change.examplePartnerGramsets', load);
+
+    gramsets.off('change.examplePartnerGramsets')
+        .on('change.examplePartnerGramsets', function () {
+            partner_select.select2('close');
+        });
+
+    form.off('submit.examplePartnerGramsets')
+        .on('submit.examplePartnerGramsets', function (event) {
+            if (!loading && !failed) {
+                return;
+            }
+
+            event.preventDefault();
+            group.show();
+
+            status.text(gramsets.attr(loading ? 'data-loading' : 'data-load-error'));
+        });
 }

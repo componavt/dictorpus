@@ -93,6 +93,13 @@ class MeaningExampleController extends Controller
             $request
         );
 
+        $partner_gramsets = (new MeaningExampleFilterInput())
+            ->partnerGramsets($request->all(), $source);
+
+        if ($partner_gramsets['errors']->count()) {
+            abort(422, $partner_gramsets['errors']->first());
+        }
+
         $partner = null;
 
         if ($request->input('partner_meaning_id')) {
@@ -107,6 +114,7 @@ class MeaningExampleController extends Controller
         $search = new MeaningExampleSearch($source, $partner, [
             'distance_from' => $interval['distance_from'],
             'distance_to' => $interval['distance_to'],
+            'partner_gramset_ids' => $partner_gramsets['ids'],
             'whole_sentence' => (bool) $interval['whole_sentence'],
             'same_gramset' => (bool) (int) $request->input('same_gramset'),
         ]);
@@ -543,13 +551,56 @@ class MeaningExampleController extends Controller
     }
 
     /**
+     * Возвращает грамсеты части речи для языка исходного значения.
+     */
+    public function partnerGramsets($meaning_id, Request $request)
+    {
+        $this->validate($request, [
+            'partner_pos_id' => 'integer|min:0',
+        ]);
+
+        $source = Meaning::with('lemma')->findOrFail($meaning_id);
+        $pos_id = (int) $request->input('partner_pos_id', 0);
+
+        if (!$pos_id) {
+            return response()->json(['results' => []]);
+        }
+
+        $this->validate($request, [
+            'partner_pos_id' => 'exists:parts_of_speech,id',
+        ]);
+
+        $values = Gramset::getList($pos_id, (int) $source->lemma->lang_id);
+
+        $results = [];
+
+        foreach ($values as $id => $text) {
+            $results[] = [
+                'id' => (int) $id,
+                'text' => $text,
+            ];
+        }
+
+        return response()->json(['results' => $results]);
+    }
+
+    /**
      * Возвращает страницу значений соседних слов с учётом фильтров формы.
      */
     public function partners($meaning_id, Request $request)
     {
         $input = $this->partnerSearchInput($request);
 
-        $this->validate($request, ['source_only_checked' => 'boolean']);
+        $this->validate($request, [
+            'source_only_checked' => 'boolean',
+            'partner_pos_id' => 'integer|min:0',
+        ]);
+
+        $partner_pos_id = (int) $request->input('partner_pos_id', 0);
+
+        if ($partner_pos_id) {
+            $this->validate($request, ['partner_pos_id' => 'exists:parts_of_speech,id']);
+        }
         $source_threshold = (int) $request->input('source_only_checked', $input['only_checked']);
 
         $source = Meaning::with('lemma')->findOrFail($meaning_id);
@@ -561,22 +612,34 @@ class MeaningExampleController extends Controller
             abort(422, $extra_filters['errors']->first());
         }
 
+        $partner_gramsets = (new MeaningExampleFilterInput())
+            ->partnerGramsets($request->all(), $source);
+
+        if ($partner_gramsets['errors']->count()) {
+            abort(422, $partner_gramsets['errors']->first());
+        }
+
         $search = new MeaningExampleSearch(
             $source,
             null,
             [
                 'distance_from' => $input['distance_from'],
                 'distance_to' => $input['distance_to'],
+                'partner_gramset_ids' => $partner_gramsets['ids'],
                 'partner_threshold' => $input['only_checked'],
                 'same_gramset' => (bool) $input['same_gramset'],
                 'source_gramset_ids' => $extra_filters['options']['source_gramset_ids'],
                 'corpus_ids' => $extra_filters['options']['corpus_ids'],
                 'source_threshold' => $source_threshold,
-                'whole_sentence' => (bool) (int) $input['whole_sentence'],
+                'whole_sentence' => (bool) (int) $input['whole_sentence']
             ]
         );
 
         $query = $search->partnerMeaningsQuery();
+
+        if ($partner_pos_id) {
+            $query->where('l2.pos_id', $partner_pos_id);
+        }
 
         if ($input['q'] !== '') {
             $query->where('l2.lemma', 'like', '%' . $input['q'] . '%')
@@ -613,7 +676,13 @@ class MeaningExampleController extends Controller
             . ' [' . $meaning->meaning_n . ']';
 
         if ($meaning->lemma->pos) {
-            $text .= ' (' . $meaning->lemma->pos->name . ')';
+            $pos = $meaning->lemma->pos;
+
+            $pos_name = $locale === 'ru' ? $pos->name_short_ru : $pos->code;
+
+            if (trim((string) $pos_name) !== '') {
+                $text .= ' (' . $pos_name . ')';
+            }
         }
 
         $meaning_texts = $meaning->meaningTexts;
@@ -956,6 +1025,7 @@ class MeaningExampleController extends Controller
             $results[] = [
                 'id' => $meaning->id,
                 'text' => $this->partnerOptionText($meaning),
+                'pos_id' => (int) $meaning->lemma->pos_id,
             ];
         }
 
@@ -1244,6 +1314,7 @@ class MeaningExampleController extends Controller
             'corpus_ids' => $selected['corpus_ids'],
             'distance_from' => (int) $input['distance_from'],
             'distance_to' => (int) $input['distance_to'],
+            'partner_gramset_ids' => $selected['partner_gramset_ids'] ?? [],
             'partner_threshold' => (int) $input['only_checked'],
             'same_gramset' => (bool) (int) $input['same_gramset'],
             'source_gramset_ids' => $selected['source_gramset_ids'],
@@ -1296,10 +1367,16 @@ class MeaningExampleController extends Controller
             ]);
         }
 
+        $partner_pos_id = isset($input['partner_pos_id']) && is_scalar($input['partner_pos_id']) ? (int) $input['partner_pos_id'] : 0;
+
+        $partner_gramsets = $partner_pos_id > 0 ? Gramset::getList($partner_pos_id, (int) $source->lemma->lang_id) : [];
+
         return [
             'source' => $source,
             'lemma' => $source->lemma,
             'partner' => $partner,
+            'partner_gramsets' => $partner_gramsets,
+            'partner_pos_id' => $partner_pos_id,
             'partner_text' => $partner ? $this->partnerOptionText($partner) : '',
             'meaning_labels' => $source->showShortLabels(),
             'back_to_url' => LaravelLocalization::localizeURL('/dict/lemma/' . $source->lemma_id) . '#meaning-' . $source->id,
