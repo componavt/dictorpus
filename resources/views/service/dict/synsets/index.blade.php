@@ -31,12 +31,12 @@
             @if (empty($url_args['search_pos']))
             <th>{{ trans('dict.pos') }}</th>
             @endif
+            <th>{{ trans('dict.synset_general_meaning') }}</th>
             <th>{{ trans('dict.dominant') }}</th>
             <th>{{ trans('dict.core') }}</th>
             <th>{{ trans('dict.periphery') }}</th>
             <th>{{ trans('collocations.title') }}</th>
             <th>{{ trans('dict.potential_members') }}</th>
-            <th>Русские синонимы</th>
             <th>{{ trans('messages.actions') }}</th>
         </tr>
     </thead>
@@ -47,6 +47,7 @@
             @if (empty($url_args['search_pos']))
             <td data-th="{{ trans('dict.pos') }}">{{ $synset->pos->name_short }}</td>
             @endif
+            <td data-th="{{ trans('dict.synset_general_meaning') }}">{{ $synset->descr }}</td>
             <td data-th="{{ trans('dict.dominant') }}">
                 @if (!empty($synset->dominant))
                 <a href="{{ route('lemma.show', $synset->dominant->lemma_id) }}">{{ $synset->dominant->lemma->lemma }}</a><sup title="{{ $synset->dominant->getMeaningTextLocale() }}">{{ $synset->dominant->meaning_n}}</sup>
@@ -70,7 +71,6 @@
                 <a href="{{ route('lemma.show', $meaning->lemma_id) }}">{{ $meaning->lemma->lemma }}</a><sup title="{{ $meaning->getMeaningTextLocale() }}">{{ $meaning->meaning_n}}</sup>
                 @endforeach
             </td>
-            <td data-th="Русские синонимы">{{ $synset->comment }}</td>
             <td data-th="{{ trans('messages.actions') }}" style="text-align:center; width: 100px;">
                 <a class="set-status status{{ $synset->status }}" id="status-{{ $synset->id }}"
                     onClick="setStatus({{ $synset->id }})"

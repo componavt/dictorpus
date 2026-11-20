@@ -11,7 +11,7 @@
         </ul>
     </div>
 @endif
-<p class="help-block">{{ trans('synset_form.pos_change_hint') }}</p>
+
 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
     @if (!empty($synset) && $action=='edit' && !$restore_members)
     <table style="width: 100%">

@@ -378,6 +378,7 @@ return [
     'status1' => 'проверено',
     'synset_dominant_member' => 'Доминанта должна входить в состав синсета.',
     'synset_etymology' => 'Этимология',
+    'synset_general_meaning' => 'Общее значение',
     'synset_members_invalid' => 'Передан недопустимый состав синсета.',
     'synset_members_language' => 'Все участники синсета должны относиться к выбранному языку.',
     'synset_members_pos' => 'Все участники синсета должны иметь одну часть речи.',

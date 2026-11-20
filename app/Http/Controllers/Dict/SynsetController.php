@@ -72,12 +72,13 @@ class SynsetController extends Controller
     protected function validatedTextFields(Request $request)
     {
         $this->validate($request, [
+            'descr' => 'string',
             'etymology' => 'string|max:60000',
             'potential_candidates' => 'string|max:60000',
         ], [], [
+            'descr' => trans('dict.synset_general_meaning'),
             'etymology' => trans('dict.synset_etymology'),
-            'potential_candidates' =>
-            trans('dict.synset_potential_candidates'),
+            'potential_candidates' => trans('dict.synset_potential_candidates'),
         ]);
 
         $raw = $request->all();
@@ -131,7 +132,13 @@ class SynsetController extends Controller
         $form_state = $this->memberFormState();
 
         return view('dict.synset.modify', array_merge(compact(
-            'action', 'args_by_get', 'default_pos_id', 'lang', 'pos_values', 'syntype_values', 'url_args'
+            'action',
+            'args_by_get',
+            'default_pos_id',
+            'lang',
+            'pos_values',
+            'syntype_values',
+            'url_args'
         ), $form_state));
     }
 

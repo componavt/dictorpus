@@ -373,6 +373,7 @@ return [
     'suggest_template' => 'suggest a template',
 
     'synset_dominant_member' => 'The dominant meaning must be a synset member.',
+    'synset_general_meaning' => 'General meaning',
     'synset_etymology' => 'Etymology',
     'synset_members_invalid' => 'The submitted synset members are invalid.',
     'synset_members_language' => 'All synset members must belong to the selected language.',

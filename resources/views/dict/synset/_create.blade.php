@@ -8,18 +8,7 @@
 
 <input type="hidden" name="lang_id" value="{{ $lang->id }}">
 
-<div class="row" style="margin-bottom: 20px;">
-    <div class="col-sm-6"><b>Язык:</b> {{ $lang->name }}</div>
-    <div class="col-sm-6">
-        @include('widgets.form.formitem._select', [
-            'name' => 'pos_id',
-            'title' => 'часть&nbsp;речи:&nbsp;',
-            'is_flex' => true,
-            'value' => $default_pos_id,
-            'values' => $pos_values,
-        ])
-    </div>
-</div>
+@include('dict.synset._header_fields')
 
 @include('dict.synset._form_create_edit', ['submit_title' => trans('messages.create_new_m'), 'action' => 'create'])
 
