@@ -1,0 +1,14 @@
+.synset-text-field trix-editor {
+    min-height: 140px;
+    background: #fff;
+    overflow-wrap: break-word;
+}
+
+.synset-text-field trix-toolbar [data-trix-button-group="file-tools"] {
+    display: none;
+}
+
+.synset-text-field .trix-content h1 {
+    font-size: 1.25em;
+    line-height: 1.4;
+}

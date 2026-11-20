@@ -44,7 +44,7 @@ function removeMeaningFromList(meaning_id) {
     $("#meanings_" + meaning_id + '__syntype_id_').prop('disabled', true);
     $("#meaning-" + meaning_id).css('text-decoration', 'line-through');
     $("#meaning_td_" + meaning_id).html('<i class="fa fa-plus-circle fa-lg add-to-list" onClick="addMeaningToList(' + meaning_id + ')" title="Добавить в синсет"></i>&nbsp;');
-    $("#dominant-" + meaning_id).hide();
+    $("#dominant-" + meaning_id).prop('checked', false).prop('disabled', true).hide();
 }
 
 
@@ -52,7 +52,7 @@ function addMeaningToList(meaning_id) {
     $("#meanings_" + meaning_id + '__syntype_id_').prop('disabled', false);
     $("#meaning_td_" + meaning_id).html('<i class="fa fa-trash fa-lg remove-from-list" onClick="removeMeaningFromList(' + meaning_id + ')" title="Удалить из синсета"></i>&nbsp;');
     $("#meaning-" + meaning_id).css('text-decoration', 'none');
-    $("#dominant-" + meaning_id).show();
+    $("#dominant-" + meaning_id).prop('disabled', false).show();
 }
 
 function reloadPotentialMembers(synset_id, lang_id) {
@@ -83,10 +83,11 @@ function addMember() {
         },
         success: function (result) {
             $("#new-members").append(result);
-            $("#pos_id").prop('disabled', true);
             $(".select-member").val(null).trigger('change');
         },
-        error: function () {
+        error: function (xhr) {
+            console.error('addMember:', xhr.status, xhr.responseText);
+            window.alert('Не удалось добавить значения. Подробности — в консоли браузера и журнале Laravel.');
         }
     });
 }

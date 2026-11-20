@@ -371,7 +371,15 @@ return [
     'status0' => 'is not checked',
     'status1' => 'is checked',
     'suggest_template' => 'suggest a template',
+
+    'synset_dominant_member' => 'The dominant meaning must be a synset member.',
+    'synset_etymology' => 'Etymology',
+    'synset_members_invalid' => 'The submitted synset members are invalid.',
+    'synset_members_language' => 'All synset members must belong to the selected language.',
+    'synset_members_pos' => 'All synset members must have the same part of speech.',
     'synset_members_required' => 'Add at least one meaning to the synset.',
+    'synset_potential_candidates' => 'Potential candidates',
+    'synset_potential_candidates_hint' => 'Expert notes on possible synset members. This field does not add meanings to the synset.',
     'syntype' => 'type of synonymy',
 
     'tense' => 'Tense',

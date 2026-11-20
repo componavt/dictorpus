@@ -23,7 +23,8 @@
         "phpoffice/phpword": "0.18",
         "spatie/laravel-medialibrary": "4.0.0",
         "box/spout": "3.3",
-        "phpoffice/phpspreadsheet": "1.17"
+        "phpoffice/phpspreadsheet": "1.17",
+        "ezyang/htmlpurifier": "^4.18"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -71,16 +72,7 @@
         "allow-plugins": {
             "kylekatarnls/update-helper": true
         },
-        "audit": {
-            "abandoned": "ignore",
-            "block-insecure": false
-        },
         "preferred-install": "dist"
-    },
-    "policy": {
-        "advisories": {
-            "block": false
-        }
     },
     "repositories": [
         {
