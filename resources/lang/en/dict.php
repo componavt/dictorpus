@@ -159,6 +159,8 @@ return [
     'dialect_in_lemma_form' => 'Dialect for word form autocompletion',
     'dialect_list' => 'Dialect list',
     'dialect_removed' => 'Dialect ":name" is removed successfully.',
+    'dialect_short_ru' => 'Russian abbreviation',
+    'dialect_short' => 'Abbreviation',
     'dialects' => 'Dialects',
     'dialects_usage' => 'dialects of usage',
     'dict_sound' => 'Dictionary sounding',

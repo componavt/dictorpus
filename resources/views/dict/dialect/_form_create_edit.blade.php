@@ -19,6 +19,10 @@
                  'title'=>trans('dict.name').' '.trans('messages.in_russian')])
                  
         @include('widgets.form.formitem._text',
+                ['name' => 'short_ru',
+                 'title' => trans('dict.dialect_short_ru')])
+
+        @include('widgets.form.formitem._text',
                 ['name' => 'code',
                  'title' => trans('dict.code')])         
 

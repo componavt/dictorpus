@@ -10,6 +10,11 @@
 @stop
 
 @section('body')
+        @include('widgets.modal',
+                ['name' => 'modalHelp',
+                 'title' => trans('navigation.help'),
+                 'modal_view' => 'help.dialect._search'])
+
         <p style="text-align: right">
         @if (User::checkAccess('ref.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/dialect/create') }}{{$args_by_get}}">
@@ -32,6 +37,7 @@
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
+                <th>{{ trans('dict.dialect_short') }}</th>
                 <th>{{ trans('dict.code') }}</th>
                 <th>{{ trans('dict.wordforms') }}</th>                
                 <th>{{ trans('navigation.texts') }}</th>                
@@ -47,6 +53,7 @@
                 <td data-th="{{ trans('dict.lang') }}">{{$dialect->lang->name}}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$dialect->name_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$dialect->name_ru}}</td>
+                <td data-th="{{ trans('dict.dialect_short') }}">{{$dialect->short_ru}}</td>
                 <td data-th="{{ trans('dict.code') }}">{{$dialect->code}}</td>
                 <td data-th="{{ trans('dict.wordforms') }}" id="wordform-total-{{$dialect->id}}" style="text-align: right"></td>
                 <td data-th="{{ trans('navigation.texts') }}" id="text-total-{{$dialect->id}}" style="text-align: right"></td>
@@ -69,6 +76,7 @@
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/search.js')!!}
+    {!! Html::script('js/help.js') !!}
 @stop
 
 @section('jqueryFunc')

@@ -12,7 +12,7 @@ use App\Models\Corpus\Word;
 class Dialect extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['lang_id', 'name_en', 'name_ru', 'code', 'sequence_number'];
+    protected $fillable = ['lang_id', 'name_en', 'name_ru', 'short_ru', 'code', 'sequence_number'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -28,6 +28,15 @@ class Dialect extends Model
 
     // Methods
     use \App\Traits\Methods\getNameAttribute;
+
+    public function getShortAttribute()
+    {
+        if (LaravelLocalization::getCurrentLocale() === 'ru' && $this->short_ru) {
+            return $this->short_ru;
+        }
+
+        return $this->code;
+    }
 
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lang;
@@ -152,6 +161,7 @@ class Dialect extends Model
     {
         $url_args = Str::urlArgs($request) + [
             'search_lang'     => (int)$request->input('search_lang'),
+            'search_name' => trim((string)$request->input('search_name', '')),
         ];
 
         return $url_args;
@@ -161,6 +171,15 @@ class Dialect extends Model
     {
         $builder = self::orderBy('lang_id')->orderBy('sequence_number')->orderBy('id');
         $builder = self::searchByLang($builder, $url_args['search_lang']);
+
+        $name = trim($url_args['search_name'] ?? '');
+        if ($name !== '') {
+            $builder->where(function ($query) use ($name) {
+                $query->where('name_ru', 'like', $name)
+                    ->orWhere('name_en', 'like', $name);
+            });
+        }
+
         return $builder;
     }
 

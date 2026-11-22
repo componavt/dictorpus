@@ -167,6 +167,8 @@ return [
     'dialect_can_not_be_removed' => 'Диалект нельзя удалять, есть связанные с ним словоформы или тексты',
     'dialect_list' => 'Список диалектов',
     'dialect_removed' => 'Диалект ":name" удален.',
+    'dialect_short_ru' => 'Сокращение на русском',
+    'dialect_short' => 'Сокращение',
     'dialect_wrong' => 'Неправильно выбран диалект',
     'dialects' => 'Диалекты',
     'dialects_usage' => 'диалекты употребления',

@@ -73,15 +73,25 @@ class DialectController extends Controller
 
     public function validateRequest(Request $request, $code_rule = '')
     {
-        $this->validate($request, [
-            'name_en'  => 'required|max:255',
-            'name_ru'  => 'required|max:255',
+        $rules = [
+            'name_en' => 'required|max:255',
+            'name_ru' => 'required|max:255',
             'code' => 'required|max:20|unique:dialects' . $code_rule
-        ]);
+        ];
+
+        if ($request->input('short_ru') !== null) {
+            $rules['short_ru'] = 'string|max:20';
+        }
+
+        $this->validate($request, $rules);
 
         $data = $request->all();
+        $short_ru = trim((string) $request->input('short_ru', ''));
+        $data['short_ru'] = $short_ru === '' ? null : $short_ru;
+
         return $data;
     }
+
     /**
      * Store a newly created resource in storage.
      *
