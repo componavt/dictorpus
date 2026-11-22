@@ -44,7 +44,11 @@ return [
     'list_open_synset' => 'Открыть сводку синсета',
 
     'matrix_add_hint' => 'Добавить сочетание :source + :partner',
+    'matrix_attached_count' => 'Прикреплено: :count',
+    'matrix_attached_none' => 'Нет прикреплённых',
     'matrix_cell_hint' => ':source + :partner — :gloss',
+    'matrix_corpus_unknown' => 'Подкорпус не указан',
+    'matrix_dialect_unknown' => 'диалект не указан',
     'matrix_empty' => 'Для сравнения ещё не внесены сочетаемости.',
     'matrix_examples' => 'Примеры',
     'matrix_examples_hint' => 'Найти примеры сочетания :source + :partner',

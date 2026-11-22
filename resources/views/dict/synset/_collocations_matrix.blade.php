@@ -205,12 +205,32 @@ foreach ($core_members as $core_member) {
                     @endif
                 @endif
                 @if ($has_examples)
-                <a  href="{{ $examples_url }}" class="synset-collocation-examples"
-                    title="{{ $examples_hint }}" aria-label="{{ $examples_hint }}">
+                    <a href="{{ $examples_url }}" class="synset-collocation-examples"
+                       title="{{ $examples_hint }}" aria-label="{{ $examples_hint }}">
                         {{ trans('collocations.matrix_examples') }}
                     </a>
-                </td>
                 @endif
+
+                @if ($collocation)
+                    <?php
+                    $attached = $collocation_matrix['attached_examples'][$collocation->id] ?? null;
+                    ?>
+
+                    <div class="small">
+                    @if ($attached)
+                        <div>{{ trans('collocations.matrix_attached_count', ['count' => $attached['total']]) }}</div>
+
+                        @foreach ($attached['groups'] as $example_group)
+                        <div title="{{ $example_group['title'] }}">
+                            {{ $example_group['label'] }} — {{ $example_group['total'] }}
+                        </div>
+                        @endforeach
+                    @else
+                        <span class="text-muted">{{ trans('collocations.matrix_attached_none') }}</span>
+                    @endif
+                    </div>
+                @endif
+                </td>
             @endforeach
             </tr>
         @endforeach

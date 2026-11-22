@@ -44,7 +44,11 @@ return [
     'list_open_synset' => 'Open the synset summary',
 
     'matrix_add_hint' => 'Add the collocation :source + :partner',
+    'matrix_attached_count' => 'Attached: :count',
+    'matrix_attached_none' => 'No attached examples',
     'matrix_cell_hint' => ':source + :partner — :gloss',
+    'matrix_corpus_unknown' => 'Subcorpus not specified',
+    'matrix_dialect_unknown' => 'dialect not specified',
     'matrix_empty' => 'No collocations have been recorded for comparison yet.',
     'matrix_examples' => 'Examples',
     'matrix_examples_hint' => 'Find usage examples for :source + :partner',

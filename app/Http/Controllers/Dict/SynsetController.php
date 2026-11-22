@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Library\CollocationExampleSummary;
 use App\Library\MeaningCollocationCandidateData;
 use App\Library\MeaningExampleAvailability;
 use App\Library\SynsetCollocationCandidateData;
@@ -187,6 +188,7 @@ class SynsetController extends Controller
         $collocation_matrix = $synset->collocationsMatrix($collocation_members);
 
         $collocation_matrix['example_pairs'] = (new MeaningExampleAvailability())->forMatrix($collocation_matrix);
+        $collocation_matrix['attached_examples'] = (new CollocationExampleSummary())->forMatrix($collocation_matrix);
 
         $potential_members = $synset->searchPotentialMembers();
 
