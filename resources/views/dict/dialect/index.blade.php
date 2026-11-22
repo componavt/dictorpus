@@ -35,9 +35,8 @@
             <tr>
                 <th>{{ trans('messages.sequence_number') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
+                <th colspan="2">{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
-                <th>{{ trans('messages.in_russian') }}</th>
-                <th>{{ trans('dict.dialect_short') }}</th>
                 <th>{{ trans('dict.code') }}</th>
                 <th>{{ trans('dict.wordforms') }}</th>                
                 <th>{{ trans('navigation.texts') }}</th>                
@@ -51,9 +50,9 @@
             <tr>
                 <td data-th="{{ trans('messages.sequence_number') }}">{{$dialect->sequence_number}}</td>
                 <td data-th="{{ trans('dict.lang') }}">{{$dialect->lang->name}}</td>
-                <td data-th="{{ trans('messages.in_english') }}">{{$dialect->name_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$dialect->name_ru}}</td>
                 <td data-th="{{ trans('dict.dialect_short') }}">{{$dialect->short_ru}}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$dialect->name_en}}</td>
                 <td data-th="{{ trans('dict.code') }}">{{$dialect->code}}</td>
                 <td data-th="{{ trans('dict.wordforms') }}" id="wordform-total-{{$dialect->id}}" style="text-align: right"></td>
                 <td data-th="{{ trans('navigation.texts') }}" id="text-total-{{$dialect->id}}" style="text-align: right"></td>
