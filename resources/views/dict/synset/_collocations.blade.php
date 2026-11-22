@@ -57,6 +57,7 @@
             </div>
 
             @include('dict.collocation._groups', ['collocation_groups' => $collocation_groups])
+            @include('dict.synset._member_collocation_note')
         </div>
         @endforeach
         @endif

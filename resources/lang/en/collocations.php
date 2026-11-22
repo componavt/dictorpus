@@ -60,6 +60,8 @@ return [
     'meaning' => 'Meaning :num',
     'meaning_in_use' => 'This meaning is used in collocations. Delete the related collocations first.',
 
+    'member_note' => 'Additional collocation information',
+    'member_note_hint' => 'An optional note about this member within this synset only. Give brief source references in square brackets. Use the synset Save button to save changes.',
     'members_all' => 'Select all',
     'members_empty' => 'Select at least one member to compare.',
     'members_hint' => 'The selection affects only the comparison and does not change synset membership.',

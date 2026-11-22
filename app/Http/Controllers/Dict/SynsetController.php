@@ -421,6 +421,8 @@ class SynsetController extends Controller
             'meanings' => 'array|max:500',
             'meanings.*' => 'array',
             'meanings.*.syntype_id' => 'required|integer|exists:syntypes,id',
+            'member_notes' => 'array|max:500',
+            'member_notes.*' => 'string|max:10000',
             'new_members' => 'array|max:500',
             'new_members.*' => 'required|integer|min:1|exists:meanings,id',
             'dominant_id' => 'integer|min:1',
@@ -493,6 +495,15 @@ class SynsetController extends Controller
         if ($validator->errors()->count()) {
             $this->throwValidationException($request, $validator);
         }
+
+        $notes = $request->input('member_notes', []);
+
+        foreach ($members as $id => &$attributes) {
+            if (array_key_exists($id, $notes)) {
+                $attributes['collocation_note'] = SynsetTextFields::clean($notes[$id]);
+            }
+        }
+        unset($attributes);
 
         return $members;
     }

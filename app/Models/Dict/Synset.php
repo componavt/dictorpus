@@ -39,14 +39,14 @@ class Synset extends Model
     public function meanings()
     {
         return $this->belongsToMany(Meaning::class)
-            ->withPivot('syntype_id');
+            ->withPivot('syntype_id', 'collocation_note');
     }
 
     public function core()
     {
         return $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
             ->wherePivot('syntype_id', Syntype::TYPE_FULL)
-            ->withPivot('syntype_id')
+            ->withPivot('syntype_id', 'collocation_note')
             ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
             ->orderBy('lemmas.lemma')
             ->select('meanings.*', 'meaning_synset.syntype_id');
@@ -78,7 +78,7 @@ class Synset extends Model
     {
         $builder = $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
             ->wherePivot('syntype_id', Syntype::TYPE_FULL)
-            ->withPivot('syntype_id')
+            ->withPivot('syntype_id', 'collocation_note')
             ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
             ->orderBy('lemmas.lemma')
             ->select('meanings.*', 'meaning_synset.syntype_id');
@@ -90,12 +90,9 @@ class Synset extends Model
 
     public function periphery()
     {
-        /*        return $this->belongsToMany(Meaning::class)
-                ->where('syntype_id', '<>', Syntype::TYPE_FULL)
-                ->withPivot('syntype_id');*/
         return $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
             ->wherePivot('syntype_id', '<>', Syntype::TYPE_FULL)
-            ->withPivot('syntype_id')
+            ->withPivot('syntype_id', 'collocation_note')
             ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
             ->orderBy('lemmas.lemma')
             ->select('meanings.*', 'meaning_synset.syntype_id');

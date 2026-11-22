@@ -1,5 +1,12 @@
+.synset-text-field {
+    margin-top: 10px;
+}
+
 .synset-text-field trix-editor {
-    min-height: 140px;
+    min-height: calc(1.5em + 12px);
+    height: auto;
+    padding: 6px 8px;
+    line-height: 1.5;
     background: #fff;
     overflow-wrap: break-word;
 }
