@@ -16,7 +16,7 @@
             <a href="{{ LaravelLocalization::localizeURL('/corpus/corpus/create') }}">
         @endif
             {{ trans('messages.create_new_m') }}
-        @if (User::checkAccess('corpus.edit'))
+        @if (User::checkAccess('ref.edit'))
             </a>
         @endif
         </p>
@@ -50,10 +50,10 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>{{ trans('messages.in_english') }}</th>
-                <th>{{ trans('messages.in_russian') }}</th>
+                <th colspan="2">{{ trans('messages.in_english') }}</th>
+                <th colspan="2">{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('navigation.texts') }}</th>
-                @if (User::checkAccess('corpus.edit'))
+                @if (User::checkAccess('ref.edit'))
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
@@ -63,13 +63,15 @@
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$corpus->name_en}}</td>
+                <td data-th="{{ trans('corpus.short_en') }}">{{$corpus->short_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$corpus->name_ru}}</td>
+                <td data-th="{{ trans('corpus.short_ru') }}">{{$corpus->short_ru}}</td>
                 <td data-th="{{ trans('navigation.texts') }}">
                     @if($corpus->texts)
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}?search_corpus[]={{$corpus->id}}">{{ $corpus->texts()->count() }}</a>
                     @endif
                 </td>
-                @if (User::checkAccess('corpus.edit'))
+                @if (User::checkAccess('ref.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form.button._edit', 
                              ['is_button'=>true, 

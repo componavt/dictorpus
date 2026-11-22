@@ -12,7 +12,7 @@ use App\Models\Corpus\Text;
 class Corpus extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['name_en', 'name_ru'];
+    protected $fillable = ['name_en', 'name_ru', 'short_ru', 'short_en'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -33,6 +33,15 @@ class Corpus extends Model
 
     // Methods
     use \App\Traits\Methods\getNameAttribute;
+
+    public function getShortAttribute()
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $short = $locale === 'ru' ? $this->short_ru
+            : ($locale === 'en' ? $this->short_en : null);
+
+        return $short ?: $this->name;
+    }
 
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Genres;

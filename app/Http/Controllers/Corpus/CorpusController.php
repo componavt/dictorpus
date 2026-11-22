@@ -75,6 +75,30 @@ class CorpusController extends Controller
         return view('corpus.corpus.create');
     }
 
+    public function validateRequest(Request $request)
+    {
+        $rules = [
+            'name_en' => 'max:255',
+            'name_ru' => 'required|max:255',
+        ];
+
+        foreach (['short_ru', 'short_en'] as $field) {
+            if ($request->input($field) !== null) {
+                $rules[$field] = 'string|max:20';
+            }
+        }
+
+        $this->validate($request, $rules);
+
+        $data = $request->all();
+        foreach (['short_ru', 'short_en'] as $field) {
+            $value = trim((string)$request->input($field, ''));
+            $data[$field] = $value === '' ? null : $value;
+        }
+
+        return $data;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -83,12 +107,7 @@ class CorpusController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name_en'  => 'max:255',
-            'name_ru'  => 'required|max:255',
-        ]);
-
-        $corpus = Corpus::create($request->all());
+        Corpus::create($this->validateRequest($request));
 
         return Redirect::to('/corpus/corpus/')
             ->withSuccess(trans('messages.created_success'));
@@ -128,13 +147,9 @@ class CorpusController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name_en'  => 'max:255',
-            'name_ru'  => 'required|max:255',
-        ]);
-
+        $data = $this->validateRequest($request);
         $corpus = Corpus::find($id);
-        $corpus->fill($request->all())->save();
+        $corpus->fill($data)->save();
 
         return Redirect::to('/corpus/corpus/')
             ->withSuccess(trans('messages.updated_success'));

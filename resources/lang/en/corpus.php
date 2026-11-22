@@ -185,6 +185,8 @@ return [
     'sections' => 'Sections',
     'select_corpus' => 'Select corpus',
     'sentences' => 'Sentences',
+    'short_en' => 'English abbreviation',
+    'short_ru' => 'Russian abbreviation',
     'show_gram_markup' => 'Show grammatic markup',
     'show_meaning_markup' => 'Show semantic markup',
 
