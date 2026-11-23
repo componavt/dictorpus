@@ -391,9 +391,11 @@ class SynsetController extends Controller
         unset($group);
 
         $back_url = LaravelLocalization::localizeURL('/dict/synset/' . $synset->id . '/edit') . $this->args_by_get;
+        $args_by_get = $this->args_by_get;
 
         return view('dict.synset.candidates', compact(
             'all_members',
+            'args_by_get',
             'back_url',
             'base_url',
             'candidate_groups',

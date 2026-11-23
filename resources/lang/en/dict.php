@@ -374,6 +374,7 @@ return [
     'status1' => 'is checked',
     'suggest_template' => 'suggest a template',
 
+    'synset_dictionary' => 'Synonym dictionary',
     'synset_dominant_member' => 'The dominant meaning must be a synset member.',
     'synset_general_meaning' => 'General meaning',
     'synset_etymology' => 'Etymology',
@@ -385,6 +386,9 @@ return [
     'synset_potential_candidates_hint' => 'Expert notes on possible synset members. This field does not add meanings to the synset.',
     'synset_removed' => 'Synset №:num is removed',
     'synset_ru_synonyms' => 'Russian synonyms',
+    'synset_tab_collocations' => 'Collocations',
+    'synset_tab_edit' => 'Editor',
+    'synset_tab_examples' => 'Examples',
     'syntype' => 'type of synonymy',
 
     'tense' => 'Tense',

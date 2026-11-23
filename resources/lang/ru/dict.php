@@ -378,6 +378,7 @@ return [
     'status' => 'статус',
     'status0' => 'не проверено',
     'status1' => 'проверено',
+    'synset_dictionary' => 'Словарь синонимов',
     'synset_dominant_member' => 'Доминанта должна входить в состав синсета.',
     'synset_etymology' => 'Этимология',
     'synset_general_meaning' => 'Общее значение',
@@ -389,6 +390,9 @@ return [
     'synset_potential_candidates_hint' => 'Экспертные заметки о возможных участниках ряда. Заполнение этого поля не добавляет значения в синсет.',
     'synset_removed' => 'Синсет №:num удален',
     'synset_ru_synonyms' => 'Русские синонимы',
+    'synset_tab_collocations' => 'Сочетаемость',
+    'synset_tab_edit' => 'Редактор',
+    'synset_tab_examples' => 'Примеры',
     'syntype' => 'тип синонимии',
     'suggest_template' => 'Предложить шаблон',
 
