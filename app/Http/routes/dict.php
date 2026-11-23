@@ -104,6 +104,7 @@ Route::group(
         Route::delete('meaning/{meaning_id}/collocations/{collocation_id}', 'Dict\CollocationController@destroy');
         Route::get('meaning/{meaning_id}/collocations', 'Dict\CollocationController@index');
         Route::post('meaning/{meaning_id}/collocations', 'Dict\CollocationController@store');
+        Route::get('meaning/{meaning_id}/collocations/{collocation_id}/examples', 'Dict\CollocationExampleController@index')->where('meaning_id', '[0-9]+')->where('collocation_id', '[0-9]+');
 
         Route::get('meaning/{meaning_id}/examples/actions/{text_id}_{w_id}', 'Library\MeaningExampleController@attachmentActions')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/examples/candidates', 'Library\MeaningCollocationCandidateController@index')->where('meaning_id', '[0-9]+');

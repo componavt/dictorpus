@@ -60,46 +60,8 @@ class CollocationExampleSummary
             $result[$id]['total'] += $total;
             $text = $texts->get((int)$row->text_id);
 
-            if (!$text || $text->corpuses->isEmpty()) {
-                $this->addGroup(
-                    $result[$id]['groups'],
-                    'unknown',
-                    trans('collocations.matrix_corpus_unknown'),
-                    trans('collocations.matrix_corpus_unknown'),
-                    $total
-                );
-                continue;
-            }
-
-            foreach ($text->corpuses->sortBy('id') as $corpus) {
-                $key = 'corpus-' . $corpus->id;
-                $label = $corpus->short;
-                $title = $corpus->name;
-
-                if ((int)$corpus->id === 1) {
-                    $dialect_ids = [];
-                    $dialect_shorts = [];
-                    $dialect_names = [];
-
-                    foreach ($text->dialects->sortBy('id') as $dialect) {
-                        $dialect_ids[] = (int)$dialect->id;
-                        $dialect_shorts[] = $dialect->short;
-                        $dialect_names[] = $dialect->name;
-                    }
-
-                    $key .= ':' . implode(',', $dialect_ids);
-
-                    if ($dialect_ids) {
-                        $label .= ' (' . implode(', ', $dialect_shorts) . ')';
-                        $title .= ' (' . implode(', ', $dialect_names) . ')';
-                    } else {
-                        $unknown = trans('collocations.matrix_dialect_unknown');
-                        $label .= ' (' . $unknown . ')';
-                        $title .= ' (' . $unknown . ')';
-                    }
-                }
-
-                $this->addGroup($result[$id]['groups'], $key, $label, $title, $total);
+            foreach ($this->corpusGroups($text) as $group) {
+                $this->addGroup($result[$id]['groups'], $group['key'], $group['label'], $group['title'], $total);
             }
         }
 
@@ -110,6 +72,42 @@ class CollocationExampleSummary
         unset($summary);
 
         return $result;
+    }
+
+    public function corpusGroups($text)
+    {
+        $unknown = trans('collocations.matrix_corpus_unknown');
+
+        if (!$text || $text->corpuses->isEmpty()) {
+            return [['key' => 'unknown', 'label' => $unknown, 'title' => $unknown]];
+        }
+
+        $groups = [];
+
+        foreach ($text->corpuses->sortBy('id') as $corpus) {
+            $key = 'corpus-' . $corpus->id;
+            $label = $corpus->short;
+            $title = $corpus->name;
+
+            if ((int)$corpus->id === 1) {
+                $ids = $shorts = $names = [];
+
+                foreach ($text->dialects->sortBy('id') as $dialect) {
+                    $ids[] = (int)$dialect->id;
+                    $shorts[] = $dialect->short;
+                    $names[] = $dialect->name;
+                }
+
+                $unknown_dialect = trans('collocations.matrix_dialect_unknown');
+                $key .= ':' . implode(',', $ids);
+                $label .= ' (' . ($ids ? implode(', ', $shorts) : $unknown_dialect) . ')';
+                $title .= ' (' . ($ids ? implode(', ', $names) : $unknown_dialect) . ')';
+            }
+
+            $groups[] = ['key' => $key, 'label' => $label, 'title' => $title];
+        }
+
+        return $groups;
     }
 
     protected function addGroup(array &$groups, $key, $label, $title, $total)

@@ -10,10 +10,10 @@
 
     <div class="synset-collocations-member-options">
         @foreach ($collocation_matrix['columns'] as $member)
-            <label for="compare-member-{{ $member->id }}">
-                <input type="checkbox" id="compare-member-{{ $member->id }}" class="synset-collocation-member-checkbox" value="{{ $member->id }}" checked>
-                {{ $member->lemma->lemma }}<sup>{{ $member->meaning_n }}</sup>
-            </label>
+        <label for="compare-member-{{ $member->id }}">
+            <input type="checkbox" id="compare-member-{{ $member->id }}" class="synset-collocation-member-checkbox" value="{{ $member->id }}" checked>
+            {{ $member->lemma->lemma }}<sup>{{ $member->meaning_n }}</sup>
+        </label>
         @endforeach
     </div>
 
@@ -57,13 +57,13 @@
 </p>
 
 <div class="synset-collocations-matrix-scroll">
-<?php
-$core_member_ids = [];
+    <?php
+    $core_member_ids = [];
 
-foreach ($core_members as $core_member) {
-    $core_member_ids[$core_member->id] = true;
-}
-?>
+    foreach ($core_members as $core_member) {
+        $core_member_ids[$core_member->id] = true;
+    }
+    ?>
     <table class="table table-bordered synset-collocations-matrix">
         <thead>
             <tr>
@@ -71,24 +71,24 @@ foreach ($core_members as $core_member) {
                     {{ trans('collocations.partner') }}
                 </th>
 
-    @if ($core_members->count())
+                @if ($core_members->count())
                 <th colspan="{{ $core_members->count() }}" class="text-center" data-member-section="core">
                     {{ trans('dict.core') }}
                 </th>
-    @endif
+                @endif
 
-    @if ($periphery_members->count())
+                @if ($periphery_members->count())
                 <th colspan="{{ $periphery_members->count() }}" class="text-center" data-member-section="periphery">
                     {{ trans('dict.periphery') }}
                 </th>
-    @endif
+                @endif
             </tr>
 
             <tr>
-    @foreach ($collocation_matrix['columns'] as $member)
-        <?php
-        $member_url = LaravelLocalization::localizeURL('/dict/lemma/'.$member->lemma_id).'#meaning-'.$member->id;
-        ?>
+                @foreach ($collocation_matrix['columns'] as $member)
+                <?php
+                $member_url = LaravelLocalization::localizeURL('/dict/lemma/' . $member->lemma_id) . '#meaning-' . $member->id;
+                ?>
                 <th scope="col" class="synset-collocation-column" data-member-id="{{ $member->id }}" data-member-group="{{ isset($core_member_ids[$member->id]) ? 'core' : 'periphery' }}">
                     <span class="synset-collocation-name">
                         <a href="{{ $member_url }}" target="_blank" rel="noopener"
@@ -96,16 +96,16 @@ foreach ($core_members as $core_member) {
                             ]) }}">{{ $member->lemma->lemma }}</a><sup>{{ $member->meaning_n }}</sup>
                     </span>
 
-        @if ((int) $synset->dominant_id === (int) $member->id)
-                        <small class="synset-collocation-dominant">{{ trans('dict.dominant') }}</small>
-        @endif
+                    @if ((int) $synset->dominant_id === (int) $member->id)
+                    <small class="synset-collocation-dominant">{{ trans('dict.dominant') }}</small>
+                    @endif
                 </th>
-    @endforeach
+                @endforeach
             </tr>
         </thead>
 
         <tbody>
-    @foreach ($collocation_matrix['groups'] as $group_index => $group)
+            @foreach ($collocation_matrix['groups'] as $group_index => $group)
             <tr class="synset-collocation-category-row" data-category-key="{{ $group_index }}">
                 <th colspan="{{ $collocation_matrix['columns']->count() + 1 }}">
                     <em>{{ $group['category'] ? $group['category']->name
@@ -113,10 +113,10 @@ foreach ($core_members as $core_member) {
                 </th>
             </tr>
 
-        @foreach ($group['rows'] as $row)
+            @foreach ($group['rows'] as $row)
             <?php
             $partner_meaning = $row['meaning'];
-            $partner_url = LaravelLocalization::localizeURL('/dict/lemma/'.$partner_meaning->lemma_id).'#meaning-'.$partner_meaning->id;
+            $partner_url = LaravelLocalization::localizeURL('/dict/lemma/' . $partner_meaning->lemma_id) . '#meaning-' . $partner_meaning->id;
             ?>
 
             <tr class="synset-collocation-data-row" data-category-key="{{ $group_index }}">
@@ -129,18 +129,15 @@ foreach ($core_members as $core_member) {
                     </span>
                 </th>
 
-            @foreach ($collocation_matrix['columns'] as $member)
+                @foreach ($collocation_matrix['columns'] as $member)
                 <?php
                 $collocation = $row['cells'][$member->id] ?? null;
 
-                $has_examples = !empty($collocation_matrix['example_pairs']
-                        [$member->id]
-                        [$partner_meaning->id]
-                );
+                $has_examples = !empty($collocation_matrix['example_pairs'][$member->id][$partner_meaning->id]);
 
                 $examples_url = LaravelLocalization::localizeURL(
-                    '/dict/meaning/'.$member->id.'/examples/search'
-                ).'?'.http_build_query([
+                    '/dict/meaning/' . $member->id . '/examples/search'
+                ) . '?' . http_build_query([
                     'distance_from' => -1,
                     'distance_to' => 1,
                     'only_checked' => 0,
@@ -151,22 +148,25 @@ foreach ($core_members as $core_member) {
                 ]);
 
                 $examples_hint = trans('collocations.matrix_examples_hint', [
-                    'source' => $member->lemma->lemma .' ('.$member->meaning_n.')',
-                    'partner' => $partner_meaning->lemma->lemma .' ('.$partner_meaning->meaning_n.')',
+                    'source' => $member->lemma->lemma . ' (' . $member->meaning_n . ')',
+                    'partner' => $partner_meaning->lemma->lemma . ' (' . $partner_meaning->meaning_n . ')',
                 ]);
                 ?>
 
                 <td class="synset-collocation-cell" data-member-id="{{ $member->id }}" data-recorded="{{ $collocation ? '1' : '0' }}">
-                @if ($collocation)
+                    @if ($collocation)
                     <?php
-                    $cell_hint = trans('collocations.matrix_cell_hint',
-                        ['source' => $member->lemma->lemma .' ('.$member->meaning_n.')',
-                        'partner' => $partner_meaning->lemma->lemma .' ('.$partner_meaning->meaning_n.')',
-                        'gloss' => $collocation->display_gloss !== '' ? $collocation->display_gloss : trans('collocations.matrix_recorded')]
+                    $cell_hint = trans(
+                        'collocations.matrix_cell_hint',
+                        [
+                            'source' => $member->lemma->lemma . ' (' . $member->meaning_n . ')',
+                            'partner' => $partner_meaning->lemma->lemma . ' (' . $partner_meaning->meaning_n . ')',
+                            'gloss' => $collocation->display_gloss !== '' ? $collocation->display_gloss : trans('collocations.matrix_recorded')
+                        ]
                     );
 
-                    $editor_url = LaravelLocalization::localizeURL('/dict/meaning/'.$member->id.'/collocations')
-                            .'?'.http_build_query(['edit' => $collocation->id, 'synset_id' => $synset->id]);
+                    $editor_url = LaravelLocalization::localizeURL('/dict/meaning/' . $member->id . '/collocations')
+                        . '?' . http_build_query(['edit' => $collocation->id, 'synset_id' => $synset->id]);
                     ?>
 
                     @if (User::checkAccess('dict.edit'))
@@ -182,20 +182,20 @@ foreach ($core_members as $core_member) {
                         </span>
                     </span>
                     @endif
-                @else
+                    @else
                     @if (User::checkAccess('dict.edit'))
-                        <?php
-                        $add_url = LaravelLocalization::localizeURL('/dict/meaning/'.$member->id.'/collocations').'?'.http_build_query([
-                            'category_id' => $group['category'] ? $group['category']->id : '',
-                            'partner_id' => $partner_meaning->id,
-                            'synset_id' => $synset->id,
-                        ]);
+                    <?php
+                    $add_url = LaravelLocalization::localizeURL('/dict/meaning/' . $member->id . '/collocations') . '?' . http_build_query([
+                        'category_id' => $group['category'] ? $group['category']->id : '',
+                        'partner_id' => $partner_meaning->id,
+                        'synset_id' => $synset->id,
+                    ]);
 
-                        $add_hint = trans('collocations.matrix_add_hint', [
-                            'source' => $member->lemma->lemma .' ('.$member->meaning_n.')',
-                            'partner' => $partner_meaning->lemma->lemma .' ('.$partner_meaning->meaning_n.')',
-                        ]);
-                        ?>
+                    $add_hint = trans('collocations.matrix_add_hint', [
+                        'source' => $member->lemma->lemma . ' (' . $member->meaning_n . ')',
+                        'partner' => $partner_meaning->lemma->lemma . ' (' . $partner_meaning->meaning_n . ')',
+                    ]);
+                    ?>
 
                     <a href="{{ $add_url }}" class="synset-collocation-add" title="{{ $add_hint }}" aria-label="{{ $add_hint }}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
@@ -203,38 +203,42 @@ foreach ($core_members as $core_member) {
                     @else
                     <span class="sr-only">{{ trans('collocations.matrix_not_recorded') }}</span>
                     @endif
-                @endif
-                @if ($has_examples)
+                    @endif
+                    @if ($has_examples)
                     <a href="{{ $examples_url }}" class="synset-collocation-examples"
-                       title="{{ $examples_hint }}" aria-label="{{ $examples_hint }}">
+                        title="{{ $examples_hint }}" aria-label="{{ $examples_hint }}">
                         {{ trans('collocations.matrix_examples') }}
                     </a>
-                @endif
+                    @endif
 
-                @if ($collocation)
+                    @if ($collocation)
                     <?php
                     $attached = $collocation_matrix['attached_examples'][$collocation->id] ?? null;
                     ?>
 
                     <div class="small">
-                    @if ($attached)
-                        <div>{{ trans('collocations.matrix_attached_count', ['count' => $attached['total']]) }}</div>
+                        @if ($attached)
+                        <?php
+                        $attached_url = LaravelLocalization::localizeURL('/dict/meaning/' . $member->id . '/collocations/' . $collocation->id . '/examples')
+                            . '?' . http_build_query(['synset_id' => $synset->id]);
+                        ?>
+                        <div><a href="{{ $attached_url }}" target="_blank" rel="noopener">{{ trans('collocations.matrix_attached_count', ['count' => $attached['total']]) }}</a></div>
 
                         @foreach ($attached['groups'] as $example_group)
                         <div title="{{ $example_group['title'] }}">
                             {{ $example_group['label'] }} — {{ $example_group['total'] }}
                         </div>
                         @endforeach
-                    @else
+                        @else
                         <span class="text-muted">{{ trans('collocations.matrix_attached_none') }}</span>
-                    @endif
+                        @endif
                     </div>
-                @endif
+                    @endif
                 </td>
-            @endforeach
+                @endforeach
             </tr>
-        @endforeach
-    @endforeach
+            @endforeach
+            @endforeach
         </tbody>
     </table>
 </div>
