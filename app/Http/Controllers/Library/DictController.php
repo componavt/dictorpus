@@ -41,10 +41,12 @@ class DictController extends Controller
 
         $this->url_args = Str::urlArgs($request) +
             [
+                'search_comment'  => trim((string)$request->input('search_comment')),
+                'search_descr'    => trim((string)$request->input('search_descr')),
+                'search_lang'     => (int)$request->input('search_lang'),
+                'search_lemma'    => trim((string)$request->input('search_lemma')),
                 'search_pos'      => (int)$request->input('search_pos'),
                 'search_status'   => (int)$request->input('search_status'),
-                'search_lang'   => (int)$request->input('search_lang'),
-                'search_lemma'    => $request->input('search_lemma'),
             ];
 
         $this->args_by_get = search_values_by_URL($this->url_args);
@@ -786,6 +788,24 @@ class DictController extends Controller
 
         if (!empty($url_args['search_status'])) {
             $synsets->whereStatus($url_args['search_status'] == 1 ? 1 : 0);
+        }
+
+        if ($url_args['search_lemma']) {
+            $synsets->whereIn('id', function ($q) use ($url_args) {
+                $q->select('synset_id')->from('meaning_synset')->whereIn('meaning_id', function ($q2) use ($url_args) {
+                    $q2->select('id')->from('meanings')->whereIn('lemma_id', function ($q3) use ($url_args) {
+                        $q3->select('id')->from('lemmas')->where(function ($q4) use ($url_args) {
+                            Lemma::searchLemmas($q4, $url_args['search_lemma']);
+                        });
+                    });
+                });
+            });
+        }
+
+        foreach (['comment', 'descr'] as $field) {
+            if ($url_args['search_' . $field] !== '') {
+                $synsets->where($field, 'like', $url_args['search_' . $field]);
+            }
         }
 
         $numAll = $synsets->count();

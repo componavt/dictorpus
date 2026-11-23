@@ -383,6 +383,8 @@ return [
     'synset_members_required' => 'Add at least one meaning to the synset.',
     'synset_potential_candidates' => 'Potential candidates',
     'synset_potential_candidates_hint' => 'Expert notes on possible synset members. This field does not add meanings to the synset.',
+    'synset_removed' => 'Synset №:num is removed',
+    'synset_ru_synonyms' => 'Russian synonyms',
     'syntype' => 'type of synonymy',
 
     'tense' => 'Tense',

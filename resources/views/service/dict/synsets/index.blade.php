@@ -12,6 +12,7 @@
 @stop
 
 @section('body')
+@include('widgets.modal', ['name' => 'modalHelp', 'title' => trans('navigation.help'), 'modal_view' => 'help.synset._search'])
 <p>
     @if (!empty($new_set_founded))
     <a href="{{ route('dict.synsets.find_new', $url_args) }}">Проверить найденные синсеты</a> |
@@ -103,6 +104,7 @@
 {!!Html::script('js/list_change.js')!!}
 {!!Html::script('js/synset.js')!!}
 {!!Html::script('js/rec-delete-link.js')!!}
+{!!Html::script('js/help.js')!!}
 @stop
 
 @section('jqueryFunc')

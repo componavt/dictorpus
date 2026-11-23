@@ -388,6 +388,7 @@ return [
     'synset_potential_candidates' => 'Потенциальные кандидаты',
     'synset_potential_candidates_hint' => 'Экспертные заметки о возможных участниках ряда. Заполнение этого поля не добавляет значения в синсет.',
     'synset_removed' => 'Синсет №:num удален',
+    'synset_ru_synonyms' => 'Русские синонимы',
     'syntype' => 'тип синонимии',
     'suggest_template' => 'Предложить шаблон',
 
