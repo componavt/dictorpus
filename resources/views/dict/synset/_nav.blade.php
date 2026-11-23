@@ -8,12 +8,22 @@ $tabs = [
     'examples' => [$base . '/examples/candidates', 'dict.synset_tab_examples'],
 ];
 ?>
-<div class="synset-space">
-    <p>
-        <a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/') . $args_by_get }}">{{ trans('dict.synset_dictionary') }}</a>
-        › <strong>{{ $synset->name }}</strong>
-        @if ($synset->descr) — {{ $synset->descr }} @endif
-    </p>
+<div class="synset-space" style="margin-bottom: 20px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; column-gap: 25px;">
+        <p>
+            <a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/') . $args_by_get }}">{{ trans('dict.synset_dictionary') }}</a>
+            › <strong>{{ $synset->name }}</strong>
+            @if ($synset->descr) — {{ $synset->descr }} @endif
+        </p>
+
+        @if (!empty($vepkar_lemma))
+        <p>
+            {{ trans('navigation.lemmas') }}:
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$vepkar_lemma->id).(!empty($vepkar_meaning_id) ? '#meaning-'.$vepkar_meaning_id : '') }}">{{ $vepkar_lemma->lemma }}</a>
+            | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$vepkar_lemma->id.'/history') }}">{{ trans('messages.history') }}</a>
+        </p>
+        @endif
+    </div>
     <ul class="nav nav-tabs">
         @foreach ($tabs as $key => $tab)
         <li class="{{ ($active ?? '') === $key ? 'active' : '' }}">

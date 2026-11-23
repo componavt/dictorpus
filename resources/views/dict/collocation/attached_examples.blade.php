@@ -11,12 +11,11 @@
 @stop
 
 @section('body')
-<p>
-    @if ($synset_url)
-    <a href="{{ $synset_url }}">{{ trans('collocations.back_to_synset', ['num' => $synset_id]) }}</a> |
-    @endif
-    <a href="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/collocations').($synset_id ? '?synset_id='.$synset_id : '') }}">{{ trans('collocations.title') }}</a>
-</p>
+@if ($synset_id)
+    @include('dict.synset._nav', ['active' => 'collocations'])
+@else
+    <p><a href="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/collocations') }}">{{ trans('collocations.title') }}</a></p>
+@endif
 
 <h3>
     {{ $source->lemma->lemma }}<sup>{{ $source->meaning_n }}</sup> +

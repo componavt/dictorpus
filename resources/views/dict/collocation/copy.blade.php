@@ -9,14 +9,11 @@
 @stop
 
 @section('body')
-    <p>
-        <a href="{{ $editor_url  }}">
-            {{ trans('collocations.title') }}
-        </a>
-     @if ($synset_url)
-        | <a href="{{ $synset_url }}">{{ trans('collocations.back_to_synset', ['num' => $synset_id]) }}</a>
-    @endif
-   </p>
+    @if ($synset_id !== null)
+    @include('dict.synset._nav', ['active' => 'collocations'])
+@endif
+
+<p><a href="{{ $editor_url }}">{{ trans('collocations.title') }}</a></p>
 
     <p>
         <strong>{{ trans('collocations.copy_target') }}:</strong>

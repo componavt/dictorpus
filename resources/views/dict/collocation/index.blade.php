@@ -14,21 +14,30 @@
         {{ session('matrix_notice') }}
     </div>
     @endif
+    @if ($synset_id !== null)
+        @include('dict.synset._nav', ['active' => 'collocations', 'vepkar_lemma' => $meaning->lemma, 'vepkar_meaning_id' => $meaning->id])
+    @else
     <p>
-        <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$meaning->lemma_id) }}">
-            {{ trans('collocations.back_to_article') }}
-        </a>
-    @if ($synset_url)
-        | <a href="{{ $synset_url }}">{{ trans('collocations.back_to_synset', ['num' => $synset_id]) }}</a>
-    @endif
-    @if (!empty($examples_return))
+        <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$meaning->lemma_id) }}">{{ trans('collocations.back_to_article') }}</a>
+        @if (!empty($examples_return))
         | <a href="{{ $examples_return['url'] }}">{{ $examples_return['label'] ?? trans('meaning_examples.back_to_examples') }}</a>
-    @endif
+        @endif
         | <a href="{{ $copy_url }}">{{ trans('collocations.copy_open') }}</a>
-        | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$meaning->lemma_id.'/history') }}">
-            {{ trans('collocations.history') }}
-        </a>
+        | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$meaning->lemma_id.'/history') }}">{{ trans('collocations.history') }}</a>
     </p>
+    @endif
+
+    @if ($synset_id !== null)
+        <h3>{{ trans('collocations.title') }} {{ $meaning->lemma->lemma }}<sup>{{ $meaning->meaning_n }}</sup></h3>
+
+        <p>
+            <a href="{{ $copy_url }}" class="btn btn-default">{{ trans('collocations.copy_open') }}</a>
+        </p>
+
+        @if (!empty($examples_return))
+        <p><a href="{{ $examples_return['url'] }}">{{ $examples_return['label'] ?? trans('meaning_examples.back_to_examples') }}</a></p>
+        @endif
+    @endif
 
     <h3>
         {{ trans('collocations.meaning', ['num' => $meaning->meaning_n]) }}

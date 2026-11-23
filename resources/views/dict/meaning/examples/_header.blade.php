@@ -1,17 +1,12 @@
 <div class="meaning-examples-header">
+    @if ($synset_id !== null)
+        @include('dict.synset._nav', ['active' => 'examples', 'vepkar_lemma' => $lemma, 'vepkar_meaning_id' => $source->id])
+    @else
     <p>
         <a href="{{ $back_to_url }}">{{ trans('meaning_examples.back_to_view') }}</a>
-
-        @if ($synset_id !== null)
-            | <a href="{{ LaravelLocalization::localizeURL('/dict/synset/'.$synset_id.'/edit').'#synset-collocations' }}">
-                {{ trans('collocations.back_to_synset', ['num' => $synset_id]) }}
-            </a>
-        @endif
-
-        | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}">
-            {{ trans('messages.back_to_list') }}
-        </a>
+        | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}">{{ trans('messages.back_to_list') }}</a>
     </p>
+    @endif
 
     <div class="example-header-columns">
         <div class="example-header-lemma">
