@@ -1,29 +1,33 @@
 /**
- * Прикрепляет и открепляет пример без перезагрузки страницы.
+ * Сохраняет решения по примерам без перезагрузки страницы.
  */
 function initCollocationExampleAttach() {
+    initCollocationExampleReviewFilter();
+
     $('.meaning-example-search')
         .off('submit.collocationExamples', '.collocation-example-form')
-        .on(
-            'submit.collocationExamples',
-            '.collocation-example-form',
-            function (event) {
-                event.preventDefault();
-                submitCollocationExample($(this));
-            }
-        );
+        .on('submit.collocationExamples', '.collocation-example-form', function (event) {
+            event.preventDefault();
+            submitCollocationExample($(this));
+        });
 }
 
-/**
- * Отправляет форму и проверяет ответ сервера.
- */
 function submitCollocationExample(form) {
-    var button = form.find('button[type="submit"]');
+    var block = form.closest('.collocation-example-action');
     var error = form.find('.collocation-example-error');
+    var decision = form.attr('data-decision');
     var question = form.attr('data-confirm');
-    var detaching = form.hasClass('collocation-example-detach');
 
-    if (button.prop('disabled')) {
+    var blocks = $('.meaning-example-search .collocation-example-action').filter(function () {
+        var candidate = $(this);
+
+        return candidate.attr('data-collocation-id') === block.attr('data-collocation-id')
+            && candidate.attr('data-text-id') === block.attr('data-text-id')
+            && candidate.attr('data-source-w-id') === block.attr('data-source-w-id')
+            && candidate.attr('data-partner-w-id') === block.attr('data-partner-w-id');
+    });
+
+    if (blocks.filter(function () { return $(this).data('decisionBusy'); }).length) {
         return;
     }
 
@@ -31,8 +35,9 @@ function submitCollocationExample(form) {
         return;
     }
 
-    button.prop('disabled', true);
-    error.text('');
+    blocks.data('decisionBusy', true);
+    blocks.find('button[type="submit"]').prop('disabled', true);
+    blocks.find('.collocation-example-error').text('');
 
     $.ajax({
         url: form.attr('action'),
@@ -40,17 +45,22 @@ function submitCollocationExample(form) {
         data: form.serialize(),
         dataType: 'json'
     }).done(function (result) {
-        if (detaching && result && result.detached === true) {
-            setCollocationExampleState(form, false, null);
+        if (decision === 'reset' && result && result.detached === true) {
+            blocks.each(function () {
+                setCollocationExampleState($(this), null, null);
+            });
             return;
         }
 
         if (
-            !detaching
+            decision !== 'reset'
             && result
+            && result.status === decision
             && /^[1-9][0-9]*$/.test(String(result.id))
         ) {
-            setCollocationExampleState(form, true, result.id);
+            blocks.each(function () {
+                setCollocationExampleState($(this), result.status, result.id);
+            });
             return;
         }
 
@@ -58,37 +68,54 @@ function submitCollocationExample(form) {
     }).fail(function () {
         error.text(form.attr('data-error'));
     }).always(function () {
-        button.prop('disabled', false);
+        blocks.data('decisionBusy', false);
+        blocks.find('button[type="submit"]').prop('disabled', false);
     });
 }
 
-/**
- * Переключает форму между прикреплением и откреплением.
- */
-function setCollocationExampleState(form, attached, attachment_id) {
-    var block = form.closest('.collocation-example-action');
+function setCollocationExampleState(block, status, decision_id) {
     var examples_url = block.attr('data-examples-url');
+    var status_key = status || 'unreviewed';
 
-    form
-        .toggleClass('collocation-example-detach', attached)
-        .attr(
-            'action',
-            attached ? examples_url + '/' + attachment_id : examples_url
-        )
-        .attr(
-            'data-confirm',
-            attached ? block.attr('data-detach-confirm') : ''
-        )
-        .attr(
-            'data-error',
-            block.attr(attached ? 'data-detach-error' : 'data-attach-error')
-        );
+    block.find('.collocation-example-status')
+        .text(block.attr('data-' + status_key + '-label'))
+        .toggleClass('text-success', status === 'attached')
+        .toggleClass('text-muted', status === 'rejected');
 
-    form.find('input[name="_method"]').prop('disabled', !attached);
+    block.find('.collocation-example-form').each(function () {
+        var form = $(this);
+        var decision = form.attr('data-decision');
+        var is_reset = decision === 'reset';
+        var visible = is_reset ? decision_id !== null : status !== decision;
 
-    form.find('button[type="submit"]').text(
-        block.attr(attached ? 'data-detach-label' : 'data-attach-label')
-    );
+        form.attr('action', is_reset ? examples_url + '/' + decision_id : examples_url);
+        form.css('display', visible ? 'inline-block' : 'none');
+        form.find('.collocation-example-error').text('');
+    });
+}
 
-    block.find('.collocation-example-status').toggle(attached);
+function initCollocationExampleReviewFilter() {
+    var section = $('#example-review-filter');
+    var status = section.find('select[name="example_status"]');
+    var partner = section.closest('form').find('[name="partner_meaning_id"]');
+
+    if (!section.length || !partner.length) {
+        return;
+    }
+
+    function updateReviewFilter() {
+        var has_partner = !!partner.val();
+
+        if (!has_partner) {
+            status.val('all');
+        }
+
+        status.prop('disabled', !has_partner);
+        section.toggle(has_partner);
+    }
+
+    partner.off('change.collocationReviewFilter')
+        .on('change.collocationReviewFilter', updateReviewFilter);
+
+    updateReviewFilter();
 }

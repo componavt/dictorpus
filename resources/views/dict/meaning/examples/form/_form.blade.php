@@ -30,5 +30,21 @@
         @include('dict.meaning.examples.form._corpuses')
     </fieldset>
 
+    @if (isset($example_status) && empty($candidate_mode) && empty($matrix_mode))
+    <fieldset id="example-review-filter" class="example-form-section" @if (empty($partner)) style="display: none;" @endif>
+        <legend>{{ trans('collocation_examples.review_status') }}</legend>
+        <div class="form-group">
+            <select name="example_status" id="example-status" class="form-control" aria-describedby="example-status-hint" @if (empty($partner)) disabled @endif>
+                @foreach (['all', 'unreviewed', 'attached', 'rejected'] as $status_value)
+                <option value="{{ $status_value }}" {{ $example_status === $status_value ? 'selected' : '' }}>
+                    {{ trans('collocation_examples.filter_'.$status_value) }}
+                </option>
+                @endforeach
+            </select>
+            <p id="example-status-hint" class="help-block">{{ trans('collocation_examples.review_filter_hint') }}</p>
+        </div>
+    </fieldset>
+    @endif
+
     @include('dict.meaning.examples.form._actions')
 </form>
