@@ -245,6 +245,23 @@ class SynsetController extends Controller
             $synset->dominant_id = $request->input('dominant_id') ? (int) $request->input('dominant_id') : null;
             $synset->fill($text_fields);
             $synset->save();
+            $old_types = DB::table('meaning_synset')
+                ->where('synset_id', $synset->id)
+                ->pluck('syntype_id', 'meaning_id');
+
+            foreach ($members as $meaning_id => &$attributes) {
+                if (!isset($old_types[$meaning_id])) {
+                    continue;
+                }
+
+                $was_core = (int)$old_types[$meaning_id] === Syntype::TYPE_FULL;
+                $is_core = (int)$attributes['syntype_id'] === Syntype::TYPE_FULL;
+
+                if ($was_core !== $is_core) {
+                    $attributes['position'] = null;
+                }
+            }
+            unset($attributes);
             $synset->meanings()->sync($members);
             $synset->normalizeMemberOrder();
         });
