@@ -119,12 +119,14 @@ class Synset extends Model
 
     public static function urlArgs($request)
     {
-        $url_args = url_args($request) + [
-            'search_lang'     => (int)$request->input('search_lang'),
-            'search_pos'    => (int)$request->input('search_pos'),
-        ];
-
-        return $url_args;
+        return array_merge(url_args($request), [
+            'search_lang' => (int)$request->input('search_lang'),
+            'search_pos' => (int)$request->input('search_pos'),
+            'search_status' => (int)$request->input('search_status'),
+            'search_lemma' => trim((string)$request->input('search_lemma')),
+            'search_descr' => trim((string)$request->input('search_descr')),
+            'search_comment' => trim((string)$request->input('search_comment')),
+        ]);
     }
 
     /**
