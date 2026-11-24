@@ -6,7 +6,7 @@
                            style="@if ($disabled) display:none; @endif" title="Выберите доминанту">
                 </span>
             </td>         
-            <td id='meaning_td_{{ $meaning->id }}' style='padding-right:10px'>
+            <td id='meaning_td_{{ $meaning->id }}' style='padding:10px'>
 @include('dict.synset._button_'.$button)                
             </td>
             <td class="meanings" data-id="{{ $meaning->id }}" style='padding-right: 20px'><a href="{{ route('lemma.show', $meaning->lemma->id) }}">{{ $meaning->lemma->lemma }}</a>: 

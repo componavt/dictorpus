@@ -212,3 +212,56 @@
     font-size: 0.85em;
     white-space: nowrap;
 }
+
+#synset-ordered-members .synset-member-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+#synset-ordered-members .synset-member-controls>span {
+    display: inline-flex;
+    align-items: center;
+    padding-right: 0 !important;
+}
+
+#synset-ordered-members .check-dominant {
+    margin: 0;
+}
+
+#synset-ordered-members .synset-order-button {
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 5px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: #555;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#synset-ordered-members .synset-order-button:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+#synset-ordered-members .synset-order-button:not(:disabled):hover {
+    color: #c0392b;
+}
+
+#synset-ordered-members .synset-order-button:focus-visible {
+    outline: 1px dotted currentColor;
+    outline-offset: 1px;
+}
+
+#synset-ordered-members tr.meaning-row>td {
+    vertical-align: middle;
+}

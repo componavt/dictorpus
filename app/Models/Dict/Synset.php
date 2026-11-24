@@ -39,15 +39,19 @@ class Synset extends Model
     public function meanings()
     {
         return $this->belongsToMany(Meaning::class)
-            ->withPivot('syntype_id', 'collocation_note');
+            ->withPivot('syntype_id', 'collocation_note', 'position')
+            ->orderByRaw('meaning_synset.position IS NULL')
+            ->orderBy('meaning_synset.position');
     }
 
     public function core()
     {
         return $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
             ->wherePivot('syntype_id', Syntype::TYPE_FULL)
-            ->withPivot('syntype_id', 'collocation_note')
+            ->withPivot('syntype_id', 'collocation_note', 'position')
             ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
+            ->orderByRaw('meaning_synset.position IS NULL')
+            ->orderBy('meaning_synset.position')
             ->orderBy('lemmas.lemma')
             ->select('meanings.*', 'meaning_synset.syntype_id');
     }
@@ -66,7 +70,7 @@ class Synset extends Model
         $meanings->each(function ($meaning) use ($freqs) {
             $meaning->freq = $freqs[$meaning->id] ?? 0;
         });
-        return $meanings->sortByDesc('freq');
+        return $meanings->values();
     }
 
     public function coreWithFrequencies()
@@ -78,8 +82,10 @@ class Synset extends Model
     {
         $builder = $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
             ->wherePivot('syntype_id', Syntype::TYPE_FULL)
-            ->withPivot('syntype_id', 'collocation_note')
+            ->withPivot('syntype_id', 'collocation_note', 'position')
             ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
+            ->orderByRaw('meaning_synset.position IS NULL')
+            ->orderBy('meaning_synset.position')
             ->orderBy('lemmas.lemma')
             ->select('meanings.*', 'meaning_synset.syntype_id');
         if ($this->dominant) {
@@ -92,8 +98,10 @@ class Synset extends Model
     {
         return $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
             ->wherePivot('syntype_id', '<>', Syntype::TYPE_FULL)
-            ->withPivot('syntype_id', 'collocation_note')
+            ->withPivot('syntype_id', 'collocation_note', 'position')
             ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
+            ->orderByRaw('meaning_synset.position IS NULL')
+            ->orderBy('meaning_synset.position')
             ->orderBy('lemmas.lemma')
             ->select('meanings.*', 'meaning_synset.syntype_id');
     }
@@ -117,5 +125,46 @@ class Synset extends Model
         ];
 
         return $url_args;
+    }
+
+    /**
+     * Нумерует участников: доминанта, остальное ядро, периферия.
+     * Новые участники без позиции попадают в конец своей группы.
+     */
+    public function normalizeMemberOrder()
+    {
+        $rows = DB::table('meaning_synset as ms')
+            ->join('meanings as m', 'm.id', '=', 'ms.meaning_id')
+            ->join('lemmas as l', 'l.id', '=', 'm.lemma_id')
+            ->where('ms.synset_id', $this->id)
+            ->orderByRaw('ms.position IS NULL')
+            ->orderBy('ms.position')
+            ->orderBy('l.lemma')
+            ->orderBy('m.meaning_n')
+            ->orderBy('ms.meaning_id')
+            ->select('ms.meaning_id', 'ms.syntype_id')
+            ->get();
+
+        $dominant_id = (int)$this->dominant_id;
+        $dominant = $core = $periphery = [];
+
+        foreach ($rows as $row) {
+            $id = (int)$row->meaning_id;
+
+            if ((int)$row->syntype_id !== Syntype::TYPE_FULL) {
+                $periphery[] = $id;
+            } elseif ($id === $dominant_id) {
+                $dominant[] = $id;
+            } else {
+                $core[] = $id;
+            }
+        }
+
+        foreach (array_merge($dominant, $core, $periphery) as $index => $meaning_id) {
+            DB::table('meaning_synset')
+                ->where('synset_id', $this->id)
+                ->where('meaning_id', $meaning_id)
+                ->update(['position' => $index + 1]);
+        }
     }
 }

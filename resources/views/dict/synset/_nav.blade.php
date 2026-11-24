@@ -11,7 +11,7 @@ $tabs = [
 <div class="synset-space" style="margin-bottom: 20px">
     <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; column-gap: 25px;">
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/') . $args_by_get }}">{{ trans('dict.synset_dictionary') }}</a>
+            <a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/') . $args_by_get }}">{{ trans('navigation.synsets') }}</a>
             › <strong>{{ $synset->name }}</strong>
             @if ($synset->descr) — {{ $synset->descr }} @endif
         </p>

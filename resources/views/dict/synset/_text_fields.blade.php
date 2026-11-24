@@ -1,5 +1,5 @@
 @foreach ([
-    'etymology' => 'dict.synset_etymology',
+    'etymology' => 'dict.etymology',
     'potential_candidates' => 'dict.synset_potential_candidates',
 ] as $field => $caption)
 

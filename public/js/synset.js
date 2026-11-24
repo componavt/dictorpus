@@ -431,6 +431,11 @@ function initSynsetCollocationNavigation() {
 
     var saved_data = form.serialize();
 
+    form.off('synsetOrderSaved.synsetCollocationNavigation')
+        .on('synsetOrderSaved.synsetCollocationNavigation', function () {
+            saved_data = form.serialize();
+        });
+
     container
         .off('click.synsetCollocationNavigation', 'a')
         .on('click.synsetCollocationNavigation', 'a', function (event) {
@@ -462,4 +467,247 @@ function initSynsetCollocationNavigation() {
                 event.preventDefault();
             }
         });
+}
+
+/**
+ * Сохраняет перестановку существующих участников через API.
+ */
+function initSynsetMemberOrder() {
+    var form = $('#synset-edit-form');
+    var table = $('#synset-ordered-members');
+
+    if (!form.length || !table.length) {
+        return;
+    }
+
+    var message = $('#synset-order-message');
+    var saved_data = form.serialize();
+    var busy = false;
+    var groups = { core: [], periphery: [] };
+    var rows = {};
+
+    table.find('tr.meaning-row').each(function () {
+        var row = $(this);
+        var radio = row.find('input.check-dominant');
+        var meaning_id = Number(radio.val());
+        var syntype = row.find('select[name$="[syntype_id]"]');
+        var group = Number(syntype.val()) === 1 ? 'core' : 'periphery';
+
+        var controls_cell = row.children('td').first();
+        controls_cell.wrapInner('<span class="synset-member-controls"></span>');
+
+        rows[meaning_id] = row;
+        groups[group].push(meaning_id);
+    });
+
+    function showMessage(text) {
+        message.text(text).prop('hidden', false);
+    }
+
+    function addButton(row, group, index, direction, disabled) {
+        var title = table.attr(direction === 'up' ? 'data-order-up' : 'data-order-down');
+
+        $('<button>', {
+            type: 'button',
+            'class': 'synset-order-button',
+            title: title,
+            'aria-label': title,
+            text: direction === 'up' ? '↑' : '↓'
+        })
+            .attr('data-group', group)
+            .attr('data-index', index)
+            .attr('data-direction', direction)
+            .prop('disabled', disabled)
+            .appendTo(row.find('.synset-member-controls'));
+    }
+
+    $.each(groups, function (group, ids) {
+        $.each(ids, function (index, meaning_id) {
+            var row = rows[meaning_id];
+            var dominant = row.find('input.check-dominant').prop('checked');
+            var previous_dominant = index > 0
+                && rows[ids[index - 1]].find('input.check-dominant').prop('checked');
+
+            addButton(row, group, index, 'up', dominant || index === 0 || previous_dominant);
+            addButton(row, group, index, 'down', dominant || index === ids.length - 1);
+        });
+    });
+
+    /**
+ * Перемещает существующие узлы, сохраняя их содержимое и обработчики.
+ */
+    function reorderElements(elements, ordered_ids, getId) {
+        var nodes = {};
+        var slots = [];
+        var ids = [];
+
+        elements.each(function () {
+            nodes[String(getId(this))] = this;
+        });
+
+        $.each(ordered_ids, function (index, meaning_id) {
+            if (nodes[String(meaning_id)]) {
+                ids.push(String(meaning_id));
+            }
+        });
+
+        if (ids.length !== elements.length) {
+            return;
+        }
+
+        elements.each(function () {
+            var slot = document.createComment('synset-order');
+            this.parentNode.insertBefore(slot, this);
+            slots.push(slot);
+        });
+
+        $.each(ids, function (index, meaning_id) {
+            slots[index].parentNode.replaceChild(nodes[meaning_id], slots[index]);
+        });
+    }
+
+    function refreshOrderButtons() {
+        $.each(groups, function (group, ids) {
+            $.each(ids, function (index, meaning_id) {
+                var row = rows[meaning_id];
+                var dominant = row.find('input.check-dominant').prop('checked');
+                var previous_dominant = index > 0
+                    && rows[ids[index - 1]].find('input.check-dominant').prop('checked');
+
+                row.find('.synset-order-button').each(function () {
+                    var button = $(this);
+                    var up = button.attr('data-direction') === 'up';
+
+                    button
+                        .attr('data-group', group)
+                        .attr('data-index', index)
+                        .prop('disabled', dominant || (up
+                            ? index === 0 || previous_dominant
+                            : index === ids.length - 1));
+                });
+            });
+        });
+    }
+
+    function applySavedOrder(result) {
+        var ordered_ids = result.core.concat(result.periphery);
+
+        reorderElements(table.find('tr.meaning-row'), ordered_ids, function (element) {
+            return $(element).find('input.check-dominant').val();
+        });
+
+        var container = $('#synset-collocations');
+
+        container.find('table.synset-collocations-matrix tr').each(function () {
+            reorderElements($(this).children('[data-member-id]'), ordered_ids, function (element) {
+                return $(element).attr('data-member-id');
+            });
+        });
+
+        reorderElements(
+            container.find('.synset-collocation-member-options > label'),
+            ordered_ids,
+            function (element) {
+                return $(element).find('.synset-collocation-member-checkbox').val();
+            }
+        );
+
+        reorderElements(
+            container.find('#synset-collocations-words > .synset-collocation-member'),
+            ordered_ids,
+            function (element) {
+                return $(element).attr('data-order-member-id');
+            }
+        );
+
+        groups.core = result.core;
+        groups.periphery = result.periphery;
+    }
+
+    table.on('click.synsetMemberOrder', '.synset-order-button', function () {
+        if (busy) {
+            return;
+        }
+
+        if (form.serialize() !== saved_data) {
+            showMessage(table.attr('data-order-dirty'));
+            return;
+        }
+
+        var button = $(this);
+        var group = button.attr('data-group');
+        var index = Number(button.attr('data-index'));
+        var next_index = index + (button.attr('data-direction') === 'up' ? -1 : 1);
+        var ids = groups[group].slice();
+
+        if (next_index < 0 || next_index >= ids.length) {
+            return;
+        }
+
+        if (rows[ids[index]].find('input.check-dominant').prop('checked')
+            || rows[ids[next_index]].find('input.check-dominant').prop('checked')) {
+            return;
+        }
+
+        var previous_id = ids[index];
+        ids[index] = ids[next_index];
+        ids[next_index] = previous_id;
+
+        var payload = {
+            core: group === 'core' ? ids : groups.core.slice(),
+            periphery: group === 'periphery' ? ids : groups.periphery.slice()
+        };
+
+        var csrf_token = form.find('input[name="_token"]').val();
+        var enabled_controls = form.find(':input:enabled');
+
+        busy = true;
+        showMessage(table.attr('data-order-saving'));
+        enabled_controls.prop('disabled', true);
+
+        var order_applied = false;
+
+        $.ajax({
+            url: table.attr('data-order-url'),
+            type: 'PUT',
+            contentType: 'application/json; charset=UTF-8',
+            dataType: 'json',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrf_token
+            },
+            data: JSON.stringify(payload)
+        })
+            .done(function (result) {
+                if (result.saved === true && $.isArray(result.core) && $.isArray(result.periphery)) {
+                    applySavedOrder(result);
+                    order_applied = true;
+                    showMessage(table.attr('data-order-saved'));
+                } else {
+                    showMessage(table.attr('data-order-error'));
+                }
+            })
+            .fail(function (xhr) {
+                var text = xhr.responseJSON && xhr.responseJSON.message;
+                showMessage(text || table.attr('data-order-error'));
+            })
+            .always(function () {
+                enabled_controls.prop('disabled', false);
+                busy = false;
+
+                refreshOrderButtons();
+
+                if (order_applied) {
+                    saved_data = form.serialize();
+                    form.trigger('synsetOrderSaved');
+                    initSynsetCollocationComparison();
+                }
+            });
+    });
+
+    form.on('submit.synsetMemberOrder', function (event) {
+        if (busy) {
+            event.preventDefault();
+        }
+    });
 }

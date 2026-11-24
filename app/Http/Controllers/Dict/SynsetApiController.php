@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Dict;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
 use App\Models\Dict\Meaning;
@@ -39,8 +40,10 @@ class SynsetApiController extends Controller
     public function removeMeaning(int $id, int $meaning_id)
     {
         $synset = Synset::find($id);
+        $result = $synset->meanings()->detach($meaning_id);
+        $synset->normalizeMemberOrder();
 
-        return $synset->meanings()->detach($meaning_id);
+        return $result;
     }
 
     public function potentialMembersEdit(int $id, Request $request)
@@ -104,5 +107,104 @@ class SynsetApiController extends Controller
             'dict.synset._member_rows',
             compact('members', 'syntype_values')
         );
+    }
+
+    /**
+     * Сохраняет порядок существующих участников, не меняя состав синсета.
+     */
+    public function saveMemberOrder($id, Request $request)
+    {
+        $this->validate($request, [
+            'core' => 'present|array|max:500',
+            'core.*' => 'required|integer|min:1',
+            'periphery' => 'present|array|max:500',
+            'periphery.*' => 'required|integer|min:1',
+        ]);
+
+        $core_ids = array_values(array_map('intval', $request->input('core')));
+        $periphery_ids = array_values(array_map('intval', $request->input('periphery')));
+        $all_ids = array_merge($core_ids, $periphery_ids);
+
+        if (count($all_ids) > 500 || count($all_ids) !== count(array_unique($all_ids))) {
+            return response()->json([
+                'message' => trans('dict.synset_order_invalid'),
+            ], 422);
+        }
+
+        return DB::transaction(function () use ($id, $core_ids, $periphery_ids) {
+            $synset = Synset::where('id', $id)->lockForUpdate()->firstOrFail();
+
+            $members = DB::table('meaning_synset')
+                ->where('synset_id', $synset->id)
+                ->orderBy('meaning_id')
+                ->lockForUpdate()
+                ->get();
+
+            $current_core_ids = [];
+            $current_periphery_ids = [];
+
+            foreach ($members as $member) {
+                if ((int)$member->syntype_id === Syntype::TYPE_FULL) {
+                    $current_core_ids[] = (int)$member->meaning_id;
+                } else {
+                    $current_periphery_ids[] = (int)$member->meaning_id;
+                }
+            }
+
+            $submitted_core_ids = $core_ids;
+            $submitted_periphery_ids = $periphery_ids;
+
+            sort($submitted_core_ids, SORT_NUMERIC);
+            sort($submitted_periphery_ids, SORT_NUMERIC);
+            sort($current_core_ids, SORT_NUMERIC);
+            sort($current_periphery_ids, SORT_NUMERIC);
+
+            if ($submitted_core_ids !== $current_core_ids || $submitted_periphery_ids !== $current_periphery_ids) {
+                return response()->json([
+                    'message' => trans('dict.synset_order_members_changed'),
+                ], 409);
+            }
+
+            $dominant_id = (int)$synset->dominant_id;
+
+            if ($dominant_id) {
+                if (!in_array($dominant_id, $core_ids, true)) {
+                    return response()->json([
+                        'message' => trans('dict.synset_order_dominant_core'),
+                    ], 409);
+                }
+
+                $core_ids = array_values(array_filter($core_ids, function ($meaning_id) use ($dominant_id) {
+                    return $meaning_id !== $dominant_id;
+                }));
+
+                array_unshift($core_ids, $dominant_id);
+            }
+
+            $ordered_ids = array_merge($core_ids, $periphery_ids);
+            $positions = [];
+
+            foreach ($ordered_ids as $index => $meaning_id) {
+                $position = $index + 1;
+
+                DB::table('meaning_synset')
+                    ->where('synset_id', $synset->id)
+                    ->where('meaning_id', $meaning_id)
+                    ->update(['position' => $position]);
+
+                $positions[] = [
+                    'meaning_id' => $meaning_id,
+                    'position' => $position,
+                ];
+            }
+
+            return response()->json([
+                'saved' => true,
+                'synset_id' => (int)$synset->id,
+                'core' => $core_ids,
+                'periphery' => $periphery_ids,
+                'positions' => $positions,
+            ]);
+        });
     }
 }

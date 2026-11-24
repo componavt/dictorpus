@@ -44,4 +44,5 @@
     initSynsetCollocationsView();
     initSynsetCollocationComparison();
     initSynsetCollocationNavigation();
+    initSynsetMemberOrder();
 @stop

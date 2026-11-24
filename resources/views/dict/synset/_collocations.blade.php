@@ -33,7 +33,7 @@
         $candidates_url = LaravelLocalization::localizeURL('/dict/meaning/'.$member->id.'/examples/candidates') .'?'.http_build_query(['synset_id' => $synset->id, 'same_gramset' => 0]);
         ?>
 
-        <div class="synset-collocation-member">
+        <div class="synset-collocation-member" data-order-member-id="{{ $member->id }}">
             <div class="synset-collocation-header">
                 <span class="synset-collocation-name">
                     <a href="{{ $member_url }}">{{ $member->lemma->lemma }}</a><sup>{{ $member->meaning_n }}</sup>

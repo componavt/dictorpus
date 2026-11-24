@@ -136,6 +136,7 @@ Route::group(
         Route::get('synset/members_list', 'Dict\SynsetApiController@membersList');
         Route::get('synset/{id}/edit/potential_members', 'Dict\SynsetApiController@potentialMembersEdit');
         Route::get('synset/{id}/examples/candidates', 'Dict\SynsetController@collocationCandidates')->where('id', '[0-9]+');
+        Route::put('synset/{id}/members/order', 'Dict\SynsetApiController@saveMemberOrder')->where('id', '[0-9]+');
         Route::get('synset/{id}/set_status/{status}', 'Dict\SynsetApiController@setStatus');
         Route::get('synset/{id}/remove_meaning/{meaning_id}', 'Dict\SynsetApiController@removeMeaning');
 

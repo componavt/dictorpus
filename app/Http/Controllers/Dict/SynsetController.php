@@ -78,7 +78,7 @@ class SynsetController extends Controller
             'potential_candidates' => 'string|max:60000',
         ], [], [
             'descr' => trans('dict.synset_general_meaning'),
-            'etymology' => trans('dict.synset_etymology'),
+            'etymology' => trans('dict.etymology'),
             'potential_candidates' => trans('dict.synset_potential_candidates'),
         ]);
 
@@ -158,6 +158,7 @@ class SynsetController extends Controller
         $synset = DB::transaction(function () use ($data, $members) {
             $synset = Synset::create($data);
             $synset->meanings()->sync($members);
+            $synset->normalizeMemberOrder();
 
             return $synset;
         });
@@ -245,6 +246,7 @@ class SynsetController extends Controller
             $synset->fill($text_fields);
             $synset->save();
             $synset->meanings()->sync($members);
+            $synset->normalizeMemberOrder();
         });
 
         return $this->redirectAfterSave($request, $synset, 'messages.updated_success');
@@ -490,8 +492,12 @@ class SynsetController extends Controller
 
         $dominant_id = (int) $request->input('dominant_id', 0);
 
-        if ($dominant_id && !isset($members[$dominant_id])) {
-            $validator->errors()->add('dominant_id', trans('dict.synset_dominant_member'));
+        if ($dominant_id) {
+            if (!isset($members[$dominant_id])) {
+                $validator->errors()->add('dominant_id', trans('dict.synset_dominant_member'));
+            } elseif ((int)$members[$dominant_id]['syntype_id'] !== Syntype::TYPE_FULL) {
+                $validator->errors()->add('dominant_id', trans('dict.synset_order_dominant_core'));
+            }
         }
 
         if ($validator->errors()->count()) {
@@ -526,9 +532,14 @@ class SynsetController extends Controller
 
         $restored_ids = array_slice(array_values(array_filter(array_keys($old_meanings), $valid_id)), 0, 500);
         $old_new_ids = array_slice(array_values(array_filter($old_new_ids, $valid_id)), 0, 500);
-        $restored_members = Meaning::with('lemma')->whereIn('id', $restored_ids)->get()->filter(function ($meaning) {
-            return (bool) $meaning->lemma;
-        });
+        $restored_by_id = Meaning::with('lemma')->whereIn('id', $restored_ids)->get()->keyBy('id');
+
+        $restored_members = collect($restored_ids)->map(function ($id) use ($restored_by_id) {
+            return $restored_by_id->get($id);
+        })->filter(function ($meaning) {
+            return $meaning && $meaning->lemma;
+        })->values();
+
         $selected_new_members = Meaning::with('lemma')->whereIn('id', $old_new_ids)->get();
         $syntype_values = Syntype::getList(1);
         $restored_member_types = [];

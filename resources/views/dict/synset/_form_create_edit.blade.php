@@ -13,8 +13,37 @@
 @endif
 
 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
-@if (!empty($synset) && $action=='edit' && !$restore_members)
+
+@if ($restore_members)
 <table style="width: 100%">
+    @if (count($restored_members))
+    <tr>
+        <th colspan="3">{{ trans('synset_form.selected_members') }}</th>
+        <th>{{ trans('dict.syntype') }}</th>
+    </tr>
+    @endif
+    @foreach ($restored_members as $meaning)
+    @include('dict.synset._meaning_row', [
+        'syntype_id' => $restored_member_types[$meaning->id],
+        'button' => 'remove',
+        'disabled' => false,
+    ])
+    @endforeach
+</table>
+@endif
+
+@if (!empty($synset) && $action=='edit' && !$restore_members)
+<p class="help-block">{{ trans('dict.synset_order_hint') }}</p>
+<div id="synset-order-message" class="alert alert-warning" role="alert" hidden></div>
+
+<table id="synset-ordered-members" style="width: 100%"
+    data-order-saving="{{ trans('dict.synset_order_saving') }}"
+    data-order-saved="{{ trans('dict.synset_order_saved') }}"
+    data-order-url="{{ LaravelLocalization::localizeURL('/dict/synset/'.$synset->id.'/members/order') }}"
+    data-order-dirty="{{ trans('dict.synset_order_dirty') }}"
+    data-order-error="{{ trans('dict.synset_order_error') }}"
+    data-order-up="{{ trans('dict.synset_order_up') }}"
+    data-order-down="{{ trans('dict.synset_order_down') }}">
     @if (count($synset->core))
     <tr>
         <th colspan='3'>{{ trans('dict.core') }}</th>
@@ -54,23 +83,7 @@
         @include('/dict/synset/_potential_rows')
         @endif
     </tbody>
-    <tbody id="new-members">
-        @if ($restore_members)
-        @if (count($restored_members))
-        <tr>
-            <th colspan="3">{{ trans('synset_form.selected_members') }}</th>
-            <th>{{ trans('dict.syntype') }}</th>
-        </tr>
-        @endif
-        @foreach ($restored_members as $meaning)
-        @include('dict.synset._meaning_row', [
-        'syntype_id' => $restored_member_types[$meaning->id],
-        'button' => 'remove',
-        'disabled' => false,
-        ])
-        @endforeach
-        @endif
-    </tbody>
+    <tbody id="new-members"></tbody>
 </table>
 
 <h3>Искать в словаре</h3>
