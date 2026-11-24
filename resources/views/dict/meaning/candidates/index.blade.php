@@ -13,7 +13,7 @@
 
 @section('body')
 <div class="meaning-candidates">
-    @include('dict.meaning.examples._header')
+    @include('dict.meaning.examples._header', ['help_section' => 'synset-help-single-candidates'])
 
     <p class="help-block">{{ trans('collocation_candidates.hint') }}</p>
 

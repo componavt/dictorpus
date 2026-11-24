@@ -1,5 +1,8 @@
 <div class="synset-collocations" id="synset-collocations" data-synset-id="{{ $synset->id }}" data-leave-confirm="{{ trans('collocations.synset_leave_confirm') }}">
-    <h3>{{ trans('collocations.synset_title') }}</h3>
+    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; column-gap: 20px;">
+        <h3>{{ trans('collocations.synset_title') }}</h3>
+        <a class="synset-collocations-help" href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/help').'#synset-help-words' }}" data-help-base="{{ LaravelLocalization::localizeURL('/service/dict/synsets/help') }}" target="_blank" rel="noopener">{{ trans('navigation.help') }}</a>
+    </div>
 
     <p class="help-block">
         {{ trans('collocations.synset_saved_members_hint') }}

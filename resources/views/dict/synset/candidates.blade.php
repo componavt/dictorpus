@@ -11,7 +11,7 @@
 @stop
 
 @section('body')
-@include('dict.synset._nav', ['active' => 'examples'])
+@include('dict.synset._nav', ['active' => 'examples', 'help_section' => 'synset-help-matrix-candidates'])
 
 <h2>Корпусные кандидаты: {{ $synset->name }}</h2>
 

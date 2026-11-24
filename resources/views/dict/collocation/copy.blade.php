@@ -10,8 +10,8 @@
 
 @section('body')
     @if ($synset_id !== null)
-    @include('dict.synset._nav', ['active' => 'collocations'])
-@endif
+        @include('dict.synset._nav', ['active' => 'collocations', 'help_section' => 'synset-help-editor'])
+    @endif
 
 <p><a href="{{ $editor_url }}">{{ trans('collocations.title') }}</a></p>
 

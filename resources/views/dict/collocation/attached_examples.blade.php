@@ -12,7 +12,7 @@
 
 @section('body')
 @if ($synset_id)
-    @include('dict.synset._nav', ['active' => 'collocations'])
+    @include('dict.synset._nav', ['active' => 'collocations', 'help_section' => 'synset-help-attach'])
 @else
     <p><a href="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/collocations') }}">{{ trans('collocations.title') }}</a></p>
 @endif

@@ -118,6 +118,10 @@ function initSynsetCollocationsView() {
     function setView(view, persist) {
         view = view === 'matrix' ? 'matrix' : 'words';
 
+        var help = container.find('.synset-collocations-help');
+        var help_anchor = view === 'matrix' ? 'synset-help-comparison' : 'synset-help-words';
+        help.attr('href', help.attr('data-help-base') + '#' + help_anchor);
+
         container.find('#synset-collocations-words')
             .prop('hidden', view === 'matrix');
 

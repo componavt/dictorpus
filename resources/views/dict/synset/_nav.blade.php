@@ -7,6 +7,12 @@ $tabs = [
     'collocations' => [$base . '/edit#synset-collocations', 'dict.synset_tab_collocations'],
     'examples' => [$base . '/examples/candidates', 'dict.synset_tab_examples'],
 ];
+$help_sections = [
+    'edit' => 'synset-help-members',
+    'collocations' => 'synset-help-comparison',
+    'examples' => 'synset-help-examples',
+];
+$help_anchor = $help_section ?? ($help_sections[$active ?? 'edit'] ?? 'synset-help-members');
 ?>
 <div class="synset-space" style="margin-bottom: 20px">
     <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; column-gap: 25px;">
@@ -14,6 +20,7 @@ $tabs = [
             <a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/') . $args_by_get }}">{{ trans('navigation.synsets') }}</a>
             › <strong>{{ $synset->name }}</strong>
             @if ($synset->descr) — {{ $synset->descr }} @endif
+            | <a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/help').$args_by_get.'#'.$help_anchor }}" target="_blank" rel="noopener">{{ trans('navigation.help') }}</a>
         </p>
 
         @if (!empty($vepkar_lemma))

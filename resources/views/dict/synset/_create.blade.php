@@ -2,6 +2,7 @@
     <a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/').$args_by_get }}">
         {{ trans('messages.back_to_list') }}
     </a>
+    | <a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/help').$args_by_get.'#synset-help-create' }}" target="_blank" rel="noopener">{{ trans('navigation.help') }}</a>
 </p>
 
 {!! Form::open(['id' => 'synset-create-form', 'method' => 'POST', 'route' => ['synset.store']]) !!}

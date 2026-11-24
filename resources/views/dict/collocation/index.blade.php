@@ -15,7 +15,7 @@
     </div>
     @endif
     @if ($synset_id !== null)
-        @include('dict.synset._nav', ['active' => 'collocations', 'vepkar_lemma' => $meaning->lemma, 'vepkar_meaning_id' => $meaning->id])
+        @include('dict.synset._nav', ['active' => 'collocations', 'vepkar_lemma' => $meaning->lemma, 'vepkar_meaning_id' => $meaning->id, 'help_section' => 'synset-help-editor'])
     @else
     <p>
         <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$meaning->lemma_id) }}">{{ trans('collocations.back_to_article') }}</a>
