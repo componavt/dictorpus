@@ -152,8 +152,8 @@ class SynsetController extends Controller
         $data = $this->validateRequest($request);
         $data['pos_id'] = (int) $request->input('pos_id');
         $data['dominant_id'] = $request->input('dominant_id') ? (int) $request->input('dominant_id') : null;
-        $data['descr'] = $data['descr'] ?? '';
-        $data['comment'] = $data['comment'] ?? '';
+        $data['descr'] = $request->input('descr') === '' ? null : $request->input('descr');
+        $data['comment'] = $request->input('comment') === '' ? null : $request->input('comment');
 
         $synset = DB::transaction(function () use ($data, $members) {
             $synset = Synset::create($data);
@@ -240,8 +240,8 @@ class SynsetController extends Controller
 
         DB::transaction(function () use ($request, $synset, $members, $text_fields) {
             $synset->pos_id = (int) $request->input('pos_id');
-            $synset->comment = $request->comment ?? '';
-            $synset->descr = $request->descr ?? '';
+            $synset->comment = $request->input('comment') === '' ? null : $request->input('comment');
+            $synset->descr = $request->input('descr') === '' ? null : $request->input('descr');
             $synset->dominant_id = $request->input('dominant_id') ? (int) $request->input('dominant_id') : null;
             $synset->fill($text_fields);
             $synset->save();
