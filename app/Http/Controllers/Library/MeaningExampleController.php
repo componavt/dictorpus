@@ -1314,6 +1314,7 @@ class MeaningExampleController extends Controller
             'corpus_ids' => $selected['corpus_ids'],
             'distance_from' => (int) $input['distance_from'],
             'distance_to' => (int) $input['distance_to'],
+            'example_status' => $input['example_status'],
             'partner_gramset_ids' => $selected['partner_gramset_ids'] ?? [],
             'partner_threshold' => (int) $input['only_checked'],
             'same_gramset' => (bool) (int) $input['same_gramset'],
@@ -1330,7 +1331,9 @@ class MeaningExampleController extends Controller
         $query = array_merge($selected, array_map('intval', $input), [
             'partner_meaning_id' => $partner ? $partner->id : '',
             'synset_id' => $this->synset_id,
+            'example_status' => $partner ? $input['example_status'] : 'all',
         ]);
+
         unset($query['page']);
 
         $sentences->appends($query);
@@ -1372,14 +1375,15 @@ class MeaningExampleController extends Controller
         $partner_gramsets = $partner_pos_id > 0 ? Gramset::getList($partner_pos_id, (int) $source->lemma->lang_id) : [];
 
         return [
-            'source' => $source,
+            'back_to_url' => LaravelLocalization::localizeURL('/dict/lemma/' . $source->lemma_id) . '#meaning-' . $source->id,
+            'example_status' => isset($input['example_status']) && is_scalar($input['example_status']) ? (string)$input['example_status'] : 'all',
             'lemma' => $source->lemma,
+            'meaning_labels' => $source->showShortLabels(),
             'partner' => $partner,
             'partner_gramsets' => $partner_gramsets,
             'partner_pos_id' => $partner_pos_id,
             'partner_text' => $partner ? $this->partnerOptionText($partner) : '',
-            'meaning_labels' => $source->showShortLabels(),
-            'back_to_url' => LaravelLocalization::localizeURL('/dict/lemma/' . $source->lemma_id) . '#meaning-' . $source->id,
+            'source' => $source,
             'filter_values' => $filter_values,
             'selected_filters' => $filters['selected_filters'],
             'search_errors' => $filters['errors'],

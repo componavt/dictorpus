@@ -103,6 +103,75 @@
     padding-left: 20px;
 }
 
+.meaning-example-form .example-source-info {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.meaning-example-form .example-source-info h1,
+.meaning-example-form .example-source-info h2,
+.meaning-example-form .example-source-info h3 {
+    margin: 0 0 8px;
+}
+
+.meaning-example-form .example-source-info h3 {
+    font-size: 16px;
+}
+
+.meaning-example-form .example-source-info p {
+    margin-bottom: 6px;
+}
+
+.meaning-example-form .example-source-info ul {
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+.meaning-example-form .form-group {
+    margin-bottom: 10px;
+}
+
+.meaning-example-form .help-block {
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+.meaning-example-form .example-word-columns {
+    align-items: start;
+}
+
+.meaning-example-form .example-word-column {
+    min-width: 0;
+}
+
+.meaning-example-form .example-word-column>.example-form-section {
+    margin: 0 0 16px;
+}
+
+.meaning-example-form .example-word-column>.example-form-section:last-child {
+    margin-bottom: 0;
+}
+
+.meaning-example-form .example-form-section-plain {
+    padding: 0;
+    border: 0;
+}
+
+.meaning-example-form .example-form-section-plain>legend {
+    margin-bottom: 8px;
+    padding: 0;
+}
+
+.meaning-example-form .example-word-column .example-combination {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+}
+
+.meaning-example-form .example-word-column .form-group:last-child {
+    margin-bottom: 0;
+}
+
 @media screen and (min-width: 768px) {
     .meaning-examples-header .example-header-columns {
         grid-template-columns: repeat(2, minmax(0, 1fr));

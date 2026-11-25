@@ -154,12 +154,12 @@ class MeaningExampleFilterInput
         $defaults = [
             'distance_from' => -1,
             'distance_to' => 1,
+            'example_status' => !empty($raw['synset_id']) && !empty($raw['partner_meaning_id']) ? 'unreviewed' : 'all',
             'partner_meaning_id' => '',
             'partner_pos_id' => 0,
             'only_checked' => 0,
             'same_gramset' => 1,
-            'source_only_checked' => array_key_exists('only_checked', $raw)
-                ? $raw['only_checked'] : 0,
+            'source_only_checked' => array_key_exists('only_checked', $raw) ? $raw['only_checked'] : 0,
             'per_page' => 20,
             'page' => 1,
             'whole_sentence' => 0,
@@ -173,6 +173,7 @@ class MeaningExampleFilterInput
         return Validator::make($input, [
             'distance_from' => 'required|integer',
             'distance_to' => 'required|integer',
+            'example_status' => 'required|in:all,unreviewed,attached,rejected',
             'partner_meaning_id' => 'integer|min:1',
             'partner_pos_id' => 'required|integer|min:0',
             'only_checked' => 'required|boolean',
@@ -184,6 +185,7 @@ class MeaningExampleFilterInput
         ], [], [
             'distance_from' => trans('meaning_examples.distance_from'),
             'distance_to' => trans('meaning_examples.distance_to'),
+            'example_status' => trans('collocation_examples.review_status'),
             'partner_meaning_id' => trans('meaning_examples.partner'),
             'only_checked' => trans('meaning_examples.only_checked'),
             'same_gramset' => trans('meaning_examples.same_gramset'),

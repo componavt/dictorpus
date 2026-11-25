@@ -32,7 +32,7 @@ class CollocationExampleData
                 $example->partner_w_id
             );
 
-            $attached[$key] = (int) $example->id;
+            $attached[$key] = $example;
         }
 
         $actions = [];
@@ -60,8 +60,8 @@ class CollocationExampleData
                         'text_id' => (int) $example['text_id'],
                         'source_w_id' => (int) $match['source_w_id'],
                         'partner_w_id' => (int) $match['partner_w_id'],
-                        'attached' => isset($attached[$key]),
-                        'attachment_id' => $attached[$key] ?? null,
+                        'status' => isset($attached[$key]) ? $attached[$key]->status : null,
+                        'decision_id' => isset($attached[$key]) ? (int)$attached[$key]->id : null,
                         'label' => trans('collocation_examples.pair', [
                             'source' => $match['source_word'],
                             'partner' => $match['partner_word'],
@@ -163,10 +163,7 @@ class CollocationExampleData
      */
     protected function sourceAttachments($partners, array $items)
     {
-        $examples = CollocationExample::whereIn(
-            'collocation_id',
-            $partners->pluck('collocation_id')->unique()->all()
-        )
+        $examples = CollocationExample::whereIn('collocation_id', $partners->pluck('collocation_id')->unique()->all())
             ->whereIn('text_id', array_column($items, 'text_id'))
             ->get();
 
@@ -179,7 +176,7 @@ class CollocationExampleData
                 $example->partner_w_id
             );
 
-            $attached[$key] = (int) $example->id;
+            $attached[$key] = $example;
         }
 
         return $attached;
@@ -188,15 +185,15 @@ class CollocationExampleData
     /**
      * Описывает действие для одной конкретной пары употреблений.
      */
-    protected function sourceAction(array $example, $partner, $attachment_id)
+    protected function sourceAction(array $example, $partner, $decision)
     {
         return [
             'collocation_id' => (int) $partner->collocation_id,
             'text_id' => (int) $example['text_id'],
             'source_w_id' => (int) $example['source_w_id'],
             'partner_w_id' => (int) $partner->partner_w_id,
-            'attached' => $attachment_id !== null,
-            'attachment_id' => $attachment_id,
+            'status' => $decision ? $decision->status : null,
+            'decision_id' => $decision ? (int)$decision->id : null,
             'label' => trans('collocation_examples.pair', [
                 'source' => $example['source_word'],
                 'partner' => $partner->partner_word,

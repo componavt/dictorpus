@@ -1,3 +1,7 @@
+@if (empty($matrix_mode) && isset($source) && isset($lemma))
+    @include('dict.meaning.examples.form._source_info')
+@endif
+
 @if (count($filter_values['source_gramsets']))
     <div class="form-group">
         <label for="example-source-gramsets">{{ trans('meaning_examples.source_gramsets') }}</label>

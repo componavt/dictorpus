@@ -12,13 +12,47 @@ class CollocationExampleLink
 {
     /**
      * Прикрепляет проверенную пару употреблений.
-     * Повторный вызов возвращает существующую запись.
      */
     public function attach($collocation_id, $text_id, $source_w_id, $partner_w_id)
     {
-        $text_id = (int) $text_id;
-        $source_w_id = (int) $source_w_id;
-        $partner_w_id = (int) $partner_w_id;
+        return $this->saveDecision(
+            $collocation_id,
+            $text_id,
+            $source_w_id,
+            $partner_w_id,
+            CollocationExample::STATUS_ATTACHED
+        );
+    }
+
+    /**
+     * Исключает проверенную пару употреблений из рассмотрения.
+     */
+    public function reject($collocation_id, $text_id, $source_w_id, $partner_w_id)
+    {
+        return $this->saveDecision(
+            $collocation_id,
+            $text_id,
+            $source_w_id,
+            $partner_w_id,
+            CollocationExample::STATUS_REJECTED
+        );
+    }
+
+    /**
+     * Создаёт решение или меняет статус существующей записи.
+     */
+    protected function saveDecision($collocation_id, $text_id, $source_w_id, $partner_w_id, $status)
+    {
+        if (!in_array($status, [
+            CollocationExample::STATUS_ATTACHED,
+            CollocationExample::STATUS_REJECTED,
+        ], true)) {
+            abort(422, 'Некорректный статус примера.');
+        }
+
+        $text_id = (int)$text_id;
+        $source_w_id = (int)$source_w_id;
+        $partner_w_id = (int)$partner_w_id;
 
         if (
             $text_id < 1 || $source_w_id < 1 || $partner_w_id < 1
@@ -31,7 +65,8 @@ class CollocationExampleLink
             $collocation_id,
             $text_id,
             $source_w_id,
-            $partner_w_id
+            $partner_w_id,
+            $status
         ) {
             $collocation = Collocation::where('id', $collocation_id)
                 ->lockForUpdate()->firstOrFail();
@@ -52,19 +87,26 @@ class CollocationExampleLink
             $this->checkMeaning($partner, $collocation->collocate_meaning_id);
 
             $attributes = [
-                'collocation_id' => (int) $collocation->id,
+                'collocation_id' => (int)$collocation->id,
                 'text_id' => $text_id,
                 'source_w_id' => $source_w_id,
                 'partner_w_id' => $partner_w_id,
             ];
 
-            $existing = CollocationExample::where($attributes)->first();
+            $existing = CollocationExample::where($attributes)->lockForUpdate()->first();
 
             if ($existing) {
+                if ($existing->status !== $status) {
+                    $existing->status = $status;
+                    $existing->sentence_xml = $sentence->text_xml;
+                    $existing->save();
+                }
+
                 return $existing;
             }
 
             return CollocationExample::create(array_merge($attributes, [
+                'status' => $status,
                 'sentence_xml' => $sentence->text_xml,
             ]));
         });

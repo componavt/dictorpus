@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 use App\Models\Corpus\Text;
+use App\Models\Dict\CollocationExample;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Synset;
@@ -222,6 +223,7 @@ class SynonymExport
 
             $examples = DB::table('collocation_examples')
                 ->where('collocation_id', $collocation->id)
+                ->where('status', CollocationExample::STATUS_ATTACHED)
                 ->orderBy('id')
                 ->get();
 

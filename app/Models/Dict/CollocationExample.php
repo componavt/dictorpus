@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class CollocationExample extends Model
 {
     protected $table = 'collocation_examples';
+    const STATUS_ATTACHED = 'attached';
+    const STATUS_REJECTED = 'rejected';
 
     protected $fillable = [
         'collocation_id',
@@ -14,6 +16,7 @@ class CollocationExample extends Model
         'source_w_id',
         'partner_w_id',
         'sentence_xml',
+        'status',
     ];
 
     protected $casts = [

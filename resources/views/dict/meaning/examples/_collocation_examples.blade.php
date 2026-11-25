@@ -1,60 +1,65 @@
-@if (User::checkAccess('dict.edit'))    @foreach ($collocation_example_actions[$example['example_id']] ?? [] as $action)
+@if (User::checkAccess('dict.edit'))
+    @foreach ($collocation_example_actions[$example['example_id']] ?? [] as $action)
         <?php
         $examples_url = LaravelLocalization::localizeURL(
-            '/dict/meaning/' . $source->id
-            . '/collocations/' . $action['collocation_id']
-            . '/examples'
+            '/dict/meaning/'.$source->id.'/collocations/'.$action['collocation_id'].'/examples'
         );
-
-        $form_url = $action['attached']
-            ? $examples_url . '/' . $action['attachment_id']
-            : $examples_url;
+        $status = $action['status'];
+        $decision_id = $action['decision_id'];
+        $status_key = $status ?: 'unreviewed';
         ?>
 
         <div class="collocation-example-action"
              data-collocation-id="{{ $action['collocation_id'] }}"
+             data-text-id="{{ $action['text_id'] }}"
+             data-source-w-id="{{ $action['source_w_id'] }}"
+             data-partner-w-id="{{ $action['partner_w_id'] }}"
              data-examples-url="{{ $examples_url }}"
-             data-attach-label="{{ trans('collocation_examples.attach') }}"
-             data-attach-error="{{ trans('collocation_examples.attach_error') }}"
-             data-detach-label="{{ trans('collocation_examples.detach') }}"
-             data-detach-confirm="{{ trans('collocation_examples.detach_confirm') }}"
-             data-detach-error="{{ trans('collocation_examples.detach_error') }}">
+             data-attached-label="{{ trans('collocation_examples.attached') }}"
+             data-rejected-label="{{ trans('collocation_examples.rejected') }}"
+             data-unreviewed-label="{{ trans('collocation_examples.unreviewed') }}">
 
             <span>{{ $action['label'] }}</span>
 
-            <span class="collocation-example-status text-success"
-                  role="status"
-                  @if (!$action['attached']) style="display: none;" @endif>
-                {{ trans('collocation_examples.attached') }}
+            <span class="collocation-example-status{{ $status === 'attached' ? ' text-success' : ($status === 'rejected' ? ' text-muted' : '') }}" role="status">
+                {{ trans('collocation_examples.'.$status_key) }}
             </span>
 
-            <form method="POST"
-                  class="collocation-example-form{{ $action['attached'] ? ' collocation-example-detach' : '' }}"
-                  action="{{ $form_url }}"
-                  data-confirm="{{ $action['attached'] ? trans('collocation_examples.detach_confirm') : '' }}"
-                  data-error="{{ trans($action['attached'] ? 'collocation_examples.detach_error' : 'collocation_examples.attach_error') }}">
+            @foreach (['attached' => 'attach', 'rejected' => 'reject', 'reset' => 'reset'] as $decision_type => $label_key)
+                <?php
+                $is_reset = $decision_type === 'reset';
+                $visible = $is_reset ? $decision_id !== null : $status !== $decision_type;
+                $confirm = $decision_type === 'rejected'
+                    ? trans('collocation_examples.reject_confirm')
+                    : ($is_reset ? trans('collocation_examples.reset_confirm') : '');
+                ?>
 
-                {!! csrf_field() !!}
+                <form method="POST"
+                      class="collocation-example-form"
+                      data-decision="{{ $decision_type }}"
+                      data-confirm="{{ $confirm }}"
+                      data-error="{{ trans('collocation_examples.decision_error') }}"
+                      action="{{ $is_reset ? $examples_url.'/'.$decision_id : $examples_url }}"
+                      style="display: {{ $visible ? 'inline-block' : 'none' }};">
+                    {!! csrf_field() !!}
 
-                <input type="hidden" name="_method" value="DELETE"
-                       @if (!$action['attached']) disabled @endif>
+                    @if ($is_reset)
+                        <input type="hidden" name="_method" value="DELETE">
+                    @else
+                        <input type="hidden" name="status" value="{{ $decision_type }}">
+                    @endif
 
-                <input type="hidden" name="text_id"
-                       value="{{ $action['text_id'] }}">
+                    <input type="hidden" name="text_id" value="{{ $action['text_id'] }}">
+                    <input type="hidden" name="source_w_id" value="{{ $action['source_w_id'] }}">
+                    <input type="hidden" name="partner_w_id" value="{{ $action['partner_w_id'] }}">
 
-                <input type="hidden" name="source_w_id"
-                       value="{{ $action['source_w_id'] }}">
+                    <button type="submit" class="btn btn-default btn-small">
+                        {{ trans('collocation_examples.'.$label_key) }}
+                    </button>
 
-                <input type="hidden" name="partner_w_id"
-                       value="{{ $action['partner_w_id'] }}">
-
-                <button type="submit" class="btn btn-default btn-small">
-                    {{ trans($action['attached'] ? 'collocation_examples.detach' : 'collocation_examples.attach') }}
-                </button>
-
-                <span class="collocation-example-error text-danger"
-                      role="alert"></span>
-            </form>
+                    <span class="collocation-example-error text-danger" role="alert"></span>
+                </form>
+            @endforeach
         </div>
     @endforeach
 @endif

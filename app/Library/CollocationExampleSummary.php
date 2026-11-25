@@ -3,7 +3,9 @@
 namespace App\Library;
 
 use Illuminate\Support\Facades\DB;
+
 use App\Models\Corpus\Text;
+use App\Models\Dict\CollocationExample;
 
 class CollocationExampleSummary
 {
@@ -26,6 +28,7 @@ class CollocationExampleSummary
         }
 
         $rows = DB::table('collocation_examples')
+            ->where('status', CollocationExample::STATUS_ATTACHED)
             ->whereIn('collocation_id', array_values($ids))
             ->select('collocation_id', 'text_id', DB::raw('COUNT(*) as total'))
             ->groupBy('collocation_id', 'text_id')

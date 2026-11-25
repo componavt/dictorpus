@@ -27,6 +27,7 @@ class MeaningExampleSearch
             'corpus_ids' => [],
             'distance_from' => -1,
             'distance_to' => 1,
+            'example_status' => 'all',
             'partner_gramset_ids' => [],
             'partner_threshold' => 0,
             'same_gramset' => true,
@@ -47,6 +48,9 @@ class MeaningExampleSearch
      */
     protected function validateOptions()
     {
+        if (!in_array($this->options['example_status'], ['all', 'unreviewed', 'attached', 'rejected'], true)) {
+            throw new \InvalidArgumentException('Invalid example status.');
+        }
         foreach (['source_threshold', 'partner_threshold'] as $field) {
             if (!in_array($this->options[$field], [0, 1], true)) {
                 throw new \InvalidArgumentException($field . ' must be integer 0 or 1.');
@@ -91,7 +95,40 @@ class MeaningExampleSearch
             }
         }
 
-        return $query;
+        return $this->applyExampleStatus($query);
+    }
+
+    /**
+     * Фильтрует решения по конкретной паре употреблений.
+     * Без выбранного партнёра не ограничивает поиск.
+     */
+    protected function applyExampleStatus(Builder $query)
+    {
+        $status = $this->options['example_status'];
+
+        if (!$this->partner || $status === 'all') {
+            return $query;
+        }
+
+        $sql = 'SELECT 1
+        FROM collocation_examples AS ce
+        JOIN collocations AS c ON c.id = ce.collocation_id
+        WHERE c.meaning_id = ?
+            AND c.collocate_meaning_id = ?
+            AND ce.text_id = w1.text_id
+            AND ce.source_w_id = w1.w_id
+            AND ce.partner_w_id = w2.w_id';
+
+        $bindings = [(int)$this->source->id, (int)$this->partner->id];
+
+        if ($status === 'unreviewed') {
+            return $query->whereRaw('NOT EXISTS (' . $sql . ')', $bindings);
+        }
+
+        $sql .= ' AND ce.status = ?';
+        $bindings[] = $status;
+
+        return $query->whereRaw('EXISTS (' . $sql . ')', $bindings);
     }
 
     /**

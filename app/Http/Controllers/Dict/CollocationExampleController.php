@@ -12,6 +12,7 @@ use App\Library\CollocationExampleLink;
 use App\Library\CollocationExampleSummary;
 use App\Library\MeaningExampleFormatter;
 use App\Models\Corpus\Text;
+use App\Models\Dict\CollocationExample;
 use App\Models\Dict\Meaning;
 
 class CollocationExampleController extends Controller
@@ -25,7 +26,9 @@ class CollocationExampleController extends Controller
     {
         $source = Meaning::with('lemma')->findOrFail($meaning_id);
         $collocation = $source->collocations()->with('collocateMeaning.lemma')->findOrFail($collocation_id);
-        $examples = $collocation->corpusExamples()->get();
+        $examples = $collocation->corpusExamples()
+            ->where('status', CollocationExample::STATUS_ATTACHED)
+            ->get();
         $texts = Text::with(['corpuses', 'dialects'])
             ->whereIn('id', $examples->pluck('text_id')->unique()->all())
             ->get()->keyBy('id');
@@ -71,6 +74,7 @@ class CollocationExampleController extends Controller
             'text_id' => 'required|integer|min:1',
             'source_w_id' => 'required|integer|min:1',
             'partner_w_id' => 'required|integer|min:1',
+            'status' => 'in:attached,rejected',
         ]);
 
         $source = Meaning::with('lemma')->findOrFail($meaning_id);
@@ -90,21 +94,39 @@ class CollocationExampleController extends Controller
             abort(422, trans('meaning_examples.different_language'));
         }
 
-        $example = (new CollocationExampleLink())->attach(
-            $collocation->id,
-            $text_id,
-            (int) $request->input('source_w_id'),
-            (int) $request->input('partner_w_id')
-        );
+        $status = $request->input('status', CollocationExample::STATUS_ATTACHED);
+        $link = new CollocationExampleLink();
+
+        if ($status === CollocationExample::STATUS_REJECTED) {
+            $example = $link->reject(
+                $collocation->id,
+                $text_id,
+                (int)$request->input('source_w_id'),
+                (int)$request->input('partner_w_id')
+            );
+        } else {
+            $example = $link->attach(
+                $collocation->id,
+                $text_id,
+                (int)$request->input('source_w_id'),
+                (int)$request->input('partner_w_id')
+            );
+        }
 
         return response()->json([
             'id' => $example->id,
-            'label' => trans('collocation_examples.attached'),
+            'status' => $example->status,
+            'label' => trans(
+                $example->status === CollocationExample::STATUS_REJECTED
+                    ? 'collocation_examples.rejected'
+                    : 'collocation_examples.attached'
+            ),
         ]);
     }
 
     /**
-     * Открепляет один пример, сохраняя сочетаемость и корпусные оценки.
+     * Удаляет решение по примеру, возвращая его в нерассмотренные.
+     * Сочетаемость и корпусные оценки остаются без изменений.
      */
     public function destroy($meaning_id, $collocation_id, $example_id)
     {
