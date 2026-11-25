@@ -300,7 +300,19 @@ class Gramset extends Model
     {
         // select id from gramsets,gramset_pos where gramset_pos.gramset_id=gramsets.id and gramset_pos.pos_id=5 group by id order by sequence_number;
 
-        $gramsets = self::orderBy('sequence_number');
+        $gramsets = self::with([
+            'gramReflexive',
+            'gramInfinitive',
+            'gramMood',
+            'gramTense',
+            'gramPerson',
+            'gramCase',
+            'gramNumber',
+            'gramNegation',
+            'gramVoice',
+            'gramParticiple',
+        ])->orderBy('sequence_number');
+
         if ($pos_id || $lang_id) {
             $gramsets->whereIn('id', function ($q) use ($lang_id, $pos_id) {
                 $q->select('gramset_id')->from('gramset_pos');
@@ -314,11 +326,10 @@ class Gramset extends Model
         }
 
         $list = array();
-        foreach ($gramsets->get() as $row) {
-            $gramset = self::find($row->id);
-            $list[$row->id] = $gramset->gramsetString();
+        foreach ($gramsets->get() as $gramset) {
+            $list[$gramset->id] = $gramset->gramsetString();
             if ($with_number) {
-                $list[$row->id] = $gramset->sequence_number . '. ' . $list[$row->id];
+                $list[$gramset->id] = $gramset->sequence_number . '. ' . $list[$gramset->id];
             }
         }
 
