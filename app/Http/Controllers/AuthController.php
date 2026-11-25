@@ -109,6 +109,13 @@ class AuthController extends Controller
      */
     public function registerProcess(Request $request)
     {
+        $first_name = mb_strtolower(trim((string) $request->first_name));
+        $last_name = mb_strtolower(trim((string) $request->last_name));
+        if ($first_name !== '' && $first_name === $last_name) {
+            return Redirect::to('register')
+                ->withInput($request->except(['password', 'password_confirm']))
+                ->withErrors(trans('error.identical_names'));
+        }
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required',

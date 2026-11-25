@@ -9,7 +9,7 @@ return [
     |
     |
     */
-    
+
     'account_not_activated' => 'Your account is not activated! Look for an email with a link to activate (we sent a further letter).',
     'account_throttle' => 'Your account is suspended on :delay seconds',
     'activation_code_expired' => 'Invalid or expired activation code.',
@@ -18,12 +18,13 @@ return [
     'email_is_registered' => 'This email is registered already.',
     'email_not_sent' => 'Sorry, an error occurred and the email was not sent.',
     'error' => 'Error',
+    'identical_names' => 'First name and last name must not be the same. If this is your real name, please use, for example, a full name or an initial.',
     'incorrect_login_pass' => 'Incorrect login or password.',
-    'no_lemma'=> 'Lemma is not found.',
-    'no_user'=> 'User is not found.',
-    'no_user_with_email'=> 'No user with that email address.',
+    'no_lemma' => 'Lemma is not found.',
+    'no_user' => 'User is not found.',
+    'no_user_with_email' => 'No user with that email address.',
     'old_reset_code' => 'Invalid or expired password reset code',
-    'permission_denied'=> 'Permission denied',
+    'permission_denied' => 'Permission denied',
     'register_failed' => 'Failed to register.',
     'success' => 'Success'
 ];
