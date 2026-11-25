@@ -87,25 +87,21 @@ class WordformController extends Controller
         $url_args['limit_num'] = $limit_num;
 
         $wordforms = Wordform::search($url_args);
-        $numAll = $wordforms->count();
-
         $wordforms = $wordforms->paginate($limit_num, ['*'], 'page', $page);
+        $numAll = $wordforms->total();
+
+        $lemma_ids = $wordforms->getCollection()->pluck('lemma_id')->filter()->unique()->all();
+        $lemmas_by_id = Lemma::with(['pos', 'lang'])->whereIn('id', $lemma_ids)->get()->keyBy('id');
+
+        $dialect_ids = $wordforms->getCollection()->pluck('dialect_id')->filter()->unique()->all();
+        $dialects_by_id = Dialect::whereIn('id', $dialect_ids)->get()->keyBy('id');
+
+        $gramset_ids = $wordforms->getCollection()->pluck('gramset_id')->filter()->unique()->all();
+        $gram_relations = ['gramReflexive', 'gramInfinitive', 'gramMood', 'gramTense', 'gramPerson', 'gramCase', 'gramNumber', 'gramNegation', 'gramVoice', 'gramParticiple'];
+        $gramsets_by_id = Gramset::with($gram_relations)->whereIn('id', $gramset_ids)->get()->keyBy('id');
 
         $lang_id = $url_args['search_lang'];
         $pos_id = $url_args['search_pos'];
-        foreach ($wordforms as $wordform) {
-            $lemmas = [];
-            foreach ($wordform->lemmas as $lemma) {
-                if ((!$lang_id || $lemma->lang_id == $lang_id)
-                    && (!$pos_id || $lemma->pos_id == $pos_id)
-                    && (!$url_args['search_gramset'] || $lemma->pivot->gramset_id == $url_args['search_gramset'])
-                    && (!$url_args['search_dialect'] || $lemma->pivot->dialect_id == $url_args['search_dialect'])
-                ) {
-                    $lemmas[$lemma->id] = $lemma;
-                }
-            }
-            $wordform['lemmas'] = array_values($lemmas);
-        }
 
         $pos_values = PartOfSpeech::getGroupedList();
 
@@ -118,8 +114,11 @@ class WordformController extends Controller
             'dict.wordform.index',
             compact(
                 'dialect_values',
+                'dialects_by_id',
                 'gramset_values',
+                'gramsets_by_id',
                 'lang_values',
+                'lemmas_by_id',
                 'numAll',
                 'pos_values',
                 'wordforms',

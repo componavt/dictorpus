@@ -48,29 +48,22 @@
         </thead>
         <tbody>
         @foreach($wordforms as $wordform)
-            <?php 
-            if ($wordform->lemma_id) {
-                $lemma_obj = \App\Models\Dict\Lemma::find($wordform->lemma_id);
-                $lemma = (!$lemma_obj || !isset($lemma_obj->lemma))
-                       ? '' : $lemma_obj->lemma;
-                $pos_name = (!$lemma_obj || !isset($lemma_obj->pos->name))
-                          ? '' : $lemma_obj->pos->name;
-                $lang_name = (!$lemma_obj || !isset($lemma_obj->lang->name))
-                           ? '' : $lemma_obj->lang->name;
-            }
+            <?php
+                $lemma_obj = $lemmas_by_id->get($wordform->lemma_id);
+                $lemma = $lemma_obj ? $lemma_obj->lemma : '';
+                $dialect_obj = $dialects_by_id->get($wordform->dialect_id);
+                $gramset_obj = $gramsets_by_id->get($wordform->gramset_id);
+                $pos_name = ($lemma_obj && $lemma_obj->pos) ? $lemma_obj->pos->name : '';
+                $lang_name = ($lemma_obj && $lemma_obj->lang) ? $lemma_obj->lang->name : '';
             ?>
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td data-th="{{ trans('dict.wordform') }}">{{$wordform->wordform}}</td>
             @if (!$url_args['search_gramset'])
                 <td data-th="{{ trans('dict.gram_attr') }}">
-                    <?php 
-                    if($wordform->gramset_id) {
-                        $gramset = \App\Models\Dict\Gramset::find($wordform->gramset_id);
-                        if ($gramset) {
-                            print $gramset->gramsetString();
-                        }
-                    } ?>
+                    @if ($gramset_obj)
+                        {{ $gramset_obj->gramsetString() }}
+                    @endif
                 </td>
             @endif
                 <td data-th="{{ trans('dict.lemmas') }}">
@@ -90,9 +83,9 @@
             @endif
             @if (!$url_args['search_dialect'])
                 <td data-th="{{ trans('dict.dialect') }}">
-                    @if($wordform->dialect_id)
-                        {{\App\Models\Dict\Dialect::find($wordform->dialect_id)->name}}
-                    @endif
+                @if($dialect_obj)
+                    {{ $dialect_obj->name }}
+                @endif
                 </td>
             @endif
             @if (User::checkAccess('dict.edit'))

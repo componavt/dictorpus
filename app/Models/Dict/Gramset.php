@@ -98,10 +98,10 @@ class Gramset extends Model
 
 
     // Gramset __belongs_to__ Gram
-    /*    public function gramReflexive()
+    public function gramReflexive()
     {
         return $this->belongsTo(Gram::class, 'gram_id_reflexive');
-    }*/
+    }
 
     public static function gramsetsLangPOS($lang_id, $pos_id)
     {
