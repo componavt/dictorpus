@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Dict;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
@@ -48,25 +47,55 @@ class WordformController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $pagination = [];
+        $pagination_rules = [
+            'page' => ['default' => 1, 'max' => PHP_INT_MAX],
+            'limit_num' => ['default' => 10, 'max' => 100],
+        ];
+
+        foreach ($pagination_rules as $name => $rule) {
+            $raw_value = $request->input($name, $rule['default']);
+
+            if (!is_string($raw_value) && !is_int($raw_value)) {
+                return response(trans('pagination.invalid_parameters'), 422, ['Content-Type' => 'text/plain; charset=UTF-8']);
+            }
+
+            $value = filter_var($raw_value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => $rule['max']]]);
+
+            if ($value === false) {
+                return response(trans('pagination.invalid_parameters'), 422, ['Content-Type' => 'text/plain; charset=UTF-8']);
+            }
+
+            $pagination[$name] = $value;
+        }
+
+        $page = $pagination['page'];
+        $limit_num = $pagination['limit_num'];
+        $max_offset = 10000;
+
+        // Проверяем глубину без умножения потенциально большого page.
+        if ($page - 1 > intdiv($max_offset, $limit_num)) {
+            return response(trans('pagination.depth_limited'), 422, ['Content-Type' => 'text/plain; charset=UTF-8']);
+        }
+
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+
+        $url_args['page'] = $page;
+        $url_args['limit_num'] = $limit_num;
 
         $wordforms = Wordform::search($url_args);
         $numAll = $wordforms->count();
 
-        $wordforms = $wordforms->paginate($url_args['limit_num']);
-        //take($limit_num)->get();
+        $wordforms = $wordforms->paginate($limit_num, ['*'], 'page', $page);
 
         $lang_id = $url_args['search_lang'];
         $pos_id = $url_args['search_pos'];
         foreach ($wordforms as $wordform) {
             $lemmas = [];
-            //dd($wordform);            
-            //dd($url_args['search_gramset']);            
             foreach ($wordform->lemmas as $lemma) {
-                //dd($lemma->pivot);                
                 if ((!$lang_id || $lemma->lang_id == $lang_id)
                     && (!$pos_id || $lemma->pos_id == $pos_id)
                     && (!$url_args['search_gramset'] || $lemma->pivot->gramset_id == $url_args['search_gramset'])
@@ -79,12 +108,9 @@ class WordformController extends Controller
         }
 
         $pos_values = PartOfSpeech::getGroupedList();
-        //        $pos_values = PartOfSpeech::getGroupedListWithQuantity('wordforms');
 
         $lang_values = Lang::getList();
-        //$lang_values = Lang::getListWithQuantity('wordforms');
 
-        //$dialect_values = Dialect::getList();
         $dialect_values = $lang_id ? [NULL => ''] + Dialect::getList($lang_id) : [];
         $gramset_values = [NULL => ''] + Gramset::getList($pos_id, $lang_id, true);
 

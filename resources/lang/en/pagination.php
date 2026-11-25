@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'previous' => '&laquo; Previous',
+    'depth_limited' => 'Please refine your search: browsing depth is temporarily limited.',
+    'invalid_parameters' => 'Invalid pagination parameters: page must be a positive integer and limit_num must be between 1 and 100.',
     'next'     => 'Next &raquo;',
+    'previous' => '&laquo; Previous',
 
 ];
