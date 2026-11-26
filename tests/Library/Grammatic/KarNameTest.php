@@ -1210,4 +1210,20 @@ class KarNameTest extends TestCase
 
         $this->assertEquals($expected, $result);
     }
+
+    public function testCompoundNounMiniTemplateNenannokka()
+    {
+        [$stems] = \App\Library\Grammatic::stemsFromTemplate(
+            'nenän||n’ok|ka [a/ka]',
+            4,
+            5,
+            null,
+            46
+        );
+
+        $this->assertSame(
+            [4 => 'nenänn’oki', 5 => 'nenänn’okki'],
+            array_intersect_key($stems ?? [], [4 => true, 5 => true])
+        );
+    }
 }
